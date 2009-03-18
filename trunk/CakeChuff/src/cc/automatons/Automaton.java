@@ -8,7 +8,7 @@ public abstract class Automaton {
 	private Mailbox _mailbox;
 	
 	public Automaton() {
-		_mailbox = new Mailbox();
+		//_mailbox = new Mailbox();
 	}
 
 	public abstract void start();
