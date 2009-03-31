@@ -33,6 +33,7 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer{
 	private SystemState _systemState=null;
 	private CakeSubsystemState _cakeSubState=null;
 	private BlisterSubsystemState _blisterSubState=null;
+	private QualitySubsystemState _qualitySubState=null;
 
     /** Creates new form FactoryInterface */
     public FactoryInterface() {
@@ -42,6 +43,8 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer{
     	_cakeSubState.addObserver(this);
     	_blisterSubState = BlisterSubsystemState.getInstance();
     	_blisterSubState.addObserver(this);
+    	_qualitySubState = QualitySubsystemState.getInstance();
+    	_qualitySubState.addObserver(this);
     	    	
         initComponents();
         try {
@@ -124,6 +127,7 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer{
         jButtonCamera2 = new javax.swing.JButton();
         jButtonCamera3 = new javax.swing.JButton();
         jButtonCamera4 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -425,6 +429,13 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer{
             }
         });
 
+        jButton1.setText("Drop CAKE");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -432,7 +443,7 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer{
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jButtonCamera1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
@@ -441,7 +452,8 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer{
                         .addComponent(jButtonCamera3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
                         .addComponent(jButtonCamera4))
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButtonTakePackage, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jButtonTakeCake, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE)
@@ -461,8 +473,10 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer{
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonCamera3)
                     .addComponent(jButtonCamera4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -473,15 +487,15 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer{
                 .addComponent(jButtonTakePackage)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(23, 23, 23))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jSpinner1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinner1StateChanged
+    private void jSpinner1StateChanged(javax.swing.event.ChangeEvent evt) {                                       
     	_cakeSubState.setConveyor_velocity(Float.parseFloat(""+jSpinner1.getValue()));
-    }//GEN-LAST:event_jSpinner1StateChanged    
+    }                                          
 
     private void jButtonTakeBlisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTakeBlisterActionPerformed
         // TODO add your handling code here:
@@ -508,11 +522,13 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer{
     }//GEN-LAST:event_jButtonCamera4ActionPerformed
 
     private void jSpinnerValve1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerValve1StateChanged
-        // TODO add your handling code here:
+        _cakeSubState.setValve1_open_secs(Float.parseFloat(""+jSpinnerValve1.getValue()));
+        // jSpinnerValve1.setValue(0);
     }//GEN-LAST:event_jSpinnerValve1StateChanged
 
     private void jSpinnerValve2StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerValve2StateChanged
-        // TODO add your handling code here:
+    	_cakeSubState.setValve2_open_secs(Float.parseFloat(""+jSpinnerValve2.getValue()));
+    	// jSpinnerValve2.setValue(0);
     }//GEN-LAST:event_jSpinnerValve2StateChanged
 
     private void jSpinnerConveyor2StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerConveyor2StateChanged
@@ -520,8 +536,12 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer{
     }//GEN-LAST:event_jSpinnerConveyor2StateChanged
 
     private void jSpinnerConveyor3StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerConveyor3StateChanged
-        // TODO add your handling code here:
+        _qualitySubState.setConveyor_velocity(Float.parseFloat(""+jSpinnerConveyor3.getValue()));
     }//GEN-LAST:event_jSpinnerConveyor3StateChanged
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        _systemState.setDropCake();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
     * @param args the command line arguments
@@ -535,6 +555,7 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer{
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonCamera1;
     private javax.swing.JButton jButtonCamera2;
     private javax.swing.JButton jButtonCamera3;
@@ -592,6 +613,10 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer{
 			} else  if( arg1 instanceof TouchSensor ){
 				changeLabelColor(jLabelSensor3, ((TouchSensor)arg1).isActived());
 			}			
+		} else if(arg0 instanceof BlisterSubsystemState){
+			// TODO: pendiente identificar sensores
+		} else if(arg0 instanceof QualitySubsystemState){
+			// TODO: pendiente identificar sensores
 		}
 		
 	}

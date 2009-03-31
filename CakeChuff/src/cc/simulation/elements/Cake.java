@@ -19,6 +19,8 @@ import com.jmex.model.converters.ObjToJme;
 
 public class Cake extends Node{
 	
+	public boolean falling=true;
+	
 	/**
 	 * 
 	 */
@@ -27,6 +29,11 @@ public class Cake extends Node{
 	public Cake() {
 		loadModel();
 		//loadCylinder();
+	}
+	
+	public Cake(int id) {
+		loadModel();
+		this.setName("Cake"+id);
 	}
 	
 	private void loadCylinder(){

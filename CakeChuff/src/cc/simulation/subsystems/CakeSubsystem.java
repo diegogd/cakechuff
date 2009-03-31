@@ -2,6 +2,7 @@ package cc.simulation.subsystems;
 
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Vector;
 
 import cc.simulation.elements.ConveyorCake;
 import cc.simulation.elements.LightSensor;
@@ -26,9 +27,7 @@ public class CakeSubsystem extends Node implements Observer {
 	Valve caramel;
 	
 	// State interface
-	CakeSubsystemState _state;
-	
-	boolean cakefalling = true;
+	CakeSubsystemState _state;	
 
 	public CakeSubsystem() {
 		_state = CakeSubsystemState.getInstance();
@@ -65,41 +64,57 @@ public class CakeSubsystem extends Node implements Observer {
 		this.attachChild(caramel);
 	}
 	
-	public void update(Spatial element, float timePerFrame){
+	public void update(Vector<Spatial> elements, float timePerFrame){
+		boolean sen1 = false, sen2=false, sen3=false;
 		
-		if(conv.hasCollision(element, false)){ 
-			element.getLocalTranslation().y = 4.3f;
-			element.getLocalTranslation().x += conv.getVelocity()*timePerFrame;
-			cakefalling=false;
-		} else if( !cakefalling ) {						
-			element.setLocalTranslation(-18, 10f, -8.5f);
-			conv.setVelocity(3f);
-			cakefalling=true;
-		} else {			
-			element.getLocalTranslation().y -= 3*timePerFrame;			
+		for(int i = 0; i < elements.size(); i++){
+			Spatial element = elements.get(i);
+			if(conv.hasCollision(element, false)){ 
+				element.getLocalTranslation().y = 4.3f;
+				element.getLocalTranslation().x += conv.getVelocity()*timePerFrame;			
+			} else if(element.getLocalTranslation().y > 0) {			
+				element.getLocalTranslation().y -= 3*timePerFrame;			
+			} else {
+				element.setLocalTranslation(-18, 10f, -8.5f);
+			}
+			
+			// Sensors detection
+			if(!sen1 && s1.hasCollision(element, false)){
+				sen1 = true;
+			}
+			
+			if(!sen2 && s2.hasCollision(element, false)){
+				sen2 = true;
+			} 
+			
+			if(!sen3 && s3.hasCollision(element, false)){
+				sen3 = true;
+			}
 		}
 		
-		// Sensors detection
-		if(s1.hasCollision(element, false)){			
-			s1.setOn();
-			chocolate.open(timePerFrame);
-		} else {
-			s1.setOff();
-		}
+		if(!sen1) s1.setOff(); else s1.setOn();
+		if(!sen2) s2.setOff(); else s2.setOn();
+		s3.setActived(sen3);
 		
-		if(s2.hasCollision(element, false)){
-			s2.setOn();
-			caramel.open(timePerFrame);
-		} else
-			s2.setOff();
-		
-		s3.setActived(s3.hasCollision(element, false));
+		caramel.update(timePerFrame);
+		chocolate.update(timePerFrame);
 		
 		_state.checkSensorsChanges();
 	}
 
 	@Override
 	public void update(Observable arg0, Object arg1) {
-		conv.setVelocity(_state.getConveyor_velocity());
+		// Dont treat sensors changes.
+		if( arg1 == null){
+			conv.setVelocity(_state.getConveyor_velocity());
+			if(_state.getValve1_open_secs() > 0){
+				chocolate.open(_state.getValve1_open_secs());
+				_state.resetValve1_open_secs();
+			}
+			if(_state.getValve2_open_secs() > 0){
+				caramel.open(_state.getValve2_open_secs());
+				_state.resetValve2_open_secs();
+			}
+		}
 	}	
 }
