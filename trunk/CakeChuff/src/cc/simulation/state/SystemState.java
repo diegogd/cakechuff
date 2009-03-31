@@ -9,7 +9,8 @@ public class SystemState extends Observable {
 	
 	private static SystemState _instance = null;
 	
-	private int id_camera=0;	
+	private int id_camera=-1;
+	private boolean dropCake = false;
 	
 	public static synchronized SystemState getInstance()
 	{
@@ -22,10 +23,29 @@ public class SystemState extends Observable {
 	public int getId_camera() {
 		return id_camera;
 	}
+	
+	public void resetCamera(){
+		id_camera = -1;
+	}
 
 	public void setId_camera(int id_camera) {
 		this.id_camera = id_camera;
 		setChanged();
 		notifyObservers();
 	}			
+	
+	public void setDropCake() {
+		this.dropCake = true;
+		setChanged();
+		notifyObservers();
+	}
+	
+	public boolean dropCake() {
+		if(dropCake){
+			dropCake = false;
+			return true;
+		}
+		else
+			return dropCake;			
+	}
 }

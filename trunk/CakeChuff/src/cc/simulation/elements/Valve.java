@@ -54,12 +54,19 @@ public class Valve extends Node{
 		this.attachChild(ModelLoader.loadOBJ(path));
 	}
 	
-	public void open(float timeperframes)
+	public void update(float timeperframes)
 	{
-		totalAmount--;
-		pivot.getLocalScale().z -= timeperframes*0.5;
-		System.out.println(pivot.getLocalScale()+" and "+content.getLocalScale());
 		if(pivot.getLocalScale().z < 0.2f) pivot.getLocalScale().z = 1;
+		totalAmount--;
+		if(timeOpen > 0){
+			timeOpen -= timeperframes;
+			pivot.getLocalScale().z -= timeperframes*0.5;		
+		}	
+	}
+	
+	public void open(float seconds)
+	{
+		timeOpen = seconds;
 	}
 	
 	public void close(float timeperframe)

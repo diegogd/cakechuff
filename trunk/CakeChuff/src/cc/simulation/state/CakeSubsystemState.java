@@ -40,12 +40,22 @@ public class CakeSubsystemState extends Observable {
 	}
 	public void setValve1_open_secs(float valve1_open_secs) {
 		this.valve1_open_secs = valve1_open_secs;
+		setChanged();
+		notifyObservers();
+	}
+	public void resetValve1_open_secs() {
+		this.valve1_open_secs = 0;
 	}
 	public float getValve2_open_secs() {
 		return valve2_open_secs;
 	}
 	public void setValve2_open_secs(float valve2_open_secs) {
 		this.valve2_open_secs = valve2_open_secs;
+		setChanged();
+		notifyObservers();
+	}
+	public void resetValve2_open_secs() {
+		this.valve2_open_secs = 0;
 	}
 	
 	public void addSensor(Sensor s){

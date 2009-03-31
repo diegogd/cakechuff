@@ -3,6 +3,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Vector;
 
 import cc.simulation.elements.Cake;
 import cc.simulation.elements.Conveyor;
@@ -18,6 +19,7 @@ import com.jme.image.Texture.MagnificationFilter;
 import com.jme.image.Texture.MinificationFilter;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
+import com.jme.scene.Spatial;
 import com.jme.scene.shape.Box;
 import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.TextureState;
@@ -41,22 +43,35 @@ public class Factory extends SimpleGame implements Observer{
 	QualitySubsystem qualitySub;
 	SystemState _state;
 	Conveyor cb2, cb3;
-	Cake cake;
+	Vector<Spatial> cakes;
+	
+	
+	private int numcakes = 0;
 	
 	private Box floor;
 	
 	public Factory() {
 		_state = SystemState.getInstance();
 		_state.addObserver(this);
+		cakes = new Vector<Spatial>();
 	}
 	
 	@Override
 	protected void simpleUpdate() {
-		// TODO Auto-generated method stub
-		super.simpleUpdate();	
 		
-		cakeSub.update(cake, timer.getTimePerFrame());
-		blisterSub.update(timer.getTimePerFrame());
+		for(int i=0; i < numcakes; i++){
+			dropCake();
+			numcakes--;
+		}
+		
+		// TODO Auto-generated method stub
+		super.simpleUpdate();
+		
+		float time = timer.getTimePerFrame();
+		
+		cakeSub.update(cakes, time);
+		
+		blisterSub.update(time);
 	}
 
 	@Override
@@ -100,10 +115,6 @@ public class Factory extends SimpleGame implements Observer{
 		qualitySub.setLocalTranslation(18, 0, 0);
 		rootNode.attachChild(qualitySub);
 		
-		cake = new Cake();
-		cake.setLocalTranslation(-18, 10f, -8.5f);
-		rootNode.attachChild(cake);
-		
 		MaterialState ms = display.getRenderer().createMaterialState();
 		ms.setColorMaterial(ColorMaterial.AmbientAndDiffuse);
 		rootNode.setRenderState(ms);
@@ -130,12 +141,29 @@ public class Factory extends SimpleGame implements Observer{
 		}
 		
 	}
+	
+	public void dropCake(){
+		Cake cake = new Cake(cakes.size());
+		cake.setLocalTranslation(-18, 10f, -8.5f);
+		rootNode.attachChild(cake);
+		rootNode.updateWorldBound();
+		rootNode.updateRenderState();
+		cakes.add(cake);
+	}
 
 	@Override
 	public void update(Observable o, Object arg) {
 		if( o instanceof SystemState)
 		{
-			loadCamera(_state.getId_camera());
+			if(_state.getId_camera() >= 0){
+				loadCamera(_state.getId_camera());
+				_state.resetCamera();
+			}
+			
+			if(_state.dropCake())
+			{
+				numcakes++;
+			}
 		}
 	}
 
