@@ -126,7 +126,8 @@ public class Robot extends Node {
 		
 		if(pivot.getLocalRotation().x<angle){
 			pivot.getLocalRotation().x += time*1/6;
-			System.out.println(pivot.getLocalRotation().x*180/FastMath.PI + " radianes:" + pivot.getLocalRotation().x);
+			//pivot.setLocalRotation(Rotations.rotateX(pivot.getLocalRotation().x +time*1/8));
+			System.out.println("Angulo: " + pivot.getLocalRotation().x*180/FastMath.PI + " radianes:" + pivot.getLocalRotation().x);
 		}
 		this.angleBody = angle*180/FastMath.PI;
 		
