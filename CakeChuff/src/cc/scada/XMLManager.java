@@ -82,7 +82,7 @@ public class XMLManager{
               h.put(e.getName(), e.getText());
           }
           return h;
-      }
+      } 
       catch(Exception e){
           e.printStackTrace();
           return null;

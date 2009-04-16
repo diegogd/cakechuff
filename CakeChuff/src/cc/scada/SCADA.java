@@ -101,5 +101,38 @@ public class SCADA {
 			XMLManager.getInstance().generate("statistics", "docs/statistics.xml", h);
 		}
 	}
+	
+	/**
+	 * Method that put all the information of one automaton into a string 
+	 * message, to be sent to this automaton.
+	 * @return A string with all the date split by the symbol "#"
+	 */
+	public String sendAutomatonInfo1(){
+		String send = "";
+		
+		send = this.getValue("conveyorSpeed", "ss1Info") + "#" +
+		       this.getValue("v1", "ss1Info")+ "#"+
+		       this.getValue("v2", "ss1Info");
+		
+		return send;
+	}
+	
+	/**
+	 * Method that inform about the speed of the conveyor
+	 * for automaton 2. 
+	 * @return A string with the speed
+	 */
+	public String sendAutomatonInfo2(){
+ 		return this.getValue("conveyorSpeed", "ss2Info");
+	}
+	
+	/**
+	 * Method that inform about the speed of the conveyor
+	 * for automaton 3. 
+	 * @return A string with the speed
+	 */
+	public String sendAutomatonInfo3(){
+ 		return this.getValue("conveyorSpeed", "ss3Info");
+	}
 
 }
