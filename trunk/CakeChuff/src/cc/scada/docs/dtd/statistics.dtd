@@ -4,4 +4,4 @@
 	<!ELEMENT statistics (procesedPackages, faultyPackages, totalCakes)>
 		<!ELEMENT procesedPackages (#PCDATA)>
 		<!ELEMENT faultyPackages (#PCDATA)>
-		<!ELEMENT totalCakes(#PCDATA)>	
+		<!ELEMENT totalCakes (#PCDATA)>	

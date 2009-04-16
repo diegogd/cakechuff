@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- DTD that represents the values for  speed for subsystem two -->
 
-	<!ELEMENT ss2Info(defaultSpeed, conveyorSpeed)>
+	<!ELEMENT ss2Info (defaultSpeed, conveyorSpeed )>
 		<!ELEMENT defaultSpeed (#PCDATA)>
 		<!ELEMENT conveyorSpeed (#PCDATA)>
