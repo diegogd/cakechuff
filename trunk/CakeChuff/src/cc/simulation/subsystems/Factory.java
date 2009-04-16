@@ -11,15 +11,19 @@ import cc.simulation.elements.ConveyorBlister;
 import cc.simulation.elements.ConveyorCake;
 import cc.simulation.elements.ConveyorQuality;
 import cc.simulation.elements.LightSensor;
+import cc.simulation.elements.Robot1;
 import cc.simulation.state.SystemState;
 
 import com.jme.app.SimpleGame;
 import com.jme.image.Texture;
 import com.jme.image.Texture.MagnificationFilter;
 import com.jme.image.Texture.MinificationFilter;
+import com.jme.math.FastMath;
+import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Spatial;
+import com.jme.scene.shape.AxisRods;
 import com.jme.scene.shape.Box;
 import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.TextureState;
@@ -44,6 +48,10 @@ public class Factory extends SimpleGame implements Observer{
 	SystemState _state;
 	Conveyor cb2, cb3;
 	Vector<Spatial> cakes;
+	
+	Robot1 robot;
+	
+	//AxisRods axis;
 	
 	
 	private int numcakes = 0;
@@ -72,6 +80,14 @@ public class Factory extends SimpleGame implements Observer{
 		cakeSub.update(cakes, time);
 		
 		blisterSub.update(time);
+		
+		robot.pickUpCake(time);
+		
+//		axis.setLocalRotation( new Quaternion().fromAngleAxis( display.getRenderer().getCamera().getDirection().angleBetween(axis.getLocalRotation().getRotationColumn(0)), display.getRenderer().getCamera().getDirection()) );
+//		axis.setLocalTranslation(display.getRenderer().getCamera().getLocation().getX(),
+//				display.getRenderer().getCamera().getLocation().getY(),
+//				display.getRenderer().getCamera().getLocation().getZ()-2
+//		);
 	}
 
 	@Override
@@ -115,6 +131,17 @@ public class Factory extends SimpleGame implements Observer{
 		qualitySub.setLocalTranslation(18, 0, 0);
 		rootNode.attachChild(qualitySub);
 		
+		robot = new Robot1();
+//		robot.pickUpCake();
+		rootNode.attachChild(robot);
+		
+		
+		
+//		//Create an right handed axisrods object with a scale of 1/2
+//		axis = new AxisRods("rods", true, 0.5f);
+//		//Attach ar to the node we want to visualize
+//		rootNode.attachChild(axis);
+		
 		MaterialState ms = display.getRenderer().createMaterialState();
 		ms.setColorMaterial(ColorMaterial.AmbientAndDiffuse);
 		rootNode.setRenderState(ms);
@@ -139,6 +166,8 @@ public class Factory extends SimpleGame implements Observer{
 		case CAMERA_QASUB: // Quality Subsystem
 			break;
 		}
+		
+		
 		
 	}
 	
