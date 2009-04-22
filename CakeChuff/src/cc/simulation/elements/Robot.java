@@ -12,8 +12,13 @@ import com.jme.scene.shape.Cylinder;
 
 public class Robot extends Node {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2973029142743347671L;
 	// State to know if it has taken an object
-	boolean has_object;
+	public boolean has_object;
+	boolean _moving;
 
 	// Draw Robot
 	private Cylinder lowerBody;
@@ -23,18 +28,26 @@ public class Robot extends Node {
 	private float angleBody;
 	private float angleFloor;
 	private Quaternion rotFloor = new Quaternion();
+	private Quaternion rotBody = new Quaternion();
 	
 	private Vector3f positionRobot;
 
 	private Node pivot;
-	private Cylinder liquid;
 
 	public  Robot(Vector3f positionRobot) {
 		has_object = false;
+		_moving = false;
 		this.positionRobot = new Vector3f(positionRobot);
 		this.angleBody = 0;
 		this.angleFloor = 0;
 		
+		loadTempModel();
+		
+		//Colocar Robot en la posicion
+		this.setLocalTranslation(this.positionRobot);
+	}
+	
+	private void loadTempModel(){
 		base = new Cylinder("base",5,25,0.2f,0.1f,true);
 		base.setLocalRotation(Rotations.rotateX(0.5f));
 		base.setModelBound(new BoundingBox());
@@ -77,21 +90,12 @@ public class Robot extends Node {
 		this.attachChild(pivot);
 		
 		this.setLocalScale(10);
-		
-		/*
-		Cylinder cake = new Cylinder("cake",4, 20, 0.7f, 0.5f, true);
-		cake.setLocalRotation(Rotations.rotateX(0.5f));
-		cake.setModelBound(new BoundingBox());
-		cake.updateModelBound();
-		cake.setDefaultColor(ColorRGBA.brown);
-		cake.updateRenderState();
-		this.attachChild(cake);
-		*/
-		
-		//Colocar Robot en la posicion
-		this.setLocalTranslation(this.positionRobot);
 	}
 
+	public boolean isMoving (){
+		return _moving;
+	}
+	
 	
 	public void closeHand() {
 		if (!has_object) {
@@ -99,7 +103,9 @@ public class Robot extends Node {
 			// Animation of taking an object (closing hand)
 			
 			has_object = true;
+			_moving = true;
 		}
+		_moving = false;
 	}
 
 	
@@ -108,36 +114,63 @@ public class Robot extends Node {
 			// Animation of leaving an object (opening hand)
 			
 			has_object = false;
+			_moving = true;
 		}
+		_moving = false;
 	}
 
-	//Calculate angle of the given vector with the actual position of the 
-	// robot and rotate it
-	private void rotateLeft(Vector3f position) {
-
-	}
-
-	private void rotateRight(Vector3f position) {
-
-	}
 	
 	//Bend body having known angleBody
-	public void bendBody(float angle, float time){
+	public boolean bendBody(float angle, float time){
 		
 		if(pivot.getLocalRotation().x<angle){
 			pivot.getLocalRotation().x += time*1/6;
-			//pivot.setLocalRotation(Rotations.rotateX(pivot.getLocalRotation().x +time*1/8));
+			
+//			rotBody.fromAngleAxis(pivot.getLocalRotation().x+time*1/8, new Vector3f(1,0,0));
+//			this.setLocalRotation(rotBody);
+			
+			// pivot.setLocalRotation(Rotations.rotateX(pivot.getLocalRotation().x+time*1/8));
+			// pivot.setLocalRotation(Rotations.rotateX(0.1f));
 			System.out.println("Angulo: " + pivot.getLocalRotation().x*180/FastMath.PI + " radianes:" + pivot.getLocalRotation().x);
+			_moving = true;
+			return false;
 		}
-		this.angleBody = angle*180/FastMath.PI;
+		 
+		this.angleBody = pivot.getLocalRotation().x*180/FastMath.PI;
+		_moving = false;
+		return true;
 		
 	}
 	
-	public void moveTo (Vector3f position){
+	public void moveTo (Vector3f position, float time){
 		//Calcular el angulo de rotacion mas corto y girar en el sentido mas corto
-		rotFloor.fromAngleAxis(this.localTranslation.angleBetween(position)*180/FastMath.PI,
-				new Vector3f(0,1,0));
-		this.setLocalRotation(rotFloor);
+		if(this.getLocalRotation().y<this.localTranslation.angleBetween(position)){
+			
+			this.getLocalRotation().y += time*1/6;
+			
+			System.out.println("Angulo: " + this.getLocalRotation().y*180/FastMath.PI + " radianes:" + this.getLocalRotation().y);
+//			rotFloor.fromAngleAxis(this.localTranslation.angleBetween(position),
+//					new Vector3f(0,1,0));
+//			this.setLocalRotation(rotFloor);
+			_moving = true;
+		}
+		_moving = false;
+		//this.setLocalRotation()(position, new Vector3f(0,1,0));
+	}
+	
+	public void moveTo (float angle, float time){
+		//Dado el angulo
+		if(this.getLocalRotation().y<angle){
+			
+//			this.getLocalRotation().y += time*1/6;
+			
+			System.out.println("Angulo: " + this.getLocalRotation().y*180/FastMath.PI + " radianes:" + this.getLocalRotation().y);
+			rotFloor.fromAngleAxis(this.getLocalRotation().y+time*1/6,
+					new Vector3f(0,1,0));
+			this.setLocalRotation(rotFloor);
+			_moving = true;
+		}
+		_moving = false;
 		//this.setLocalRotation()(position, new Vector3f(0,1,0));
 	}
 } 
