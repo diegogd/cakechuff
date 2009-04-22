@@ -11,7 +11,6 @@ import cc.simulation.elements.ConveyorBlister;
 import cc.simulation.elements.ConveyorCake;
 import cc.simulation.elements.ConveyorQuality;
 import cc.simulation.elements.LightSensor;
-import cc.simulation.elements.Robot1;
 import cc.simulation.state.SystemState;
 
 import com.jme.app.SimpleGame;
@@ -81,6 +80,7 @@ public class Factory extends SimpleGame implements Observer{
 		
 		blisterSub.update(time);
 		
+//		robot.moveToSub1(time);
 		robot.pickUpCake(time);
 		
 //		axis.setLocalRotation( new Quaternion().fromAngleAxis( display.getRenderer().getCamera().getDirection().angleBetween(axis.getLocalRotation().getRotationColumn(0)), display.getRenderer().getCamera().getDirection()) );
