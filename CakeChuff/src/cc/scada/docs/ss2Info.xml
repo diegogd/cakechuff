@@ -2,4 +2,6 @@
 <ss2Info>
 	<defaultSpeed>10</defaultSpeed>
 	<conveyorSpeed>10</conveyorSpeed>
+	<conveyorLenght>20</conveyorLenght>
+	<state>init</state>
 	</ss2Info>

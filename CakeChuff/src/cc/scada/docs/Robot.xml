@@ -1,0 +1,5 @@
+<!DOCTYPE robot SYSTEM "dtd\robot.dtd">
+<robot>
+	<pick_blister>5</pick_blister>
+	<move_place_cake>5</move_place_cake>
+	<state>init</state></robot>

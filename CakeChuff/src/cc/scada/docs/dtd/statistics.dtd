@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- DTD that represents the statistics of CakeChuff -->
 
-	<!ELEMENT statistics (procesedPackages, faultyPackages, totalCakes)>
+	<!ELEMENT statistics (procesedPackages, faultyPackages, total_ko_cakes, total_ok_cakes, start, emergency_stops, stops)>
 		<!ELEMENT procesedPackages (#PCDATA)>
 		<!ELEMENT faultyPackages (#PCDATA)>
-		<!ELEMENT totalCakes (#PCDATA)>	
+		<!ELEMENT total_ko_cakes (#PCDATA)>
+		<!ELEMENT total_ok_cakes (#PCDATA)>
+		<!ELEMENT start (#PCDATA)>
+		<!ELEMENT emergency_stops (#PCDATA)>
+		<!ELEMENT stops (#PCDATA)>	

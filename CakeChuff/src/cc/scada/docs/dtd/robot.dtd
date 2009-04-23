@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- DTD that represents the features and keeps the state of the robot -->
+
+	<!ELEMENT robot (pick_blister, move_place_cake, state )>
+		<!ELEMENT pick_blister (#PCDATA)>
+		<!ELEMENT move_place_cake (#PCDATA)>
+		<!--states: empty, blister, cake1, cake2, cake3, full-->
+		<!ELEMENT state (#PCDATA)>

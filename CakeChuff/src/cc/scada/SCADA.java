@@ -19,10 +19,12 @@ public class SCADA {
 	 *          defaultv2
 	 *          v1
 	 *          v2
+	 *          state (this one for the robot also)
 	 * @param subsystem the names can be:
 	 * 		    ss1Info
 	 * 			ss2Info
 	 * 			ss3Info
+	 * 			robot
 	 * @return the value interested in
 	 */
 	public String getValue(String key, String subsystem){
@@ -87,7 +89,11 @@ public class SCADA {
 	 * recover. This can be:
 	 *          procesedPackages
 	 *          faultyPackages
-	 *          totalCakes
+	 *          total_ko_cakes
+	 *          total_ok_cakes
+	 *          start
+	 *          emergency_stops
+	 *          stops
 	 * @param value 
 	 */
 	public void setStatistics(String key, String value){
@@ -134,5 +140,12 @@ public class SCADA {
 	public String sendAutomatonInfo3(){
  		return this.getValue("conveyorSpeed", "ss3Info");
 	}
-
+	
+	public String sendInitInfo(){
+		String s = this.sendAutomatonInfo1() + "$" + 
+				this.sendAutomatonInfo2() + "$" + 
+				this.sendAutomatonInfo3();
+		return s;
+	}
+	
 }

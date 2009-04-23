@@ -4,4 +4,7 @@
 	<conveyorSpeed>10</conveyorSpeed><defaultv1>2</defaultv1>
 	<v1>2</v1><defaultv2>3</defaultv2>
 	<v2>3</v2>
+	<conveyorLenght>10</conveyorLenght>
+	<cakesCapacity>50</cakesCapacity>
+	<state>init</state>
 	</ss1Info>
