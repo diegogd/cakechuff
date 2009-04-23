@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- DTD that represents the values for  speed for subsystem three -->
 
-	<!ELEMENT ss3Info (defaultSpeed, conveyorSpeed)>
+	<!ELEMENT ss3Info (defaultSpeed, conveyorSpeed, conveyorLenght, time_pack, failure_range, state, pick_blister, robot_state )>
 		<!ELEMENT defaultSpeed (#PCDATA)>
 		<!ELEMENT conveyorSpeed (#PCDATA)>
+		<!ELEMENT conveyorLenght (#PCDATA)>
+		<!ELEMENT time_pack (#PCDATA)>
+		<!ELEMENT failure_range (#PCDATA)>
+		<!--states: init, QC, qc-stamp, stamp, stamp-wait, ko_mov, ok_wait, ko_wait-->
+		<!ELEMENT state (#PCDATA)>
+		<!-- Now the features of the robot in subsystem 3-->
+		<!ELEMENT pick_blister (#PCDATA)>
+		<!-- Robot state: init, moving-->
+		<!ELEMENT robot_state (#PCDATA)>

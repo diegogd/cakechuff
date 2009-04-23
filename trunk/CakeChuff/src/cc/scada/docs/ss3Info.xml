@@ -2,4 +2,10 @@
 <ss3Info>
 	<defaultSpeed>10</defaultSpeed>
 	<conveyorSpeed>10</conveyorSpeed>
+	<conveyorLenght>20</conveyorLenght>
+	<time_pack>5</time_pack>
+	<failure_range>5</failure_range>
+	<state>init</state>
+	<pick_blister>5</pick_blister>
+	<robot_state>init</robot_state>
 	</ss3Info>
