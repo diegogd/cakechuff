@@ -16,15 +16,12 @@ public class Robot1 extends Node implements Observer {
 
 	Robot1State _state;
 
-	private Vector3f positionSubsystem1 = new Vector3f(4, 9f, 0f);
-	private Vector3f positionSubsystem2;
-	private Vector3f positionSubsystem3;
-	private Vector3f positionTable;
+	private float angleSubsystem1 = 3.752f;
+	private float angleSubsystem2 = 5.847f;
+	private float angleSubsystem3 = FastMath.PI / 2;
+	private float angleTable = 2.705f;
 
-	private float angleSubsystem1 = 0.785f;
-	private float angleSubsystem2;
-	private float angleSubsystem3;
-	private float angleTable;
+	private int phase;
 
 	final int INIT = 0;
 	final int SUBSYSTEM1 = 1;
@@ -42,89 +39,231 @@ public class Robot1 extends Node implements Observer {
 		// super(new Vector3f(0,0,0));
 
 		robot = new Robot(new Vector3f(0, 0, 0)); // Modificar valores
+		this.attachChild(robot);
 		_state = Robot1State.getInstance();
 		_state.addObserver(this);
+
+		phase = 0;
 	}
 
-	public void moveToInit(float time) {
-		// System.out.println();
-		// super.moveTo(positionSubsystem1,time);
-		robot.moveTo(0, time);
+	public boolean moveToInit(float time) {
+		if (robot.moveTo(0, time))
+			return true;
+		return false;
 	}
 
-	public void moveToSub1(float time) {
-		// System.out.println();
-		// super.moveTo(positionSubsystem1,time);
-		robot.moveTo(angleSubsystem1, time);
+	public boolean moveToSub1(float time) {
+		if (robot.moveTo(angleSubsystem1, time))
+			return true;
+		return false;
 	}
 
-	public void moveToSub2(float time) {
-		robot.moveTo(positionSubsystem2, time);
+	public boolean moveToSub2(float time) {
+		if (robot.moveTo(angleSubsystem2, time))
+			return true;
+		return false;
 	}
 
-	public void moveToSub3(float time) {
-		robot.moveTo(positionSubsystem3, time);
+	public boolean moveToSub3(float time) {
+		if (robot.moveTo(angleSubsystem3, time))
+			return true;
+		return false;
 	}
 
-	public void moveToTable(float time) {
-		robot.moveTo(positionTable, time);
+	public boolean moveToTable(float time) {
+		if (robot.moveTo(angleTable, time))
+			return true;
+		return false;
 	}
 
-	public void pickUpCake(float time) {
+	public boolean pickUpCake(float time) {
 
-		// Hacer que se ejecuten de manera unitaria todas estas acciones -->
-		// problema: se ejecutaran todas en cada instancia de tiempo
-
-		// moveToSub1();
-		// while(super.bendBody(0.25f,time)){}
-		if (robot.bendBody(0.785f, time)) {// insertar angulo
-			// Anidar el resto
-			// if()
-
+		switch (this.phase) {
+		case 0:
+			if (robot.bendBody(1.5f, time))
+				this.phase++;
+			break;
+		case 1:
+			if (robot.moveTo(angleSubsystem1, time))
+				this.phase++;
+			break;
+		case 2:
+			if (robot.openHand(-0.785f, time))
+				this.phase++;
+			break;
+		case 3:
+			if (robot.bendBody(2.005f, time))
+				this.phase++;
+			break;
+		case 4:
+			if (robot.openHand(0f, time))
+				this.phase++;
+			break;
+		case 5:
+			if (robot.bendBody(1.5f, time))
+				this.phase++;
+			break;
+		case 6:
+			phase = 0;
+			return true;
 		}
-		// super.closeHand();
-		// super.bendBody(-15);
+		return false;
+
 	}
 
-	public void dropCake(float time) {
-		if (robot.has_object) {
-			moveToTable(time);
-			robot.bendBody(0.785f, time);
-			robot.openHand();
-			robot.bendBody(0, time);
+	public boolean dropCake(float time) {
+
+		switch (this.phase) {
+		case 0:
+			if (robot.bendBody(1.5f, time))
+				this.phase++;
+			break;
+		case 1:
+			if (robot.moveTo(angleTable, time))
+				this.phase++;
+			break;
+		case 2:
+			if (robot.bendBody(2.005f, time))
+				this.phase++;
+			break;
+		case 3:
+			if (robot.openHand(-0.785f, time))
+				this.phase++;
+			break;
+		case 4:
+			if (robot.bendBody(1.5f, time))
+				this.phase++;
+			break;
+		case 5:
+			phase = 0;
+			return true;
 		}
+		return false;
 	}
 
-	public void pickUpBlister(float time) {
-		moveToSub2(time);
-		robot.bendBody(0.785f, time); // insertar angulo
-		robot.closeHand();
-		robot.bendBody(0, time);
-	}
+	public boolean pickUpBlister(float time) {
 
-	public void dropBlister(float time) {
-		if (robot.has_object) {
-			moveToTable(time);
-			robot.bendBody(0.785f, time);
-			robot.openHand();
-			robot.bendBody(0, time);
+		switch (this.phase) {
+		case 0:
+			if (robot.bendBody(1.5f, time))
+				this.phase++;
+			break;
+		case 1:
+			if (robot.moveTo(angleSubsystem2, time))
+				this.phase++;
+			break;
+		case 2:
+			if (robot.openHand(-0.785f, time))
+				this.phase++;
+			break;
+		case 3:
+			if (robot.bendBody(2.005f, time))
+				this.phase++;
+			break;
+		case 4:
+			if (robot.openHand(0f, time))
+				this.phase++;
+			break;
+		case 5:
+			if (robot.bendBody(1.5f, time))
+				this.phase++;
+			break;
+		case 6:
+			phase = 0;
+			return true;
 		}
+		return false;
 	}
 
-	public void pickUpPacket(float time) {
-		moveToTable(time);
-		robot.bendBody(0.785f, time); // insertar angulo
-		robot.closeHand();
-		robot.bendBody(0, time);
-	}
-
-	public void dropPacket(float time) {
-		if (robot.has_object) {
-			moveToSub3(time);
-			robot.bendBody(0.785f, time);
-			robot.openHand();
-			robot.bendBody(0, time);
+	public boolean dropBlister(float time) {
+		switch (this.phase) {
+		case 0:
+			if (robot.bendBody(1.5f, time))
+				this.phase++;
+			break;
+		case 1:
+			if (robot.moveTo(angleTable, time))
+				this.phase++;
+			break;
+		case 2:
+			if (robot.bendBody(2.005f, time))
+				this.phase++;
+			break;
+		case 3:
+			if (robot.openHand(-0.785f, time))
+				this.phase++;
+			break;
+		case 4:
+			if (robot.bendBody(1.5f, time))
+				this.phase++;
+			break;
+		case 5:
+			phase = 0;
+			return true;
 		}
+		return false;
+	}
+
+	public boolean pickUpPacket(float time) {
+		switch (this.phase) {
+		case 0:
+			if (robot.bendBody(1.5f, time))
+				this.phase++;
+			break;
+		case 1:
+			if (robot.moveTo(angleTable, time))
+				this.phase++;
+			break;
+		case 2:
+			if (robot.openHand(-0.785f, time))
+				this.phase++;
+			break;
+		case 3:
+			if (robot.bendBody(2.005f, time))
+				this.phase++;
+			break;
+		case 4:
+			if (robot.openHand(0f, time))
+				this.phase++;
+			break;
+		case 5:
+			if (robot.bendBody(1.5f, time))
+				this.phase++;
+			break;
+		case 6:
+			phase = 0;
+			return true;
+		}
+		return false;
+	}
+
+	public boolean dropPacket(float time) {
+		switch (this.phase) {
+		case 0:
+			if (robot.bendBody(1.5f, time))
+				this.phase++;
+			break;
+		case 1:
+			if (robot.moveTo(angleSubsystem3, time))
+				this.phase++;
+			break;
+		case 2:
+			if (robot.bendBody(2.005f, time))
+				this.phase++;
+			break;
+		case 3:
+			if (robot.openHand(-0.785f, time))
+				this.phase++;
+			break;
+		case 4:
+			if (robot.bendBody(1.5f, time))
+				this.phase++;
+			break;
+		case 5:
+			phase = 0;
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -139,56 +278,60 @@ public class Robot1 extends Node implements Observer {
 			switch (_state.getGoToState()) {
 
 			case INIT:
-				moveToInit(time);
-				_state.setCurrentState(INIT);
+				if (moveToInit(time)) {
+					_state.setCurrentState(INIT);
+				}
 				break;
 			case SUBSYSTEM1:
-				moveToSub1(time);
-				_state.setCurrentState(SUBSYSTEM1);
+				if (moveToSub1(time)) {
+					_state.setCurrentState(SUBSYSTEM1);
+				}
 				break;
 			case SUBSYSTEM2:
-				moveToSub2(time);
-				_state.setCurrentState(SUBSYSTEM2);
+				if (moveToSub2(time)) {
+					_state.setCurrentState(SUBSYSTEM2);
+				}
 				break;
 			case SUBSYSTEM3:
-				moveToSub3(time);
-				_state.setCurrentState(SUBSYSTEM3);
+				if (moveToSub3(time))
+					_state.setCurrentState(SUBSYSTEM3);
 				break;
 			case TABLE:
-				moveToTable(time);
-				_state.setCurrentState(TABLE);
+				if (moveToTable(time)) {
+					_state.setCurrentState(TABLE);
+				}
 				break;
 			case PICKUPCAKE:
-				pickUpCake(time);
-				_state.setCurrentState(PICKUPCAKE);
+				if (pickUpCake(time)) {
+					_state.setCurrentState(PICKUPCAKE);
+				}
 				break;
 			case DROPCAKE:
-				dropCake(time);
-				_state.setCurrentState(DROPCAKE);
+				if (dropCake(time))
+					_state.setCurrentState(DROPCAKE);
 				break;
 			case PICKUPBLISTER:
-				pickUpBlister(time);
-				_state.setCurrentState(PICKUPBLISTER);
+				if (pickUpBlister(time))
+					_state.setCurrentState(PICKUPBLISTER);
 				break;
 			case DROPBLISTER:
-				dropBlister(time);
-				_state.setCurrentState(DROPBLISTER);
+				if (dropBlister(time))
+					_state.setCurrentState(DROPBLISTER);
 				break;
 			case PICKUPPACKET:
-				pickUpPacket(time);
-				_state.setCurrentState(PICKUPPACKET);
+				if (pickUpPacket(time))
+					_state.setCurrentState(PICKUPPACKET);
 				break;
 			case DROPPACKET:
-				dropPacket(time);
-				_state.setCurrentState(DROPPACKET);
+				if (dropPacket(time))
+					_state.setCurrentState(DROPPACKET);
 				break;
 			default:
-				moveToInit(time);
-				_state.setCurrentState(INIT);
+				if (moveToInit(time))
+					_state.setCurrentState(INIT);
 				break;
 			}
-			
-			_state.setMoving(false);	//It has finished moving
+			_state.setMoving(false); // It has finished moving
 		}
 	}
 }

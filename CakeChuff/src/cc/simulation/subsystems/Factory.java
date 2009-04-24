@@ -48,7 +48,7 @@ public class Factory extends SimpleGame implements Observer{
 	Conveyor cb2, cb3;
 	Vector<Spatial> cakes;
 	
-	Robot1 robot;
+	Robot1 robot1;
 	
 	//AxisRods axis;
 	
@@ -80,8 +80,8 @@ public class Factory extends SimpleGame implements Observer{
 		
 		blisterSub.update(time);
 		
-//		robot.moveToSub1(time);
-		robot.pickUpCake(time);
+//		robot1.moveToSub1(time);
+		robot1.update(time);
 		
 //		axis.setLocalRotation( new Quaternion().fromAngleAxis( display.getRenderer().getCamera().getDirection().angleBetween(axis.getLocalRotation().getRotationColumn(0)), display.getRenderer().getCamera().getDirection()) );
 //		axis.setLocalTranslation(display.getRenderer().getCamera().getLocation().getX(),
@@ -131,9 +131,10 @@ public class Factory extends SimpleGame implements Observer{
 		qualitySub.setLocalTranslation(18, 0, 0);
 		rootNode.attachChild(qualitySub);
 		
-		robot = new Robot1();
+		robot1 = new Robot1();
 //		robot.pickUpCake();
-		rootNode.attachChild(robot);
+		rootNode.attachChild(robot1);
+		
 		
 		
 		
