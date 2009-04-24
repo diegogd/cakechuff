@@ -34,6 +34,7 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer{
 	private CakeSubsystemState _cakeSubState=null;
 	private BlisterSubsystemState _blisterSubState=null;
 	private QualitySubsystemState _qualitySubState=null;
+	private Robot1State _robot1State=null;
 
     /** Creates new form FactoryInterface */
     public FactoryInterface() {
@@ -45,6 +46,8 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer{
     	_blisterSubState.addObserver(this);
     	_qualitySubState = QualitySubsystemState.getInstance();
     	_qualitySubState.addObserver(this);
+    	_robot1State = Robot1State.getInstance();
+    	_robot1State.addObserver(this);
     	    	
         initComponents();
         try {
@@ -541,6 +544,8 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer{
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         _systemState.setDropCake();
+        
+        _robot1State.setGoToState(5);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
