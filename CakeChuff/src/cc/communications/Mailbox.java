@@ -1,59 +1,60 @@
 package cc.communications;
 
-public class Mailbox {
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+
+import cc.automatons.Automaton;
+
+public abstract class Mailbox implements Runnable {
+
+	ServerSocket ss;
+	Socket so;
+	DataInputStream din; 
+	DataOutputStream dout;
+	ArrayList<String> msg_list;
 	
-	private Packet input;
-
-	private Packet output;
-
+	public Mailbox(Automaton owner, int port) throws IOException{
+		ss = new ServerSocket(port);
+		msg_list=new ArrayList<String>();
+	}
 	
-
-	public Mailbox(int option){
-
-		input= new Packet(option);
-
-		output= new Packet(option);
-
+	@Override
+	public void run() {
+		//Accept connections
+		try{
+			this.connect();
+			while(true){
+				receiveMsgs();
+			}
+		}catch(IOException ioe){
+			//cannot connect
+		}
+		
 	}
 
-
-
-	public Packet getInput() {
-
-		return input;
-
+	private void connect() throws IOException {
+		so = ss.accept();
+		din = new DataInputStream(so.getInputStream());
+		dout = new DataOutputStream(so.getOutputStream());
 	}
 
-
-
-	public void setInput(Packet in) {
-
-		input = in;
-
+	private void receiveMsgs() {
+		String msg;
+		while (true) {
+			try {
+				msg = din.readUTF();
+				manageMsg(msg);
+			} catch (IOException ioe) {
+				// connection failure, put automaton into failure state
+			}
+		}
 	}
-
-
-
-	public Packet getOutput() {
-
-		return output;
-
-	}
-
-
-
-	public void setOutput(Packet out) {
-
-		output = out;
-
-	}
-
-	
-
-	public String toString() {
-
-		return ("Input MailBox "+ input.toString()+"\n"+"Output MailBox "+ output.toString());	
-
-	}
-
+	/*
+	 * Manage messages received, specific for each automaton
+	 */
+	protected abstract void manageMsg(String msg);
 }
