@@ -5,15 +5,19 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
 
+import cc.simulation.elements.Blister;
 import cc.simulation.elements.Cake;
 import cc.simulation.elements.Conveyor;
 import cc.simulation.elements.ConveyorBlister;
 import cc.simulation.elements.ConveyorCake;
 import cc.simulation.elements.ConveyorQuality;
 import cc.simulation.elements.LightSensor;
+import cc.simulation.elements.Table;
 import cc.simulation.state.SystemState;
+import cc.simulation.utils.Rotations;
 
 import com.jme.app.SimpleGame;
+import com.jme.bounding.BoundingBox;
 import com.jme.image.Texture;
 import com.jme.image.Texture.MagnificationFilter;
 import com.jme.image.Texture.MinificationFilter;
@@ -46,7 +50,11 @@ public class Factory extends SimpleGame implements Observer{
 	QualitySubsystem qualitySub;
 	SystemState _state;
 	Conveyor cb2, cb3;
-	Vector<Spatial> cakes;
+	Vector<Spatial> cakes,blisters, combination;
+	
+	Table table;
+	
+	Spatial test;
 	
 	Robot1 robot1;
 	
@@ -54,6 +62,7 @@ public class Factory extends SimpleGame implements Observer{
 	
 	
 	private int numcakes = 0;
+	private int numBlisters = 0;
 	
 	private Box floor;
 	
@@ -61,6 +70,8 @@ public class Factory extends SimpleGame implements Observer{
 		_state = SystemState.getInstance();
 		_state.addObserver(this);
 		cakes = new Vector<Spatial>();
+		blisters = new Vector<Spatial>();
+		combination = new Vector<Spatial>();
 	}
 	
 	@Override
@@ -71,6 +82,11 @@ public class Factory extends SimpleGame implements Observer{
 			numcakes--;
 		}
 		
+		for(int i=0; i < numBlisters; i++){
+			Engrave();
+			numBlisters--;
+		}
+		
 		// TODO Auto-generated method stub
 		super.simpleUpdate();
 		
@@ -78,17 +94,22 @@ public class Factory extends SimpleGame implements Observer{
 		
 		cakeSub.update(cakes, time);
 		
-		blisterSub.update(time);
+		blisterSub.update(blisters,time);
 		
 //		robot1.moveToSub1(time);
-		robot1.update(time);
+		
+		//Lo correcto seria:robot1.update(time,rootNode.getChildren());
+		robot1.update(time,combination);
 		
 //		axis.setLocalRotation( new Quaternion().fromAngleAxis( display.getRenderer().getCamera().getDirection().angleBetween(axis.getLocalRotation().getRotationColumn(0)), display.getRenderer().getCamera().getDirection()) );
 //		axis.setLocalTranslation(display.getRenderer().getCamera().getLocation().getX(),
 //				display.getRenderer().getCamera().getLocation().getY(),
 //				display.getRenderer().getCamera().getLocation().getZ()-2
 //		);
+		
 	}
+
+	
 
 	@Override
 	protected void simpleInitGame() {
@@ -131,11 +152,24 @@ public class Factory extends SimpleGame implements Observer{
 		qualitySub.setLocalTranslation(18, 0, 0);
 		rootNode.attachChild(qualitySub);
 		
+		table = new Table();
+		table.setLocalRotation(Rotations.rotateY(-0.785f));
+		table.setLocalTranslation(4f,2.4f,-8f);
+		
+		rootNode.attachChild(table);
+		
 		robot1 = new Robot1();
 //		robot.pickUpCake();
 		rootNode.attachChild(robot1);
 		
-		
+//		test = new Box("test", new Vector3f(-0.5f, 0f,-0.5f), new Vector3f(0.5f,1f,0.5f));
+//		test.setModelBound(new BoundingBox());
+//		test.updateModelBound();
+//		test.setLocalTranslation(new Vector3f(-4.5f,4f,-7f));
+//		test.setLocalScale(2.0f);
+//		test.updateRenderState();
+//				
+//		rootNode.attachChild(test);
 		
 		
 //		//Create an right handed axisrods object with a scale of 1/2
@@ -146,6 +180,8 @@ public class Factory extends SimpleGame implements Observer{
 		MaterialState ms = display.getRenderer().createMaterialState();
 		ms.setColorMaterial(ColorMaterial.AmbientAndDiffuse);
 		rootNode.setRenderState(ms);
+		
+		combination.add(table);
 		
 		loadCamera(CAMERA_CAKESUB);
 	}
@@ -179,6 +215,18 @@ public class Factory extends SimpleGame implements Observer{
 		rootNode.updateWorldBound();
 		rootNode.updateRenderState();
 		cakes.add(cake);
+		combination.add(cake);
+	}
+	
+	private void Engrave() {
+		Blister blister = new Blister(blisters.size());
+		blister.setLocalTranslation(-13f, 0f, 16.8f);
+		blister.setLocalScale(1.1f);
+		rootNode.attachChild(blister);
+		rootNode.updateWorldBound();
+		rootNode.updateRenderState();
+		blisters.add(blister);
+		combination.add(blister);
 	}
 
 	@Override
@@ -193,6 +241,11 @@ public class Factory extends SimpleGame implements Observer{
 			if(_state.dropCake())
 			{
 				numcakes++;
+			}
+			
+			if(_state.makeBlister())
+			{
+				numBlisters++;
 			}
 		}
 	}

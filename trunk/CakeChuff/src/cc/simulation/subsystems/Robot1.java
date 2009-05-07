@@ -1,14 +1,20 @@
 package cc.simulation.subsystems;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import cc.simulation.elements.Blister;
+import cc.simulation.elements.Cake;
 import cc.simulation.elements.Robot;
+import cc.simulation.elements.Table;
 import cc.simulation.state.Robot1State;
 
 import com.jme.math.FastMath;
 import com.jme.math.Vector3f;
 import com.jme.scene.Node;
+import com.jme.scene.Spatial;
 
 public class Robot1 extends Node implements Observer {
 
@@ -76,7 +82,7 @@ public class Robot1 extends Node implements Observer {
 		return false;
 	}
 
-	public boolean pickUpCake(float time) {
+	public boolean pickUpCake(float time, Spatial element) {
 
 		switch (this.phase) {
 		case 0:
@@ -96,7 +102,7 @@ public class Robot1 extends Node implements Observer {
 				this.phase++;
 			break;
 		case 4:
-			if (robot.openHand(0f, time))
+			if (robot.openHandObject(0f, time, element))
 				this.phase++;
 			break;
 		case 5:
@@ -111,7 +117,7 @@ public class Robot1 extends Node implements Observer {
 
 	}
 
-	public boolean dropCake(float time) {
+	public boolean dropCake(float time,Spatial element) {
 
 		switch (this.phase) {
 		case 0:
@@ -127,7 +133,7 @@ public class Robot1 extends Node implements Observer {
 				this.phase++;
 			break;
 		case 3:
-			if (robot.openHand(-0.785f, time))
+			if (robot.leaveHandObject(-0.785f, time,element))
 				this.phase++;
 			break;
 		case 4:
@@ -141,7 +147,7 @@ public class Robot1 extends Node implements Observer {
 		return false;
 	}
 
-	public boolean pickUpBlister(float time) {
+	public boolean pickUpBlister(float time, Spatial element) {
 
 		switch (this.phase) {
 		case 0:
@@ -161,7 +167,7 @@ public class Robot1 extends Node implements Observer {
 				this.phase++;
 			break;
 		case 4:
-			if (robot.openHand(0f, time))
+			if (robot.openHandObject(0f, time,element))
 				this.phase++;
 			break;
 		case 5:
@@ -175,7 +181,7 @@ public class Robot1 extends Node implements Observer {
 		return false;
 	}
 
-	public boolean dropBlister(float time) {
+	public boolean dropBlister(float time,Spatial element) {
 		switch (this.phase) {
 		case 0:
 			if (robot.bendBody(1.5f, time))
@@ -190,7 +196,7 @@ public class Robot1 extends Node implements Observer {
 				this.phase++;
 			break;
 		case 3:
-			if (robot.openHand(-0.785f, time))
+			if (robot.leaveHandObject(-0.785f, time,element))
 				this.phase++;
 			break;
 		case 4:
@@ -273,7 +279,8 @@ public class Robot1 extends Node implements Observer {
 	}
 
 	// //Gestionar los estados y las llamadas a las funciones en el update
-	public void update(float time) {
+	public void update(float time, List<Spatial> element) {
+		Iterator<Spatial> elem;
 		if (_state.getIfMoving()) {
 			switch (_state.getGoToState()) {
 
@@ -302,22 +309,53 @@ public class Robot1 extends Node implements Observer {
 				}
 				break;
 			case PICKUPCAKE:
-				if (pickUpCake(time)) {
-					_state.setCurrentState(PICKUPCAKE);
+				 elem = element.iterator();
+				while (elem.hasNext()) {
+					Spatial aux = elem.next();
+					if (aux instanceof Cake) {
+						if (pickUpCake(time, aux)) {
+							_state.setCurrentState(PICKUPCAKE);
+						}
+					}
 				}
 				break;
 			case DROPCAKE:
-				if (dropCake(time))
-					_state.setCurrentState(DROPCAKE);
+				elem = element.iterator();
+				while (elem.hasNext()) {
+					Spatial aux = elem.next();
+					if (aux instanceof Table) {
+						if (dropCake(time,aux)){
+							_state.setCurrentState(DROPCAKE);
+						}
+					}
+				}
+				
 				break;
+				
 			case PICKUPBLISTER:
-				if (pickUpBlister(time))
-					_state.setCurrentState(PICKUPBLISTER);
+				elem = element.iterator();
+				while (elem.hasNext()) {
+					Spatial aux = elem.next();
+					if (aux instanceof Blister) {
+						if (pickUpBlister(time,aux)){
+							_state.setCurrentState(PICKUPBLISTER);
+						}
+					}
+				}
 				break;
+				
 			case DROPBLISTER:
-				if (dropBlister(time))
-					_state.setCurrentState(DROPBLISTER);
+				elem = element.iterator();
+				while (elem.hasNext()) {
+					Spatial aux = elem.next();
+					if (aux instanceof Table) {
+						if (dropBlister(time,aux)){
+							_state.setCurrentState(DROPBLISTER);
+						}
+					}
+				}
 				break;
+				
 			case PICKUPPACKET:
 				if (pickUpPacket(time))
 					_state.setCurrentState(PICKUPPACKET);

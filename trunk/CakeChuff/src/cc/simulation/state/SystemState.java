@@ -11,6 +11,7 @@ public class SystemState extends Observable {
 	
 	private int id_camera=-1;
 	private boolean dropCake = false;
+	private boolean makeBlister = false;
 	
 	public static synchronized SystemState getInstance()
 	{
@@ -47,5 +48,20 @@ public class SystemState extends Observable {
 		}
 		else
 			return dropCake;			
+	}
+	
+	public void setMakeBlister() {
+		this.makeBlister = true;
+		setChanged();
+		notifyObservers();
+	}
+	
+	public boolean makeBlister() {
+		if(makeBlister){
+			makeBlister = false;
+			return true;
+		}
+		else
+			return makeBlister;			
 	}
 }
