@@ -7,7 +7,9 @@ import cc.simulation.elements.ConveyorBlister;
 import cc.simulation.elements.ConveyorQuality;
 import cc.simulation.elements.Engraver;
 import cc.simulation.elements.LightSensor;
+import cc.simulation.elements.PacketBox;
 import cc.simulation.elements.PlasticSupplier;
+import cc.simulation.elements.Robot;
 import cc.simulation.state.BlisterSubsystemState;
 import cc.simulation.state.QualitySubsystemState;
 import cc.simulation.utils.Rotations;
@@ -28,6 +30,12 @@ public class QualitySubsystem extends Node implements Observer{
 	
 	// State
 	QualitySubsystemState _state;
+	
+	//Robot
+	Robot robot2;
+	
+	//Boxes
+	PacketBox goodBox, badBox;
 	
 	
 	public QualitySubsystem() {

@@ -1,6 +1,6 @@
 # This file uses centimeters as units for non-parametric coordinates.
 
-mtllib prueba.mtl
+mtllib blister.mtl
 g default
 v -4.229734 4.529197 -8.103524
 v -4.107630 4.529197 -8.182407
