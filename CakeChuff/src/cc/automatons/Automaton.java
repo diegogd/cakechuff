@@ -6,7 +6,7 @@ import cc.communications.Mailbox;
 import cc.sensors.Sensor;
 
 public abstract class Automaton implements Observer{
-	
+	protected int state;
 	protected Mailbox mbox;
 	
 	public Automaton() {
@@ -26,6 +26,6 @@ public abstract class Automaton implements Observer{
 	 * The mailbox will run this method when a new message
 	 * (standard priority) arrives.
 	 */
-	public abstract void newMsg(String[] msg);
+	public abstract void newMsg(String msg);
 
 }
