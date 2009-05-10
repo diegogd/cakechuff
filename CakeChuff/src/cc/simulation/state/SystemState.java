@@ -12,6 +12,7 @@ public class SystemState extends Observable {
 	private int id_camera=-1;
 	private boolean dropCake = false;
 	private boolean makeBlister = false;
+	private boolean makePacket = false;
 	
 	public static synchronized SystemState getInstance()
 	{
@@ -63,5 +64,20 @@ public class SystemState extends Observable {
 		}
 		else
 			return makeBlister;			
+	}
+	
+	public void setMakePacket() {
+		this.makePacket = true;
+		setChanged();
+		notifyObservers();
+	}
+	
+	public boolean makePacket() {
+		if(makePacket){
+			makePacket = false;
+			return true;
+		}
+		else
+			return makePacket;			
 	}
 }

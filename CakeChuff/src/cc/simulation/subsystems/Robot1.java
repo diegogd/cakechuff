@@ -7,6 +7,7 @@ import java.util.Observer;
 
 import cc.simulation.elements.Blister;
 import cc.simulation.elements.Cake;
+import cc.simulation.elements.PacketBox;
 import cc.simulation.elements.Robot;
 import cc.simulation.elements.Table;
 import cc.simulation.state.Robot1State;
@@ -210,7 +211,7 @@ public class Robot1 extends Node implements Observer {
 		return false;
 	}
 
-	public boolean pickUpPacket(float time) {
+	public boolean pickUpPacket(float time, Spatial element) {
 		switch (this.phase) {
 		case 0:
 			if (robot.bendBody(1.5f, time))
@@ -229,7 +230,7 @@ public class Robot1 extends Node implements Observer {
 				this.phase++;
 			break;
 		case 4:
-			if (robot.openHand(0f, time))
+			if (robot.openHandObject(0f, time, element))
 				this.phase++;
 			break;
 		case 5:
@@ -243,7 +244,7 @@ public class Robot1 extends Node implements Observer {
 		return false;
 	}
 
-	public boolean dropPacket(float time) {
+	public boolean dropPacket(float time, Spatial element) {
 		switch (this.phase) {
 		case 0:
 			if (robot.bendBody(1.5f, time))
@@ -258,7 +259,7 @@ public class Robot1 extends Node implements Observer {
 				this.phase++;
 			break;
 		case 3:
-			if (robot.openHand(-0.785f, time))
+			if (robot.leaveHandObject(-0.785f, time,element))
 				this.phase++;
 			break;
 		case 4:
@@ -275,6 +276,11 @@ public class Robot1 extends Node implements Observer {
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		// TODO Auto-generated method stub
+		if (arg1 == null) {
+			if (_state.getRobot_velocity() > 0) {
+				robot.setSpeed(_state.getRobot_velocity());
+			}
+		}
 
 	}
 
@@ -357,13 +363,28 @@ public class Robot1 extends Node implements Observer {
 				break;
 				
 			case PICKUPPACKET:
-				if (pickUpPacket(time))
-					_state.setCurrentState(PICKUPPACKET);
+				elem = element.iterator();
+				while (elem.hasNext()) {
+					Spatial aux = elem.next();
+					if (aux instanceof PacketBox) {
+						if (pickUpPacket(time,aux)){
+							_state.setCurrentState(PICKUPPACKET);
+						}
+					}
+				}
 				break;
 			case DROPPACKET:
-				if (dropPacket(time))
-					_state.setCurrentState(DROPPACKET);
+				elem = element.iterator();
+				while (elem.hasNext()) {
+					Spatial aux = elem.next();
+					if (aux instanceof PacketBox) {
+						if (dropPacket(time,aux)){
+							_state.setCurrentState(DROPPACKET);
+						}
+					}
+				}
 				break;
+				
 			default:
 				if (moveToInit(time))
 					_state.setCurrentState(INIT);
