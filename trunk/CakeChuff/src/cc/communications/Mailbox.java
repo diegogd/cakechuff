@@ -9,15 +9,17 @@ import java.util.ArrayList;
 
 import cc.automatons.Automaton;
 
-public abstract class Mailbox implements Runnable {
+public class Mailbox implements Runnable {
 
 	ServerSocket ss;
 	Socket so;
 	DataInputStream din; 
 	DataOutputStream dout;
 	ArrayList<String> msg_list;
+	Automaton owner;
 	
 	public Mailbox(Automaton owner, int port) throws IOException{
+		this.owner=owner;
 		ss = new ServerSocket(port);
 		msg_list=new ArrayList<String>();
 	}
@@ -47,14 +49,10 @@ public abstract class Mailbox implements Runnable {
 		while (true) {
 			try {
 				msg = din.readUTF();
-				manageMsg(msg);
+				owner.newMsg(msg);				
 			} catch (IOException ioe) {
 				// connection failure, put automaton into failure state
 			}
 		}
 	}
-	/*
-	 * Manage messages received, specific for each automaton
-	 */
-	protected abstract void manageMsg(String msg);
 }
