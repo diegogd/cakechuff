@@ -884,17 +884,17 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer {
 		_robot1State.setGoToState(7);
 
 	}// GEN-LAST:event_jButtonTakeBlisterActionPerformed
-	
-	private void jButtonEngraveActionPerformed(
-			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonTakeBlisterActionPerformed
+
+	private void jButtonEngraveActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonTakeBlisterActionPerformed
 		// TODO add your handling code here:
 		_blisterSubState.setEngraver_secs(8);
 		_systemState.setMakeBlister();
+		_qualitySubState.setWrapper_secs(8);
+		_systemState.setMakePacket();
 
 	}// GEN-LAST:event_jButtonTakeBlisterActionPerformed
-	
-	private void jButtonCutActionPerformed(
-			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonTakeBlisterActionPerformed
+
+	private void jButtonCutActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonTakeBlisterActionPerformed
 		// TODO add your handling code here:
 		_blisterSubState.setCutter_secs(8);
 	}// GEN-LAST:event_jButtonTakeBlisterActionPerformed
@@ -905,8 +905,9 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer {
 		_robot1State.setGoToState(5);
 
 	}// GEN-LAST:event_jButtonTakeCakeActionPerformed
-	
-	private void jButtonTakePackageActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonTakeCakeActionPerformed
+
+	private void jButtonTakePackageActionPerformed(
+			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonTakeCakeActionPerformed
 		// TODO add your handling code here:
 
 		_robot1State.setGoToState(8);
@@ -1032,15 +1033,33 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer {
 		} else if (arg0 instanceof BlisterSubsystemState) {
 			// TODO: pendiente identificar sensores
 			if (arg1 instanceof LightSensor) {
-					changeLabelColor(jLabelSensor4, ((LightSensor) arg1)
-							.isActived());
-				
+				changeLabelColor(jLabelSensor4, ((LightSensor) arg1)
+						.isActived());
+
 			} else if (arg1 instanceof TouchSensor) {
 				changeLabelColor(jLabelSensor5, ((TouchSensor) arg1)
 						.isActived());
 			}
 		} else if (arg0 instanceof QualitySubsystemState) {
 			// TODO: pendiente identificar sensores
+			if (arg1 instanceof LightSensor) {
+				if (((LightSensor) arg1).getName().equalsIgnoreCase("quality1")) {
+					changeLabelColor(jLabelQA1, ((LightSensor) arg1)
+							.isActived());
+				} else if (((LightSensor) arg1).getName().equalsIgnoreCase(
+						"quality2")) {
+					changeLabelColor(jLabelQA2, ((LightSensor) arg1)
+							.isActived());
+				} else if (((LightSensor) arg1).getName().equalsIgnoreCase(
+						"quality3")) {
+					changeLabelColor(jLabelQA3, ((LightSensor) arg1)
+							.isActived());
+				} else {
+					changeLabelColor(jLabelQA4, ((LightSensor) arg1)
+							.isActived());
+				}
+
+			}
 		}
 
 	}

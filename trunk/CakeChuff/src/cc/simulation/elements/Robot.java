@@ -42,7 +42,7 @@ public class Robot extends Node {
 	private Vector3f positionRobot;
 
 	private Node pivotBase, pivotBody, pivotHead, pivotHeadLeft,
-			pivotHeadRight, pivotElement;
+			pivotHeadRight, pivotElement, Father;
 
 	public Robot(Vector3f positionRobot) {
 		has_object = false;
@@ -50,6 +50,7 @@ public class Robot extends Node {
 		this.positionRobot = new Vector3f(positionRobot);
 		this.angleBody = 0;
 		this.angleFloor = 0;
+		speed = 1;
 
 		loadTempModel();
 
@@ -167,6 +168,14 @@ public class Robot extends Node {
 
 	}
 
+	public void setSpeed(float speed){
+		this.speed = speed;
+	}
+	
+	public float getSpeed(){
+		return speed;
+	}
+	
 	// public boolean isMoving() {
 	// return _moving;
 	// }
@@ -251,7 +260,8 @@ public class Robot extends Node {
 				object = element;
 				has_object = true;
 				Vector3f in = element.getLocalTranslation();
-				this.getParent().detachChild(element);
+				Father = element.getParent();
+				Father.detachChild(element);
 				pivotElement.attachChild(element);
 
 				if (element instanceof Blister) {
@@ -308,6 +318,7 @@ public class Robot extends Node {
 					System.out.println("Colisionado 2!!!");
 					object = element;
 					has_object = true;
+					element.getParent();
 					this.getParent().detachChild(element);
 					pivotHead.attachChild(element);
 
@@ -343,6 +354,7 @@ public class Robot extends Node {
 				this.has_object = false;
 				pivotElement.detachChild(object);
 				this.getParent().attachChild(object);
+				System.out.println(this.getParent().toString());
 				object.updateRenderState();
 				
 				return true;
