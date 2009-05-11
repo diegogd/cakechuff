@@ -6,14 +6,21 @@
 
 package cc.simulation.state;
 
+import cc.scada.*;
+
 /**
  *
- * @author  user
+ * @author  cakechuff team
  */
 public class ConfirmationWindow extends javax.swing.JFrame {
 
+    private SCADA _scada;
+    private ControlInterface _ui;
+    
     /** Creates new form ConfirmationWindow */
-    public ConfirmationWindow() {
+    public ConfirmationWindow(SCADA s, ControlInterface c) {
+        _scada =s;
+        _ui =c;
         initComponents();
     }
 
@@ -31,8 +38,9 @@ public class ConfirmationWindow extends javax.swing.JFrame {
         yesbutton = new javax.swing.JButton();
         nobutton = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Confirmation Window");
+        setAlwaysOnTop(true);
         setName("ConfirmationWindow"); // NOI18N
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14));
@@ -40,9 +48,9 @@ public class ConfirmationWindow extends javax.swing.JFrame {
         jLabel1.setText("<html> <P Align=\"center\">Are you sure you want to reset all default<br><br> values of CakeChuff?</p>");
         jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
-        jLabel2.setIcon(new javax.swing.ImageIcon("F:\\SI\\CakeChuff_ui\\CakeChuff\\src\\cc\\Images\\warning.PNG")); // NOI18N
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/cc/images/warning.PNG"))); // NOI18N
 
-        yesbutton.setIcon(new javax.swing.ImageIcon("F:\\SI\\CakeChuff_ui\\CakeChuff\\src\\cc\\Images\\ok.PNG")); // NOI18N
+        yesbutton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/cc/Images/ok.PNG"))); // NOI18N
         yesbutton.setText("YES");
         yesbutton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -50,7 +58,7 @@ public class ConfirmationWindow extends javax.swing.JFrame {
             }
         });
 
-        nobutton.setIcon(new javax.swing.ImageIcon("F:\\SI\\CakeChuff_ui\\CakeChuff\\src\\cc\\Images\\ko.PNG")); // NOI18N
+        nobutton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/cc/images/ko.PNG"))); // NOI18N
         nobutton.setText("NO");
         nobutton.setIconTextGap(8);
         nobutton.addActionListener(new java.awt.event.ActionListener() {
@@ -100,23 +108,18 @@ public class ConfirmationWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
 private void yesbuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_yesbuttonActionPerformed
-// TODO add your handling code here:
+    this._scada.resetDB();
+
+    _ui.updateValues();
+   
+    _ui.setEnabled(true);
+    this.dispose();
 }//GEN-LAST:event_yesbuttonActionPerformed
 
 private void nobuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nobuttonActionPerformed
-// TODO add your handling code here:
+    _ui.setEnabled(true);
+    this.dispose();
 }//GEN-LAST:event_nobuttonActionPerformed
-
-    /**
-    * @param args the command line arguments
-    */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ConfirmationWindow().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
