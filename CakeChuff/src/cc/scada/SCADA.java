@@ -61,6 +61,7 @@ public class SCADA {
 	 * 		    ss1Info
 	 * 			ss2Info
 	 * 			ss3Info
+         *                  robot
 	 * @param key The name of the value in the xml file that we want to 
 	 * recover. This can be:
 	 *          defaultSpeed
@@ -111,12 +112,14 @@ public class SCADA {
 	/**
 	 * Method that put all the information of one automaton into a string 
 	 * message, to be sent to this automaton.
-	 * @return A string with all the date split by the symbol "#"
+	 * @return A string with all the data split by the symbol "#"
 	 */
 	public String sendAutomatonInfo1(){
 		String send = "";
 		
-		send = this.getValue("conveyorSpeed", "ss1Info") + "#" +
+		send = this.getValue("cakesCapacity", "ss1Info") + "#" +
+                       this.getValue("conveyorSpeed", "ss1Info") + "#" +
+                       this.getValue("conveyorLenght", "ss1Info") + "#" +
 		       this.getValue("v1", "ss1Info")+ "#"+
 		       this.getValue("v2", "ss1Info");
 		
@@ -126,26 +129,187 @@ public class SCADA {
 	/**
 	 * Method that inform about the speed of the conveyor
 	 * for automaton 2. 
-	 * @return A string with the speed
+	 * @return A string 
 	 */
 	public String sendAutomatonInfo2(){
- 		return this.getValue("conveyorSpeed", "ss2Info");
+ 		return this.getValue("conveyorSpeed", "ss2Info") + "#" +
+                        this.getValue("conveyorLenght", "ss2Info");
 	}
+        
+     private String sendRobotInfo() {
+        return this.getValue("pick_blister", "robot") + "#" +  this.getValue("move_place_cake", "robot");
+     }
 	
 	/**
-	 * Method that inform about the speed of the conveyor
-	 * for automaton 3. 
+	 * Method that inform about the the data for automaton 3.
 	 * @return A string with the speed
 	 */
 	public String sendAutomatonInfo3(){
- 		return this.getValue("conveyorSpeed", "ss3Info");
+ 		String send = "";
+		
+		send = this.getValue("conveyorSpeed", "ss3Info") + "#" +
+                       this.getValue("conveyorLenght", "ss3Info") + "#" +
+		       this.getValue("failure_range", "ss3Info")+ "#"+
+                       this.getValue("time_pack", "ss3Info")+ "#"+
+		       this.getValue("pick_blister", "ss3Info");
+		
+		return send;
 	}
 	
+        /**
+	 * Method that send the initial info for cakechuff. Begin with the word
+	 * INIT, follow by ":" and all the data of the subsystems, separed by
+         * "$". The different field for each subsystem are divided by "#".
+         * The order is A1(numcakes#speed#lenght#choc#caramel), A2(speed#lenght),
+         * A3(speed#lenght#failurerate#timepack#robot), R1 (pick#move). 
+	 * @return A string 
+	 */
 	public String sendInitInfo(){
-		String s = this.sendAutomatonInfo1() + "$" + 
+		String s = "INIT" + ":" + this.sendAutomatonInfo1() + "$" + 
 				this.sendAutomatonInfo2() + "$" + 
-				this.sendAutomatonInfo3();
+				this.sendAutomatonInfo3() + "$" +
+                                this.sendRobotInfo();
 		return s;
 	}
+  
+        /**
+	 * Method that send the info to recover the system. Begin with the word
+	 * RESET, follow by ":" and all the data of the subsystems, separed by
+         * "$". The different field for each subsystem are divided by "#", and the
+         * first one is the state where the subsystem was stopped.
+         * The order is A1(state#numcakes#speed#lenght#choc#caramel), 
+         * A2(state#speed#lenght),A3(state#s_robot#speed#lenght#failurerate#timepack#robot),
+         * R1 (state#pick#move). 
+	 * @return A string 
+	 */
+        public String sendResetInfo(){
+		String s = "RESET" + ":" + this.getValue("state", "ss1Info") + "#" + this.sendAutomatonInfo1() + "$" + 
+				this.getValue("state", "ss2Info") + "#" + this.sendAutomatonInfo2() + "$" + 
+				this.getValue("state", "ss3Info") + "#" + this.getValue("robot_state", "ss3Info") + "#" +this.sendAutomatonInfo3() + "$" +
+                                this.getValue("state", "robot") + "#" + this.sendRobotInfo();
+		return s;
+	}
+        
+        /**
+	 * Method that send the info to restart one subsystem, in response a 
+         * petitions from the Master automaton. 
+	 * @return A string 
+	 */
+        public String sendRestartInfo(String subsystem_name){
+            String s = "RESTART" + ":";
+                
+            if (subsystem_name.compareTo("A1") ==0){
+                s.concat(this.getValue("state", "ss1Info") + "#" + this.sendAutomatonInfo1());
+            }else if(subsystem_name.compareTo("A2") ==0){
+                s.concat(this.getValue("state", "ss2Info") + "#" + this.sendAutomatonInfo2());
+            }else if (subsystem_name.compareTo("A3") ==0){
+                s.concat(this.getValue("state", "ss3Info") + "#" +  
+                        this.getValue("robot_state", "ss3Info") + "#"+ this.sendAutomatonInfo3());
+            }else if(subsystem_name.compareTo("R1") ==0){
+               s.concat(this.getValue("state", "robot") + "#" + this.sendRobotInfo());
+            }
+               
+            return s;
+	}
+        
+       /**
+	 * Method that send the message to master automaton to stop the system
+	 * @return A string 
+	 */
+        public String stop(){
+            return "STOP";  
+	}
+        
+        /**
+	 * Method that send the message to master automaton to stop the system
+         * inmediatetly.
+	 * @return A string 
+	 */
+        public String emergencyStop(){
+            return "EMERGENCY STOP";  
+	}
+        
+        /**
+	 * Method to reset all the default values of CakeChuff
+	 */
+        public void resetDB(){
+            String defaultval = null;
+            
+            //Automaton 1
+            defaultval = this.getValue("defaultSpeed", "ss1Info");
+            this.setValues("ss1Info", "conveyorSpeed", defaultval);
+            
+            defaultval = this.getValue("defaultLenght","ss1Info");
+            this.setValues("ss1Info", "conveyorLenght", defaultval);
+            
+            defaultval = this.getValue("defaultv1", "ss1Info");
+            this.setValues("ss1Info", "v1", defaultval);
+            
+            defaultval = this.getValue("defaultv2", "ss1Info");
+            this.setValues("ss1Info", "v2", defaultval);
+            
+            defaultval = this.getValue("defaultCapacity", "ss1Info");
+            this.setValues("ss1Info", "cakesCapacity", defaultval);
+
+            //Automaton 2
+            defaultval = this.getValue("defaultSpeed", "ss2Info");
+            this.setValues("ss2Info", "conveyorSpeed", defaultval);
+            
+            defaultval = this.getValue("defaultLenght", "ss2Info");
+            this.setValues("ss2Info", "conveyorLenght", defaultval);
+            
+            //Automaton 3
+            defaultval = this.getValue("defaultSpeed", "ss3Info");
+            this.setValues("ss3Info", "conveyorSpeed", defaultval);
+            
+            defaultval = this.getValue("defaultLenght", "ss3Info");
+            this.setValues("ss3Info", "conveyorLenght", defaultval);
+            
+            defaultval = this.getValue("defaultTime", "ss3Info");
+            this.setValues("ss3Info", "time_pack", defaultval);
+            
+            defaultval = this.getValue("defaultRange", "ss3Info");
+            this.setValues("ss3Info", "failure_range", defaultval);
+            
+            defaultval = this.getValue("defaultTimeRobot", "ss3Info");
+            this.setValues("ss3Info", "pick_blister", defaultval);
+            
+            //Robot
+            defaultval = this.getValue("defaultPick", "robot");
+            this.setValues("robot", "pick_blister", defaultval);
+            
+            defaultval = this.getValue("defaultMove", "robot");
+            this.setValues("robot", "move_place_cake", defaultval);
+            
+	}
+
+        /**
+         * Method to receive the message from the master with the info about
+         * the change in the state of a subsystem. Checks the subsystem 
+         * who belongs the info, and change the state in the database. 
+         * @param info Subsystem_name +  "#" + state
+         * @return false if the info do not corresponds to any subsystem
+         */
+        public boolean stateChanged(String info){
+            
+            boolean ok = true;
+            String [] array = info.split("#");
+            
+            if (array[0].compareTo("A1") ==0){
+                this.setValues("ss1Info", "state", array[1]);
+            }else if(array[0].compareTo("A2") ==0){
+                this.setValues("ss2Info", "state", array[1]); 
+            }else if (array[0].compareTo("A3") ==0){
+                this.setValues("ss3Info", "state", array[1]); 
+            }else if(array[0].compareTo("R1") ==0){
+                this.setValues("robot", "state", array[1]); 
+            }else{
+                ok = false; 
+            }
+            
+            return ok;
+        }
+
+
 	
 }
