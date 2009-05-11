@@ -880,7 +880,7 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer {
 	private void jButtonTakeBlisterActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonTakeBlisterActionPerformed
 		// TODO add your handling code here:
-
+		_robot1State.setRobot_velocity(4f);
 		_robot1State.setGoToState(7);
 
 	}// GEN-LAST:event_jButtonTakeBlisterActionPerformed
@@ -897,19 +897,23 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer {
 	private void jButtonCutActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonTakeBlisterActionPerformed
 		// TODO add your handling code here:
 		_blisterSubState.setCutter_secs(8);
+		_qualitySubState.setRobotGoToState(5);
 	}// GEN-LAST:event_jButtonTakeBlisterActionPerformed
 
 	private void jButtonTakeCakeActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonTakeCakeActionPerformed
 		// TODO add your handling code here:
 
+		_qualitySubState.setQualityCheck(false);
+		_robot1State.setRobot_velocity(4f);
 		_robot1State.setGoToState(5);
+		
 
 	}// GEN-LAST:event_jButtonTakeCakeActionPerformed
 
 	private void jButtonTakePackageActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonTakeCakeActionPerformed
 		// TODO add your handling code here:
-
+		_robot1State.setRobot_velocity(2f);
 		_robot1State.setGoToState(8);
 		_qualitySubState.setQualityCheck(true);
 

@@ -1,5 +1,6 @@
 package cc.simulation.elements;
 
+import cc.simulation.subsystems.QualitySubsystem;
 import cc.simulation.utils.Rotations;
 
 import com.jme.bounding.BoundingBox;
@@ -168,14 +169,14 @@ public class Robot extends Node {
 
 	}
 
-	public void setSpeed(float speed){
+	public void setSpeed(float speed) {
 		this.speed = speed;
 	}
-	
-	public float getSpeed(){
+
+	public float getSpeed() {
 		return speed;
 	}
-	
+
 	// public boolean isMoving() {
 	// return _moving;
 	// }
@@ -199,7 +200,7 @@ public class Robot extends Node {
 		// System.out.println("Direction:"+direction);
 		if (direction < 0) {
 			if (time < 1) {
-				angleClaws += time;
+				angleClaws += time * speed;
 			}
 			rotClawLeft.fromAngleAxis(angleClaws, new Vector3f(0, 0, 1));
 			pivotHeadLeft.setLocalRotation(rotClawLeft);
@@ -212,7 +213,7 @@ public class Robot extends Node {
 		} else {
 			if (direction > 0) {
 				if (time < 1) {
-					angleClaws -= time;
+					angleClaws -= time * speed;
 				}
 				rotClawLeft.fromAngleAxis(angleClaws, new Vector3f(0, 0, 1));
 				pivotHeadLeft.setLocalRotation(rotClawLeft);
@@ -244,7 +245,7 @@ public class Robot extends Node {
 					&& !lowerHeadRight.hasCollision(element, false)
 					&& !upperHeadRight.hasCollision(element, false)) {
 				if (time < 1) {
-					angleClaws += time;
+					angleClaws += time * speed;
 				}
 				rotClawLeft.fromAngleAxis(angleClaws, new Vector3f(0, 0, 1));
 				pivotHeadLeft.setLocalRotation(rotClawLeft);
@@ -266,16 +267,16 @@ public class Robot extends Node {
 
 				if (element instanceof Blister) {
 					// element.setLocalRotation(Rotations.rotateX(0f));
-					// element.setLocalTranslation(0, -0.65f, 0);
+					element.setLocalTranslation(0, -5f, 0);
 					// element.setLocalTranslation(0, -1.5f, 0);
 					// element.setLocalScale(0.25f);
-					Vector3f aux = new Vector3f();
-					pivotElement.worldToLocal(in, aux);
-					System.out.println(in.x + " " + in.y + " " + in.z);
-					System.out.println(aux.x + " " + aux.y + " " + aux.z);
-					System.out.println(pivotElement.getWorldTranslation().x
-							+ " " + pivotElement.getWorldTranslation().y + " "
-							+ pivotElement.getWorldTranslation().z);
+					// Vector3f aux = new Vector3f();
+					// pivotElement.worldToLocal(in, aux);
+					// System.out.println(in.x + " " + in.y + " " + in.z);
+					// System.out.println(aux.x + " " + aux.y + " " + aux.z);
+					// System.out.println(pivotElement.getWorldTranslation().x
+					// + " " + pivotElement.getWorldTranslation().y + " "
+					// + pivotElement.getWorldTranslation().z);
 
 					// pivotElement.setLocalTranslation(0f,0f,0f);
 
@@ -303,7 +304,7 @@ public class Robot extends Node {
 						&& !lowerHeadRight.hasCollision(element, false)
 						&& !upperHeadRight.hasCollision(element, false)) {
 					if (time < 1) {
-						angleClaws -= time;
+						angleClaws -= time * speed;
 					}
 					rotClawLeft
 							.fromAngleAxis(angleClaws, new Vector3f(0, 0, 1));
@@ -346,19 +347,28 @@ public class Robot extends Node {
 
 		// System.out.println("Direction:"+direction);
 		if (this.has_object) {
-//			if (!this.object.hasCollision(element, false)){
-//				
-//				object.getLocalTranslation().y--;
-//				return false;
-//			}else{
-				this.has_object = false;
-				pivotElement.detachChild(object);
-				this.getParent().attachChild(object);
-				System.out.println(this.getParent().toString());
-				object.updateRenderState();
+			// if (!this.object.hasCollision(element, false)){
+			//				
+			// object.getLocalTranslation().y--;
+			// return false;
+			// }else{
+			if (element instanceof Table) {
+				if (this.object instanceof Blister) {
+					this.has_object = false;
+					// pivotElement.detachChild(object);
+					object.removeFromParent();
+					Father.attachChild(object);
+					System.out.println(Father.toString());
+					object.setLocalTranslation(9f, -1f, -2f);
+					object.updateRenderState();
+					Father.updateRenderState();
+
+					return true;
+				}
+			}else if (element instanceof QualitySubsystem){
 				
-				return true;
-//			}
+			}
+			// }
 		}
 		return true;
 	}
@@ -373,7 +383,7 @@ public class Robot extends Node {
 		// System.out.println("Direction:"+direction);
 		if (direction < 0) {
 			if (time < 1) {
-				angleBody += time;
+				angleBody += time * speed;
 			}
 			rotBody.fromAngleAxis(angleBody, new Vector3f(1, 0, 0));
 			pivotBody.setLocalRotation(rotBody);
@@ -388,7 +398,7 @@ public class Robot extends Node {
 		} else {
 			if (direction > 0) {
 				if (time < 1) {
-					angleBody -= time;
+					angleBody -= time * speed;
 				}
 				rotBody.fromAngleAxis(angleBody, new Vector3f(1, 0, 0));
 				pivotBody.setLocalRotation(rotBody);
@@ -409,25 +419,6 @@ public class Robot extends Node {
 		}
 	}
 
-	// public void moveTo(Vector3f position, float time) {
-	// // Calcular el angulo de rotacion mas corto y girar en el sentido mas
-	// // corto
-	// if (this.getLocalRotation().y < this.localTranslation
-	// .angleBetween(position)) {
-	//
-	// this.getLocalRotation().y += time * 1 / 6;
-	//
-	// System.out.println("Angulo: " + this.getLocalRotation().y * 180
-	// / FastMath.PI + " radianes:" + this.getLocalRotation().y);
-	// // rotFloor.fromAngleAxis(this.localTranslation.angleBetween(position),
-	// // new Vector3f(0,1,0));
-	// // this.setLocalRotation(rotFloor);
-	// _moving = true;
-	// }
-	// _moving = false;
-	// // this.setLocalRotation()(position, new Vector3f(0,1,0));
-	// }
-
 	public boolean moveTo(float angle, float time) {
 
 		// Calculate direction of movement
@@ -437,7 +428,7 @@ public class Robot extends Node {
 		// System.out.println("Direction:"+direction);
 		if (direction < 0) {
 			if (time < 1) {
-				angleFloor += time;
+				angleFloor += time * speed;
 			}
 			rotFloor.fromAngleAxis(angleFloor, new Vector3f(0, 1, 0));
 			this.setLocalRotation(rotFloor);
@@ -454,7 +445,7 @@ public class Robot extends Node {
 		} else {
 			if (direction > 0) {
 				if (time < 1) {
-					angleFloor -= time;
+					angleFloor -= time * speed;
 				}
 				rotFloor.fromAngleAxis(angleFloor, new Vector3f(0, 1, 0));
 				this.setLocalRotation(rotFloor);
