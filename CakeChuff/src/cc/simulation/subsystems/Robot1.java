@@ -16,6 +16,7 @@ import com.jme.math.FastMath;
 import com.jme.math.Vector3f;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
+import com.jme.scene.shape.Box;
 
 public class Robot1 extends Node implements Observer {
 
@@ -318,7 +319,7 @@ public class Robot1 extends Node implements Observer {
 				 elem = element.iterator();
 				while (elem.hasNext()) {
 					Spatial aux = elem.next();
-					if (aux instanceof Cake) {
+					if (aux instanceof Box) {
 						if (pickUpCake(time, aux)) {
 							_state.setCurrentState(PICKUPCAKE);
 						}

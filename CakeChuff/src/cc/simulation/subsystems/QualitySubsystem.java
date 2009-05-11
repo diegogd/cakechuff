@@ -186,15 +186,22 @@ public class QualitySubsystem extends Node implements Observer {
 			if (_state.getRobot_velocity() > 0) {
 				robot2.setSpeed(_state.getRobot_velocity());
 			}
+			// if (!_state.getQualityCheck()) {
+			// qa1.setOff();
+			// qa2.setOff();
+			// qa3.setOff();
+			// qa4.setOff();
+			// }
+		} else {
+			if (arg1 instanceof Boolean) {
+				if ((Boolean) arg1 == false) {
+					qa1.setOff();
+					qa2.setOff();
+					qa3.setOff();
+					qa4.setOff();
+				}
+			}
 		}
-		// else {
-		// if ( arg1 instanceof boolean) {
-		// qa1.setOff();
-		// qa2.setOff();
-		// qa3.setOff();
-		// qa4.setOff();
-		// }
-		// }
 	}
 
 	private void qualityCheck(Vector<Spatial> elements, float timePerFrame) {
@@ -284,32 +291,32 @@ public class QualitySubsystem extends Node implements Observer {
 				}
 				break;
 			case DROPGOODBOX:
-				elem = element.iterator();
-				while (elem.hasNext()) {
-					Spatial aux = elem.next();
-					if (aux instanceof PacketBox) {
-						if (dropPacket(time, aux, true)) {
-							_state.setRobotCurrentState(DROPGOODBOX);
-						}
-					}
+				// elem = element.iterator();
+				// while (elem.hasNext()) {
+				// Spatial aux = elem.next();
+				// if (aux instanceof PacketBox) {
+				if (dropPacket(time, goodBox, true)) {
+					_state.setRobotCurrentState(DROPGOODBOX);
 				}
+				// }
+				// }
 
 				break;
 
 			case DROPBADBOX:
-				elem = element.iterator();
-				while (elem.hasNext()) {
-					Spatial aux = elem.next();
-					if (aux instanceof PacketBox) {
-						if (dropPacket(time, aux, false)) {
-							_state.setRobotCurrentState(DROPBADBOX);
-						}
-					}
+				// elem = element.iterator();
+				// while (elem.hasNext()) {
+				// Spatial aux = elem.next();
+				// if (aux instanceof PacketBox) {
+				if (dropPacket(time, badBox, false)) {
+					_state.setRobotCurrentState(DROPBADBOX);
 				}
+				// }
+				// }
 				break;
 
 			default:
-				if (moveToPlace(0,time))
+				if (moveToPlace(0, time))
 					_state.setRobotCurrentState(INIT);
 				break;
 			}

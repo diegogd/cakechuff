@@ -58,13 +58,11 @@ public class QualitySubsystemState extends Observable {
 	public void setQualityCheck(boolean quality) {
 		this.quality_check = quality;
 		setChanged();
-		notifyObservers();
+		notifyObservers(quality);
 	}
 
 	public void resetQualityCheck() {
 		this.quality_check = false;
-		setChanged();
-		notifyObservers(false);
 		
 	}
 

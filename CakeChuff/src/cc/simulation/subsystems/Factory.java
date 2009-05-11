@@ -26,6 +26,7 @@ import com.jme.math.FastMath;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
+import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.scene.shape.AxisRods;
 import com.jme.scene.shape.Box;
@@ -163,7 +164,7 @@ public class Factory extends SimpleGame implements Observer{
 		
 		table = new Table();
 		table.setLocalRotation(Rotations.rotateY(-0.785f));
-		table.setLocalTranslation(4f,2.4f,-8f);
+		table.setLocalTranslation(4f,2.2f,-8f);
 		
 		rootNode.attachChild(table);
 		
@@ -171,14 +172,26 @@ public class Factory extends SimpleGame implements Observer{
 //		robot.pickUpCake();
 		rootNode.attachChild(robot1);
 		
-//		test = new Box("test", new Vector3f(-0.5f, 0f,-0.5f), new Vector3f(0.5f,1f,0.5f));
-//		test.setModelBound(new BoundingBox());
-//		test.updateModelBound();
-//		test.setLocalTranslation(new Vector3f(-4.5f,4f,-7f));
-//		test.setLocalScale(2.0f);
-//		test.updateRenderState();
-//				
+		test = new Box("test", new Vector3f(-0.5f, 0f,-0.5f), new Vector3f(0.5f,1f,0.5f));
+		test.setModelBound(new BoundingBox());
+		test.updateModelBound();
+		test.setLocalTranslation(new Vector3f(-4.5f,4f,-7f));
+		test.setLocalScale(2.0f);
+		test.updateRenderState();
+		combination.add(test);
+				
+		rootNode.attachChild(test);
+		
+//		
+//		Node prueba = new Node();
+//		rootNode.attachChild(prueba);
+//		
+//		test.removeFromParent();
+//		prueba.attachChild(test);
+//		
+//		test.removeFromParent();
 //		rootNode.attachChild(test);
+		
 		
 		
 //		//Create an right handed axisrods object with a scale of 1/2
