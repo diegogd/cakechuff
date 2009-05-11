@@ -911,6 +911,7 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer {
 		// TODO add your handling code here:
 
 		_robot1State.setGoToState(8);
+		_qualitySubState.setQualityCheck(true);
 
 	}// GEN-LAST:event_jButtonTakeCakeActionPerformed
 
@@ -1054,7 +1055,8 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer {
 						"quality3")) {
 					changeLabelColor(jLabelQA3, ((LightSensor) arg1)
 							.isActived());
-				} else {
+				} else if (((LightSensor) arg1).getName().equalsIgnoreCase(
+				"quality4")){
 					changeLabelColor(jLabelQA4, ((LightSensor) arg1)
 							.isActived());
 				}

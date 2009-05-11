@@ -1,19 +1,25 @@
 package cc.simulation.subsystems;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
 
+import cc.simulation.elements.Blister;
 import cc.simulation.elements.Cake;
 import cc.simulation.elements.ConveyorQuality;
 import cc.simulation.elements.LightSensor;
+import cc.simulation.elements.Packet;
 import cc.simulation.elements.PacketBox;
 import cc.simulation.elements.Robot;
+import cc.simulation.elements.Table;
 import cc.simulation.elements.TouchSensor;
 import cc.simulation.elements.Wrapper;
 import cc.simulation.state.QualitySubsystemState;
 import cc.simulation.utils.Rotations;
 
+import com.jme.math.FastMath;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
@@ -21,6 +27,18 @@ import com.jme.scene.Spatial;
 import com.jme.scene.shape.Box;
 
 public class QualitySubsystem extends Node implements Observer {
+
+	public final int INIT = 0;
+	public final int SUBSYSTEM = 1;
+	public final int GOODBOX = 2;
+	public final int BADBOX = 3;
+	public final int PICKUPPACKET = 4;
+	public final int DROPGOODBOX = 5;
+	public final int DROPBADBOX = 6;
+
+	float angleSubsystem = (FastMath.PI / 2) + FastMath.PI,
+			angleGoodBox = (FastMath.PI / 4) + (FastMath.PI / 2),
+			angleBadBox = FastMath.PI / 4;
 
 	// Conveyor
 	ConveyorQuality conv;
@@ -41,10 +59,13 @@ public class QualitySubsystem extends Node implements Observer {
 
 	Wrapper wrapper;
 
+	private int phase;
+
 	public QualitySubsystem() {
 		_state = QualitySubsystemState.getInstance();
 		_state.addObserver(this);
 		initElements();
+		phase = 0;
 	}
 
 	private void initElements() {
@@ -148,7 +169,9 @@ public class QualitySubsystem extends Node implements Observer {
 
 		wrapper.update(timePerFrame);
 		qualityCheck(elements, timePerFrame);
-		
+
+		robotUpdate(elements, timePerFrame);
+
 		_state.checkSensorsChanges();
 	}
 
@@ -164,6 +187,14 @@ public class QualitySubsystem extends Node implements Observer {
 				robot2.setSpeed(_state.getRobot_velocity());
 			}
 		}
+		// else {
+		// if ( arg1 instanceof boolean) {
+		// qa1.setOff();
+		// qa2.setOff();
+		// qa3.setOff();
+		// qa4.setOff();
+		// }
+		// }
 	}
 
 	private void qualityCheck(Vector<Spatial> elements, float timePerFrame) {
@@ -173,7 +204,8 @@ public class QualitySubsystem extends Node implements Observer {
 			for (int i = 0; i < elements.size(); i++) {
 				Spatial element = elements.get(i);
 				// Sensors detection
-				if (element instanceof Cake) {
+				if (element instanceof Packet) {
+					// if (element instanceof Cake) {
 					if (!sen1 && qa1.hasCollision(element, false)) {
 						sen1 = true;
 					}
@@ -205,9 +237,158 @@ public class QualitySubsystem extends Node implements Observer {
 				qa4.setOff();
 			else
 				qa4.setOn();
-			
-			if((sen1)&&(sen2)&&(sen3)&&(sen4)) _state.setIfQualityPassed(true);
-			else _state.setIfQualityPassed(false);
+
+			if ((sen1) && (sen2) && (sen3) && (sen4))
+				_state.setIfQualityPassed(true);
+			else
+				_state.setIfQualityPassed(false);
+
+			_state.resetQualityCheck();
 		}
+	}
+
+	private void robotUpdate(List<Spatial> element, float time) {
+		Iterator<Spatial> elem;
+		if (_state.getRobotIfMoving()) {
+			switch (_state.getRobotGoToState()) {
+
+			case INIT:
+				if (moveToPlace(0, time)) {
+					_state.setRobotCurrentState(INIT);
+				}
+				break;
+			case SUBSYSTEM:
+				if (moveToPlace(angleSubsystem, time)) {
+					_state.setRobotCurrentState(SUBSYSTEM);
+				}
+				break;
+			case GOODBOX:
+				if (moveToPlace(angleGoodBox, time)) {
+					_state.setRobotCurrentState(GOODBOX);
+				}
+				break;
+			case BADBOX:
+				if (moveToPlace(angleBadBox, time))
+					_state.setRobotCurrentState(BADBOX);
+				break;
+
+			case PICKUPPACKET:
+				elem = element.iterator();
+				while (elem.hasNext()) {
+					Spatial aux = elem.next();
+					if (aux instanceof Packet) {
+						if (pickUpPacket(time, aux)) {
+							_state.setRobotCurrentState(PICKUPPACKET);
+						}
+					}
+				}
+				break;
+			case DROPGOODBOX:
+				elem = element.iterator();
+				while (elem.hasNext()) {
+					Spatial aux = elem.next();
+					if (aux instanceof PacketBox) {
+						if (dropPacket(time, aux, true)) {
+							_state.setRobotCurrentState(DROPGOODBOX);
+						}
+					}
+				}
+
+				break;
+
+			case DROPBADBOX:
+				elem = element.iterator();
+				while (elem.hasNext()) {
+					Spatial aux = elem.next();
+					if (aux instanceof PacketBox) {
+						if (dropPacket(time, aux, false)) {
+							_state.setRobotCurrentState(DROPBADBOX);
+						}
+					}
+				}
+				break;
+
+			default:
+				if (moveToPlace(0,time))
+					_state.setRobotCurrentState(INIT);
+				break;
+			}
+			_state.setRobotMoving(false); // It has finished moving
+		}
+	}
+
+	public boolean moveToPlace(float angle, float time) {
+		if (robot2.moveTo(angle, time))
+			return true;
+		return false;
+	}
+
+	public boolean pickUpPacket(float time, Spatial element) {
+
+		switch (this.phase) {
+		case 0:
+			if (robot2.bendBody(1.5f, time))
+				this.phase++;
+			break;
+		case 1:
+			if (robot2.moveTo(angleSubsystem, time))
+				this.phase++;
+			break;
+		case 2:
+			if (robot2.openHand(-0.785f, time))
+				this.phase++;
+			break;
+		case 3:
+			if (robot2.bendBody(2.005f, time))
+				this.phase++;
+			break;
+		case 4:
+			if (robot2.openHandObject(0f, time, element))
+				this.phase++;
+			break;
+		case 5:
+			if (robot2.bendBody(1.5f, time))
+				this.phase++;
+			break;
+		case 6:
+			phase = 0;
+			return true;
+		}
+		return false;
+	}
+
+	public boolean dropPacket(float time, Spatial element, boolean goodBox) {
+		switch (this.phase) {
+		case 0:
+			if (robot2.bendBody(1.5f, time))
+				this.phase++;
+			break;
+		case 1:
+			if (goodBox) {
+				if (robot2.moveTo(angleGoodBox, time))
+					this.phase++;
+			} else {
+				if (robot2.moveTo(angleBadBox, time))
+					this.phase++;
+			}
+
+			break;
+		case 2:
+			if (robot2.bendBody(2.005f, time))
+				this.phase++;
+			break;
+		case 3:
+			if (robot2.leaveHandObject(-0.785f, time, element))
+				this.phase++;
+			break;
+		case 4:
+			if (robot2.bendBody(1.5f, time))
+				this.phase++;
+			break;
+		case 5:
+			phase = 0;
+			return true;
+		}
+		return false;
 	}
 }
