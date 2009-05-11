@@ -1,7 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE ss2Info SYSTEM "dtd\ss2Info.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ss2Info SYSTEM "dtd/ss2Info.dtd">
+
 <ss2Info>
-	<defaultSpeed>10</defaultSpeed>
-	<conveyorSpeed>10</conveyorSpeed>
-	<conveyorLenght>20</conveyorLenght>
-	<state>init</state>
-	</ss2Info>
+  <defaultSpeed>10</defaultSpeed>
+  <conveyorSpeed>10</conveyorSpeed>
+  <conveyorLenght>20</conveyorLenght>
+  <defaultLenght>20</defaultLenght>
+  <state>init</state>
+</ss2Info>
+
