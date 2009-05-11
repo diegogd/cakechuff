@@ -240,7 +240,7 @@ public class Factory extends SimpleGame implements Observer{
 	
 	private void Wrap() {
 		Packet packet = new Packet(packets.size());
-		packet.setLocalTranslation(15f, 10.5f, -8.1f);
+		packet.setLocalTranslation(15f, 10.2f, -8.1f);
 		packet.setLocalScale(-1.1f);
 		packet.updateRenderState();
 		rootNode.attachChild(packet);
