@@ -319,7 +319,7 @@ public class Robot1 extends Node implements Observer {
 				 elem = element.iterator();
 				while (elem.hasNext()) {
 					Spatial aux = elem.next();
-					if (aux instanceof Box) {
+					if (aux instanceof Cake) {
 						if (pickUpCake(time, aux)) {
 							_state.setCurrentState(PICKUPCAKE);
 						}
