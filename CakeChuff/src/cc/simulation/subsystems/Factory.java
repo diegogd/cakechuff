@@ -172,13 +172,13 @@ public class Factory extends SimpleGame implements Observer{
 //		robot.pickUpCake();
 		rootNode.attachChild(robot1);
 		
-		test = new Box("test", new Vector3f(-0.5f, 0f,-0.5f), new Vector3f(0.5f,1f,0.5f));
-		test.setModelBound(new BoundingBox());
-		test.updateModelBound();
-		test.setLocalTranslation(new Vector3f(-4.5f,4f,-7f));
-		test.setLocalScale(2.0f);
-		test.updateRenderState();
-		combination.add(test);
+//		test = new Box("test", new Vector3f(-0.5f, 0f,-0.5f), new Vector3f(0.5f,1f,0.5f));
+//		test.setModelBound(new BoundingBox());
+//		test.updateModelBound();
+//		test.setLocalTranslation(new Vector3f(-4.5f,4f,-7f));
+//		test.setLocalScale(2.0f);
+//		test.updateRenderState();
+//		combination.add(test);
 				
 		rootNode.attachChild(test);
 		

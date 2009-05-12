@@ -163,6 +163,16 @@ public class Robot extends Node {
 		pivotHead.attachChild(pivotHeadRight);
 
 		pivotElement = new Node();
+
+//		pivotElement.setLocalRotation(Rotations.rotateX(0.1f));
+//		pivotElement.setLocalTranslation(0, -0.65f, 0);
+//		pivotElement.setLocalTranslation(0, -0.675f, 0);
+//		
+//		pivotElement.setLocalRotation(Rotations.rotateX(0.1f));
+//		Cylinder temp = new Cylinder("temp55", 5, 25, 0.05f, 0.25f,
+//				true);
+//		pivotElement.attachChild(temp);
+		
 		pivotHead.attachChild(pivotElement);
 
 		this.setLocalScale(10);
@@ -267,7 +277,18 @@ public class Robot extends Node {
 
 				if (element instanceof Blister) {
 					// element.setLocalRotation(Rotations.rotateX(0f));
-					element.setLocalTranslation(0, -5f, 0);
+//					element.getLocalTranslation().x -= 3.767264;
+//					element.getLocalTranslation().z -= 16.8;
+//					element.setLocalTranslation(3.767264f, -5f, 16.8f);
+//					(-13f, 0f, 16.8f);
+//					element.getLocalTranslation().x = pivotElement.getLocalTranslation().x;
+//					element.getLocalTranslation().y = pivotElement.getLocalTranslation().y;
+//					element.getLocalTranslation().z = pivotElement.getLocalTranslation().z;
+//					element.getLocalRotation().x = pivotElement.getLocalRotation().x;
+//					element.getLocalRotation().y = pivotElement.getLocalRotation().y;
+//					element.getLocalRotation().z = pivotElement.getLocalRotation().z;
+					//element.setLocalScale(1);
+					
 					// element.setLocalTranslation(0, -1.5f, 0);
 					// element.setLocalScale(0.25f);
 					// Vector3f aux = new Vector3f();
@@ -287,6 +308,9 @@ public class Robot extends Node {
 					// element.setLocalTranslation(0, -0.0f, 0);
 					// element.setLocalScale(0.25f);
 					// element.updateRenderState();
+					element.getLocalTranslation().x = pivotElement.getLocalTranslation().x;
+					element.getLocalTranslation().y = pivotElement.getLocalTranslation().y;
+					element.getLocalTranslation().z = pivotElement.getLocalTranslation().z;
 				} else {
 					element.setLocalRotation(Rotations.rotateX(0f));
 					element.setLocalTranslation(0, -0.65f, 0);
