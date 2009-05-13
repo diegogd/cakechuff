@@ -11,13 +11,21 @@ import cc.automatons.Automaton;
 
 public class Mailbox implements Runnable {
 
-	ServerSocket ss;
-	Socket so;
-	DataInputStream din; 
-	DataOutputStream dout;
-	ArrayList<String> msg_list;
-	Automaton owner;
-	
+	private ServerSocket ss;
+	private Socket so;
+	private DataInputStream din; 
+	private DataOutputStream dout;
+	private ArrayList<String> msg_list;
+	private Automaton owner;
+	private boolean failure;
+	public boolean isFailure() {
+		return failure;
+	}
+
+	public void setFailure(boolean failure) {
+		this.failure = failure;
+	}
+
 	public Mailbox(Automaton owner, int port) throws IOException{
 		this.owner=owner;
 		ss = new ServerSocket(port);
