@@ -25,14 +25,10 @@ public class CakeAutomaton extends Automaton {
 	private static final int FAILURE=7;
 	
 	//parameters
-	int speed, belt_lg, cake_cap, vt1, vt2;
-	
-	//comm
-	Socket sout;
-	DataOutputStream dout;
-	
+	private int speed, belt_lg, cake_cap, vt1, vt2;
+		
 	//simulation
-	CakeSubsystemState cakesystem;
+	private CakeSubsystemState cakesystem;
 	
 	public CakeAutomaton(int portin, int portout, String master){
 		state=-1;
@@ -61,34 +57,38 @@ public class CakeAutomaton extends Automaton {
 		this.vt2 = vt2;
 		state=START;
 		//send new state
-		try{
+		/*try{
 			dout.writeChars("A1:START");
 		}catch(IOException ioe){
 			//connection failure
 			
-		}
+		}*/
+		send("A1:START");
 	}
 	private void run_init(){
 		//start conveyor
 		//drop cake
+		/*
 		try{
 			dout.writeChars("A1:INIT");
 		}catch(IOException ioe){
 			//connection failure
 			
-		}
+		}*/
+		send("A1:INIT");
 		state= INIT;
 	}
 	private void run_choc(){
 		//stop conveyor
 		//open chocolate valve
 		state=CHOC;
+		/*
 		try{
 			dout.writeChars("A1:CHOC");
 		}catch(IOException ioe){
 			//connection failure	
-		}
-		
+		}*/
+		send("A1:CHOC");
 		//change to choc_car here??
 		try{
 			Thread.sleep(vt1*1000);
@@ -100,21 +100,23 @@ public class CakeAutomaton extends Automaton {
 	}
 	private void run_choc_car(){
 		state=CHOC_CAR;
-		try{
+		/*try{
 			dout.writeChars("A1:CHOC_CAR");
 		}catch(IOException ioe){
 			//connection failure	
-		}
+		}*/
+		send("A1:CHOC_CAR");
 	}
 	private void run_car(){
 		//stop conveyor
 		//open caramel valve
 		state=CHOC;
-		try{
+		/*try{
 			dout.writeChars("A1:CAR");
 		}catch(IOException ioe){
 			//connection failure	
-		}
+		}*/
+		send("A1:CAR");
 		
 		//change to car_wait here??
 		try{
@@ -125,20 +127,22 @@ public class CakeAutomaton extends Automaton {
 	}
 	private void run_car_wait(){
 		state=CHOC_CAR;
-		try{
+		/*try{
 			dout.writeChars("A1:CAR_WAIT");
 		}catch(IOException ioe){
 			//connection failure	
-		}
+		}*/
+		send("A1:CAR_WAIT");
 	}
 	private void run_wait(){
 		//stop conveyor
 		state=WAIT;
-		try{
+		/*try{
 			dout.writeChars("A1:WAIT");
 		}catch(IOException ioe){
 			//connection failure	
-		}
+		}*/
+		send("A1:WAIT");
 	}
 	private void run_failure(){
 		
@@ -147,7 +151,7 @@ public class CakeAutomaton extends Automaton {
 		
 	}
 	@Override
-	public void newMsg(String msg) {
+	public synchronized void newMsg(String msg) {
 		String[] content= msg.split("#");
 		//Emergencies work for any state
 		if(content[0].equals("ER")) run_stop();

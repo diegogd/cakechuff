@@ -30,11 +30,7 @@ public class QCAutomaton extends Automaton {
 	
 	//parameters
 	int speed, belt_lg, t_stamp, t_rob;
-	
-	//comm
-	Socket sout;
-	DataOutputStream dout;
-	
+
 	//simulation
 	QualitySubsystemState qcsystem;
 	public QCAutomaton(int portin, int portout, String master){
@@ -100,7 +96,7 @@ public class QCAutomaton extends Automaton {
 		
 	}
 	@Override
-	public void newMsg(String msg) {
+	public synchronized void newMsg(String msg) {
 		String[] content= msg.split("#");
 		//Emergencies work for any state
 		if(content[0].equals("ER")) run_stop();
