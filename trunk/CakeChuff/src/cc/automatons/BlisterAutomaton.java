@@ -22,13 +22,10 @@ public class BlisterAutomaton extends Automaton {
 	private static final int FAILURE=5;
 	
 	//param
-	int speed, belt_lg;
-	//comm
-	Socket sout;
-	DataOutputStream dout;
+	private int speed, belt_lg;
 	
 	//simulation
-	BlisterSubsystemState blistersystem;
+	private BlisterSubsystemState blistersystem;
 	
 	public BlisterAutomaton(int portin, int portout, String master){
 		state=0;
@@ -53,24 +50,26 @@ public class BlisterAutomaton extends Automaton {
 		this.belt_lg=belt_lg;
 		state=START;
 		//send new state
-		try{
+		/*try{
 			dout.writeChars("A2:START");
 		}catch(IOException ioe){
 			//connection failure
 			
-		}
+		}*/
+		send("A2:START");
 		
 	}
 	public void run_init(){
 		//start conveyor
 		state=START;
 		//send new state
-		try{
+		/*try{
 			dout.writeChars("A2:INIT");
 		}catch(IOException ioe){
 			//connection failure
-			
-		}
+
+		}*/
+		send("A2:INIT");
 		//press timer...
 		//press down -> run_press() ??
 		
@@ -78,35 +77,37 @@ public class BlisterAutomaton extends Automaton {
 	public void run_press(){
 		state=PRESS;
 		//send new state
-		try{
+		/*try{
 			dout.writeChars("A2:PRESS");
 		}catch(IOException ioe){
 			//connection failure
 			
-		}
+		}*/
+		send("A2:PRESS");
 	}
 	public void run_cutting(){
 		//blade down
 		state=CUTTING;
 		//send new state
-		try{
+		/*try{
 			dout.writeChars("A2:CUTTING");
 		}catch(IOException ioe){
 			//connection failure
 			
-		}
-		
+		}*/
+		send("A2:CUTTING");
 	}
 	public void run_blister_ready(){
 		//stop conveyor
 		state=BLISTER_READY;
 		//send new state
-		try{
+		/*try{
 			dout.writeChars("A2:BLISTER_READY");
 		}catch(IOException ioe){
 			//connection failure
 			
-		}
+		}*/
+		send("A2:BLISTER_READY");
 		
 	}
 	public void run_failure(){
@@ -116,7 +117,7 @@ public class BlisterAutomaton extends Automaton {
 		//stop conveyor
 	}
 	@Override
-	public void newMsg(String msg) {
+	public synchronized void newMsg(String msg) {
 		String[] content= msg.split("#");
 		//Emergencies work for any state
 		if(content[0].equals("ER")) run_stop();
