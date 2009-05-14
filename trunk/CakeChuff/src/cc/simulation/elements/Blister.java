@@ -16,10 +16,11 @@ import com.jme.scene.shape.Cylinder;
 public class Blister extends Node {
 
 	public boolean[] spaces = { false, false, false, false };
+	public boolean wrapperIsPlaced = false;
 
 	Node pivot;
 
-	Node hole1, hole2, hole3, hole4;
+	Node hole1, hole2, hole3, hole4,wrapper;
 
 	/**
 	 * 
@@ -40,15 +41,48 @@ public class Blister extends Node {
 		hole3 = new Node();
 		hole4 = new Node();
 
-		hole1.setLocalTranslation(-1, 0, -1);
-		hole2.setLocalTranslation(1, 0, -1);
-		hole3.setLocalTranslation(-1, 0, 1);
-		hole4.setLocalTranslation(1, 0, 1);
-
+		
+		Box base = new Box("base", new Vector3f(-0.5f,-0.5f,-0.5f),
+				new Vector3f(0.5f, 0.5f, 0.5f));
+		base.setDefaultColor(ColorRGBA.cyan);
+		pivot.attachChild(base);
+		
 		pivot.attachChild(hole1);
 		pivot.attachChild(hole2);
 		pivot.attachChild(hole3);
 		pivot.attachChild(hole4);
+//		pivot.setLocalTranslation(-5.2f,0f,7.4f);
+		
+//		hole1.setLocalTranslation(-1, 0, -1);
+		hole1.setLocalTranslation(-6.3f,0.1f,-8.5f);
+//		hole1.setLocalTranslation(-1f, 0.1f, );
+//		Box box1 = new Box("box1", new Vector3f(-0.5f,-0.5f,-0.5f),
+//				new Vector3f(0.5f, 0.5f, 0.5f));
+//		box1.setDefaultColor(ColorRGBA.red);
+//		hole1.attachChild(box1);
+		
+//		hole2.setLocalTranslation(1, 0, -1);
+		hole2.setLocalTranslation(-4.2f,0.1f,-8.5f);
+//		Box box2 = new Box("box2", new Vector3f(-0.5f,-0.5f,-0.5f),
+//				new Vector3f(0.5f, 0.5f, 0.5f));
+//		hole2.attachChild(box2);
+//		box2.setDefaultColor(ColorRGBA.yellow);
+		
+//		hole3.setLocalTranslation(-1, 0, 1);
+		hole3.setLocalTranslation(-6.3f,0.1f,-6.4f);
+//		Box box3 = new Box("box3", new Vector3f(-0.5f,-0.5f,-0.5f),
+//				new Vector3f(0.5f, 0.5f, 0.5f));
+//		hole3.attachChild(box3);
+//		box3.setDefaultColor(ColorRGBA.green);
+		
+		
+//		hole4.setLocalTranslation(1, 0, 1);
+		hole4.setLocalTranslation(-4.2f,0.1f,-6.4f);
+//		Box box4 = new Box("box4", new Vector3f(-0.5f,-0.5f,-0.5f),
+//				new Vector3f(0.5f, 0.5f, 0.5f));
+//		hole4.attachChild(box4);
+//		box4.setDefaultColor(ColorRGBA.orange);
+				
 
 		loadModel();
 		// loadBox(id);
@@ -73,29 +107,42 @@ public class Blister extends Node {
 				.getResource("model/blister.obj");
 		pivot.attachChild(ModelLoader.loadOBJ(model));
 	}
+	
+	public Spatial getHole1() {
+		return hole1;
+	}
+	public Spatial getHole2() {
+		return hole2;
+	}
+	public Spatial getHole3() {
+		return hole3;
+	}
+	public Spatial getHole4() {
+		return hole4;
+	}
 
-	public void placeCake(int hole, Spatial cake) {
+	public void placeCake(Spatial cake) {
 		if (cake.removeFromParent()) {
-			switch (hole) {
-			case 1:
+			if(!spaces[0]){
 				hole1.attachChild(cake);
-				spaces[hole-1]=true;
-				break;
-			case 2:
+				spaces[0]=true;
+			}else if(!spaces[1]){
 				hole2.attachChild(cake);
-				spaces[hole-1]=true;
-				break;
-			case 3:
+				spaces[1]=true;
+			}else if(!spaces[2]){
 				hole3.attachChild(cake);
-				spaces[hole-1]=true;
-				break;
-			case 4:
+				spaces[2]=true;
+			}else if(!spaces[3]){
 				hole4.attachChild(cake);
-				spaces[hole-1]=true;
-				break;
-			default:
-				break;
+				spaces[3]=true;
 			}
+		}
+	}
+	
+	public void placeWrapper(Spatial wrapper) {
+		if (wrapper.removeFromParent()) {
+				this.wrapper.attachChild(wrapper);
+				wrapperIsPlaced = true;			
 		}
 	}
 }

@@ -204,6 +204,7 @@ public class Factory extends SimpleGame implements Observer{
 		rootNode.setRenderState(ms);
 		
 		combination.add(table);
+		combination.add(qualitySub);
 		
 		loadCamera(CAMERA_CAKESUB);
 	}
