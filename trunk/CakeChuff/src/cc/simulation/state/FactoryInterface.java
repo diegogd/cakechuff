@@ -902,7 +902,7 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer {
 		_blisterSubState.setEngraver_secs(8);
 		_systemState.setMakeBlister();
 		_qualitySubState.setWrapper_secs(8);
-		_systemState.setMakePacket();
+		//_systemState.setMakePacket();
 
 	}// GEN-LAST:event_jButtonTakeBlisterActionPerformed
 
@@ -948,7 +948,9 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer {
 	}// GEN-LAST:event_jButtonCamera3ActionPerformed
 
 	private void jButtonCamera4ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonCamera4ActionPerformed
-		_systemState.setId_camera(0);
+//		_systemState.setId_camera(0);
+		_qualitySubState.setWrapper_secs(8);
+		_qualitySubState.setWrappedUp(true);
 	}// GEN-LAST:event_jButtonCamera4ActionPerformed
 
 	private void jSpinnerValve1StateChanged(javax.swing.event.ChangeEvent evt) {// GEN-FIRST:event_jSpinnerValve1StateChanged

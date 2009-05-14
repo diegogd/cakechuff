@@ -135,11 +135,19 @@ public class QualitySubsystem extends Node implements Observer {
 		boolean sen1 = false, sen2 = false, sen3 = false;
 
 		for (int i = 0; i < elements.size(); i++) {
-			Spatial element = elements.get(i);
+			Spatial element = elements.get(elements.size()-i-1);
 
-			if ((conv.hasCollision(element, false))&&(element instanceof Blister)) {
+			if ((conv.hasCollision(element, false))
+					&& (element instanceof Blister)) {
 				element.getLocalTranslation().x += conv.getVelocity()
 						* timePerFrame;
+				if (_state.getWrappedUp()) {
+					// System.out.println("Getting inside!");
+					if (!wrapper.finished)
+						wrapper.update(timePerFrame, element);
+					else
+						_state.setWrappedUp(false);
+				}
 			}
 
 			// Sensors detection
@@ -167,7 +175,6 @@ public class QualitySubsystem extends Node implements Observer {
 
 		sensor3.setActived(sen3);
 
-		wrapper.update(timePerFrame);
 		qualityCheck(elements, timePerFrame);
 
 		robotUpdate(elements, timePerFrame);
@@ -186,12 +193,7 @@ public class QualitySubsystem extends Node implements Observer {
 			if (_state.getRobot_velocity() > 0) {
 				robot2.setSpeed(_state.getRobot_velocity());
 			}
-			// if (!_state.getQualityCheck()) {
-			// qa1.setOff();
-			// qa2.setOff();
-			// qa3.setOff();
-			// qa4.setOff();
-			// }
+
 		} else {
 			if (arg1 instanceof Boolean) {
 				if ((Boolean) arg1 == false) {
@@ -199,6 +201,12 @@ public class QualitySubsystem extends Node implements Observer {
 					qa2.setOff();
 					qa3.setOff();
 					qa4.setOff();
+				}
+			} else if (arg1 instanceof Integer) {
+				if ((Integer) arg1 == 1) {
+					wrapper.finished = false;
+				} else {
+					wrapper.finished = true;
 				}
 			}
 		}
@@ -213,16 +221,24 @@ public class QualitySubsystem extends Node implements Observer {
 				// Sensors detection
 				if (element instanceof Blister) {
 					// if (element instanceof Cake) {
-					if (!sen1 && qa1.hasCollision(((Blister)element).getHole1(), false)) {
+					if (!sen1
+							&& qa1.hasCollision(((Blister) element).getHole1(),
+									false)) {
 						sen1 = true;
 					}
-					if (!sen2 && qa2.hasCollision(((Blister)element).getHole2(), false)) {
+					if (!sen2
+							&& qa2.hasCollision(((Blister) element).getHole2(),
+									false)) {
 						sen2 = true;
 					}
-					if (!sen3 && qa3.hasCollision(((Blister)element).getHole3(), false)) {
+					if (!sen3
+							&& qa3.hasCollision(((Blister) element).getHole3(),
+									false)) {
 						sen3 = true;
 					}
-					if (!sen4 && qa4.hasCollision(((Blister)element).getHole4(), false)) {
+					if (!sen4
+							&& qa4.hasCollision(((Blister) element).getHole4(),
+									false)) {
 						sen4 = true;
 					}
 				}
@@ -283,7 +299,8 @@ public class QualitySubsystem extends Node implements Observer {
 				elem = element.iterator();
 				while (elem.hasNext()) {
 					Spatial aux = elem.next();
-					if ((aux instanceof Packet)&&(conv.hasCollision(aux, false))) {
+					if ((aux instanceof Packet)
+							&& (conv.hasCollision(aux, false))) {
 						if (pickUpPacket(time, aux)) {
 							_state.setRobotCurrentState(PICKUPPACKET);
 						}
@@ -324,13 +341,13 @@ public class QualitySubsystem extends Node implements Observer {
 		}
 	}
 
-	public boolean moveToPlace(float angle, float time) {
+	private boolean moveToPlace(float angle, float time) {
 		if (robot2.moveTo(angle, time))
 			return true;
 		return false;
 	}
 
-	public boolean pickUpPacket(float time, Spatial element) {
+	private boolean pickUpPacket(float time, Spatial element) {
 
 		switch (this.phase) {
 		case 0:
@@ -364,7 +381,7 @@ public class QualitySubsystem extends Node implements Observer {
 		return false;
 	}
 
-	public boolean dropPacket(float time, Spatial element, boolean goodBox) {
+	private boolean dropPacket(float time, Spatial element, boolean goodBox) {
 		switch (this.phase) {
 		case 0:
 			if (robot2.bendBody(1.5f, time))
@@ -398,4 +415,5 @@ public class QualitySubsystem extends Node implements Observer {
 		}
 		return false;
 	}
+
 }
