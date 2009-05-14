@@ -18,17 +18,17 @@ public class Robot1State extends Observable {
 
 	private float robot_velocity = 0;
 
-	public final int INIT = 0;
-	public final int SUBSYSTEM1 = 1;
-	public final int SUBSYSTEM2 = 2;
-	public final int SUBSYSTEM3 = 3;
-	public final int TABLE = 4;
-	public final int PICKUPCAKE = 5;
-	public final int DROPCAKE = 6;
-	public final int PICKUPBLISTER = 7;
-	public final int DROPBLISTER = 8;
-	public final int PICKUPPACKET = 9;
-	public final int DROPPACKET = 10;
+	final int INIT = 0;
+	final int SUBSYSTEM1 = 1;
+	final int SUBSYSTEM2 = 2;
+	final int SUBSYSTEM3 = 3;
+	final int TABLE = 4;
+	final int PICKUPCAKE = 5;
+	final int DROPINTABLE = 6;
+	final int PICKUPBLISTER = 7;
+	//final int DROPBLISTER = 8;
+	final int PICKUPPACKET = 9;
+	final int DROPINSUB3 = 10;
 
 	int current_state, goToState;
 	boolean _moving;

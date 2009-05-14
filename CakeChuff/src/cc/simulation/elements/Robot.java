@@ -20,7 +20,7 @@ public class Robot extends Node {
 	private static final long serialVersionUID = 2973029142743347671L;
 	// State to know if it has taken an object
 	private boolean has_object;
-	private Spatial object;
+	private Spatial object, blister;
 
 	private float speed; // modificar la velocidad
 
@@ -164,15 +164,15 @@ public class Robot extends Node {
 
 		pivotElement = new Node();
 
-//		pivotElement.setLocalRotation(Rotations.rotateX(0.1f));
-//		pivotElement.setLocalTranslation(0, -0.65f, 0);
-//		pivotElement.setLocalTranslation(0, -0.675f, 0);
-//		
-//		pivotElement.setLocalRotation(Rotations.rotateX(0.1f));
-//		Cylinder temp = new Cylinder("temp55", 5, 25, 0.05f, 0.25f,
-//				true);
-//		pivotElement.attachChild(temp);
-		
+		// pivotElement.setLocalRotation(Rotations.rotateX(0.1f));
+		// pivotElement.setLocalTranslation(0, -0.65f, 0);
+		// pivotElement.setLocalTranslation(0, -0.675f, 0);
+		//		
+		// pivotElement.setLocalRotation(Rotations.rotateX(0.1f));
+		// Cylinder temp = new Cylinder("temp55", 5, 25, 0.05f, 0.25f,
+		// true);
+		// pivotElement.attachChild(temp);
+
 		pivotHead.attachChild(pivotElement);
 
 		this.setLocalScale(10);
@@ -270,25 +270,30 @@ public class Robot extends Node {
 				System.out.println("Colisionado 1!!!");
 				object = element;
 				has_object = true;
-				Vector3f in = element.getLocalTranslation();
 				Father = element.getParent();
 				Father.detachChild(element);
 				pivotElement.attachChild(element);
 
 				if (element instanceof Blister) {
 					// element.setLocalRotation(Rotations.rotateX(0f));
-//					element.getLocalTranslation().x -= 3.767264;
-//					element.getLocalTranslation().z -= 16.8;
-//					element.setLocalTranslation(3.767264f, -5f, 16.8f);
-//					(-13f, 0f, 16.8f);
-//					element.getLocalTranslation().x = pivotElement.getLocalTranslation().x;
-//					element.getLocalTranslation().y = pivotElement.getLocalTranslation().y;
-//					element.getLocalTranslation().z = pivotElement.getLocalTranslation().z;
-//					element.getLocalRotation().x = pivotElement.getLocalRotation().x;
-//					element.getLocalRotation().y = pivotElement.getLocalRotation().y;
-//					element.getLocalRotation().z = pivotElement.getLocalRotation().z;
-					//element.setLocalScale(1);
-					
+					// element.getLocalTranslation().x -= 3.767264;
+					// element.getLocalTranslation().z -= 16.8;
+					// element.setLocalTranslation(3.767264f, -5f, 16.8f);
+					// (-13f, 0f, 16.8f);
+					// element.getLocalTranslation().x =
+					// pivotElement.getLocalTranslation().x;
+					// element.getLocalTranslation().y =
+					// pivotElement.getLocalTranslation().y;
+					// element.getLocalTranslation().z =
+					// pivotElement.getLocalTranslation().z;
+					// element.getLocalRotation().x =
+					// pivotElement.getLocalRotation().x;
+					// element.getLocalRotation().y =
+					// pivotElement.getLocalRotation().y;
+					// element.getLocalRotation().z =
+					// pivotElement.getLocalRotation().z;
+					// element.setLocalScale(1);
+
 					// element.setLocalTranslation(0, -1.5f, 0);
 					// element.setLocalScale(0.25f);
 					// Vector3f aux = new Vector3f();
@@ -308,9 +313,12 @@ public class Robot extends Node {
 					// element.setLocalTranslation(0, -0.0f, 0);
 					// element.setLocalScale(0.25f);
 					// element.updateRenderState();
-					element.getLocalTranslation().x = pivotElement.getLocalTranslation().x;
-					element.getLocalTranslation().y = pivotElement.getLocalTranslation().y;
-					element.getLocalTranslation().z = pivotElement.getLocalTranslation().z;
+					element.getLocalTranslation().x = pivotElement
+							.getLocalTranslation().x;
+					element.getLocalTranslation().y = pivotElement
+							.getLocalTranslation().y;
+					element.getLocalTranslation().z = pivotElement
+							.getLocalTranslation().z;
 				} else {
 					element.setLocalRotation(Rotations.rotateX(0f));
 					element.setLocalTranslation(0, -0.65f, 0);
@@ -369,13 +377,7 @@ public class Robot extends Node {
 		int direction = (int) Math.ceil(angleClaws * 180 / FastMath.PI)
 				- (int) Math.ceil(angle * 180 / FastMath.PI);
 
-		// System.out.println("Direction:"+direction);
 		if (this.has_object) {
-			// if (!this.object.hasCollision(element, false)){
-			//				
-			// object.getLocalTranslation().y--;
-			// return false;
-			// }else{
 			if (element instanceof Table) {
 				if (this.object instanceof Blister) {
 					this.has_object = false;
@@ -383,14 +385,50 @@ public class Robot extends Node {
 					object.removeFromParent();
 					Father.attachChild(object);
 					System.out.println(Father.toString());
-					object.setLocalTranslation(9f, -1f, -2f);
+					object.setLocalTranslation(8f, 0f, 0f);
 					object.updateRenderState();
 					Father.updateRenderState();
+					blister = object;
+					object = null;
+
+					return true;
+				} else if (this.object instanceof Cake) {
+					if (blister != null) {
+						this.has_object = false;
+						System.out.println(Father.toString());
+						
+						((Blister) blister).placeCake(object);
+							
+						object = null;
+						
+					}
+//					} else {
+//						this.has_object = false;
+//						// pivotElement.detachChild(object);
+//						object.removeFromParent();
+//						Father.attachChild(object);
+//						System.out.println(Father.toString());
+//						object.setLocalTranslation(9f, 0, -2f);
+//						object.updateRenderState();
+//						Father.updateRenderState();
+//					}
+					return true;
+				}
+			} else if (element instanceof QualitySubsystem) {
+				if (this.object instanceof Blister) {
+					this.has_object = false;
+					// pivotElement.detachChild(object);
+					object.removeFromParent();
+					Father.attachChild(object);
+					System.out.println(Father.toString());
+					object.setLocalTranslation(16f, 0f, 8.5f);
+					object.updateRenderState();
+					Father.updateRenderState();
+					blister = null;
+					object = null;
 
 					return true;
 				}
-			}else if (element instanceof QualitySubsystem){
-				
 			}
 			// }
 		}
@@ -412,12 +450,6 @@ public class Robot extends Node {
 			rotBody.fromAngleAxis(angleBody, new Vector3f(1, 0, 0));
 			pivotBody.setLocalRotation(rotBody);
 
-			// if (this.has_object) {
-			// this.object.getLocalTranslation().y -= 0.01;
-			// }
-
-			// System.out.println("Angulo: " + angleBody * 180 / FastMath.PI
-			// + " radianes:" + angleBody);
 			return false;
 		} else {
 			if (direction > 0) {
@@ -427,13 +459,6 @@ public class Robot extends Node {
 				rotBody.fromAngleAxis(angleBody, new Vector3f(1, 0, 0));
 				pivotBody.setLocalRotation(rotBody);
 
-				// if (this.has_object) {
-				// this.object.getLocalTranslation().y += 0.01;
-				// }
-
-				// System.out.println("Disminuyendo Angulo: " + angleBody * 180
-				// / FastMath.PI
-				// + " radianes:" + angleBody);
 				return false;
 			} else {
 				// System.out.println("Terminado Bend");
@@ -457,14 +482,6 @@ public class Robot extends Node {
 			rotFloor.fromAngleAxis(angleFloor, new Vector3f(0, 1, 0));
 			this.setLocalRotation(rotFloor);
 
-			// if (this.has_object) {
-			// this.object.setLocalRotation(rotFloor);
-			// this.object.setLocalTranslation((float)this.object.getLocalTranslation().x+0.01f,
-			// 0f, (float)this.object.getLocalTranslation().z+0.01f);
-			// }
-
-			// System.out.println("Angulo: " + angleBody * 180 / FastMath.PI
-			// + " radianes:" + angleBody);
 			return false;
 		} else {
 			if (direction > 0) {
@@ -474,15 +491,6 @@ public class Robot extends Node {
 				rotFloor.fromAngleAxis(angleFloor, new Vector3f(0, 1, 0));
 				this.setLocalRotation(rotFloor);
 
-				// if (this.has_object) {
-				// this.object.setLocalRotation(rotFloor);
-				// this.object.setLocalTranslation((float)this.object.getLocalTranslation().x+0.1f,
-				// 0f, (float)this.object.getLocalTranslation().z+0.1f);
-				// }
-
-				// System.out.println("Disminuyendo Angulo: " + angleBody * 180
-				// / FastMath.PI
-				// + " radianes:" + angleBody);
 				return false;
 			} else {
 				// System.out.println("Terminado Bend");

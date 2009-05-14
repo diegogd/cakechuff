@@ -137,7 +137,7 @@ public class QualitySubsystem extends Node implements Observer {
 		for (int i = 0; i < elements.size(); i++) {
 			Spatial element = elements.get(i);
 
-			if (conv.hasCollision(element, false)) {
+			if ((conv.hasCollision(element, false))&&(element instanceof Blister)) {
 				element.getLocalTranslation().x += conv.getVelocity()
 						* timePerFrame;
 			}
@@ -211,18 +211,18 @@ public class QualitySubsystem extends Node implements Observer {
 			for (int i = 0; i < elements.size(); i++) {
 				Spatial element = elements.get(i);
 				// Sensors detection
-				if (element instanceof Packet) {
+				if (element instanceof Blister) {
 					// if (element instanceof Cake) {
-					if (!sen1 && qa1.hasCollision(element, false)) {
+					if (!sen1 && qa1.hasCollision(((Blister)element).getHole1(), false)) {
 						sen1 = true;
 					}
-					if (!sen2 && qa2.hasCollision(element, false)) {
+					if (!sen2 && qa2.hasCollision(((Blister)element).getHole2(), false)) {
 						sen2 = true;
 					}
-					if (!sen3 && qa3.hasCollision(element, false)) {
+					if (!sen3 && qa3.hasCollision(((Blister)element).getHole3(), false)) {
 						sen3 = true;
 					}
-					if (!sen4 && qa4.hasCollision(element, false)) {
+					if (!sen4 && qa4.hasCollision(((Blister)element).getHole4(), false)) {
 						sen4 = true;
 					}
 				}
@@ -283,7 +283,7 @@ public class QualitySubsystem extends Node implements Observer {
 				elem = element.iterator();
 				while (elem.hasNext()) {
 					Spatial aux = elem.next();
-					if (aux instanceof Packet) {
+					if ((aux instanceof Packet)&&(conv.hasCollision(aux, false))) {
 						if (pickUpPacket(time, aux)) {
 							_state.setRobotCurrentState(PICKUPPACKET);
 						}

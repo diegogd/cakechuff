@@ -876,7 +876,19 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer {
 		_cakeSubState.setConveyor_velocity(Float.parseFloat(""
 				+ jSpinner1.getValue()));
 	}
-
+	
+	final int INIT = 0;
+	final int SUBSYSTEM1 = 1;
+	final int SUBSYSTEM2 = 2;
+	final int SUBSYSTEM3 = 3;
+	final int TABLE = 4;
+	final int PICKUPCAKE = 5;
+	final int DROPINTABLE = 6;
+	final int PICKUPBLISTER = 7;
+	//final int DROPBLISTER = 8;
+	final int PICKUPPACKET = 9;
+	final int DROPINSUB3 = 10;
+	
 	private void jButtonTakeBlisterActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonTakeBlisterActionPerformed
 		// TODO add your handling code here:
@@ -896,13 +908,16 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer {
 
 	private void jButtonCutActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonTakeBlisterActionPerformed
 		// TODO add your handling code here:
+		_robot1State.setRobot_velocity(4f);
+		_robot1State.setGoToState(6);
 		_blisterSubState.setCutter_secs(8);
-		_qualitySubState.setRobotGoToState(5);
+		//_qualitySubState.setRobotGoToState(5);
 	}// GEN-LAST:event_jButtonTakeBlisterActionPerformed
 
 	private void jButtonTakeCakeActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonTakeCakeActionPerformed
 		// TODO add your handling code here:
 
+		
 		_qualitySubState.setQualityCheck(false);
 		_robot1State.setRobot_velocity(4f);
 		_robot1State.setGoToState(5);
@@ -913,14 +928,14 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer {
 	private void jButtonTakePackageActionPerformed(
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonTakeCakeActionPerformed
 		// TODO add your handling code here:
-		_robot1State.setRobot_velocity(2f);
-		_robot1State.setGoToState(8);
+		_robot1State.setGoToState(9);
 		_qualitySubState.setQualityCheck(true);
 
 	}// GEN-LAST:event_jButtonTakeCakeActionPerformed
 
 	private void jButtonCamera1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonCamera1ActionPerformed
 		_systemState.setId_camera(1);
+		
 	}// GEN-LAST:event_jButtonCamera1ActionPerformed
 
 	private void jButtonCamera2ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonCamera2ActionPerformed
@@ -928,6 +943,7 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer {
 	}// GEN-LAST:event_jButtonCamera2ActionPerformed
 
 	private void jButtonCamera3ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonCamera3ActionPerformed
+		_robot1State.setGoToState(10);
 		_systemState.setId_camera(3);
 	}// GEN-LAST:event_jButtonCamera3ActionPerformed
 

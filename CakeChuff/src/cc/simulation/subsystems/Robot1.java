@@ -37,11 +37,11 @@ public class Robot1 extends Node implements Observer {
 	final int SUBSYSTEM3 = 3;
 	final int TABLE = 4;
 	final int PICKUPCAKE = 5;
-	final int DROPCAKE = 6;
+	final int DROPINTABLE = 6;
 	final int PICKUPBLISTER = 7;
-	final int DROPBLISTER = 8;
+	//final int DROPBLISTER = 8;
 	final int PICKUPPACKET = 9;
-	final int DROPPACKET = 10;
+	final int DROPINSUB3 = 10;
 
 	public Robot1() {
 		// super(new Vector3f(0,0,0));
@@ -326,13 +326,13 @@ public class Robot1 extends Node implements Observer {
 					}
 				}
 				break;
-			case DROPCAKE:
+			case DROPINTABLE:
 				elem = element.iterator();
 				while (elem.hasNext()) {
 					Spatial aux = elem.next();
 					if (aux instanceof Table) {
 						if (dropCake(time,aux)){
-							_state.setCurrentState(DROPCAKE);
+							_state.setCurrentState(DROPINTABLE);
 						}
 					}
 				}
@@ -351,36 +351,36 @@ public class Robot1 extends Node implements Observer {
 				}
 				break;
 				
-			case DROPBLISTER:
-				elem = element.iterator();
-				while (elem.hasNext()) {
-					Spatial aux = elem.next();
-					if (aux instanceof Table) {
-						if (dropBlister(time,aux)){
-							_state.setCurrentState(DROPBLISTER);
-						}
-					}
-				}
-				break;
+//			case DROPBLISTER:
+//				elem = element.iterator();
+//				while (elem.hasNext()) {
+//					Spatial aux = elem.next();
+//					if (aux instanceof Table) {
+//						if (dropBlister(time,aux)){
+//							_state.setCurrentState(DROPBLISTER);
+//						}
+//					}
+//				}
+//				break;
 				
 			case PICKUPPACKET:
 				elem = element.iterator();
 				while (elem.hasNext()) {
 					Spatial aux = elem.next();
-					if (aux instanceof PacketBox) {
+					if (aux instanceof Blister) {
 						if (pickUpPacket(time,aux)){
 							_state.setCurrentState(PICKUPPACKET);
 						}
 					}
 				}
 				break;
-			case DROPPACKET:
+			case DROPINSUB3:
 				elem = element.iterator();
 				while (elem.hasNext()) {
 					Spatial aux = elem.next();
-					if (aux instanceof PacketBox) {
+					if (aux instanceof QualitySubsystem) {
 						if (dropPacket(time,aux)){
-							_state.setCurrentState(DROPPACKET);
+							_state.setCurrentState(DROPINSUB3);
 						}
 					}
 				}

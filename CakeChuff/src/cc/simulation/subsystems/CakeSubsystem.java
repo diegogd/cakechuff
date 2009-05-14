@@ -4,6 +4,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
 
+import cc.simulation.elements.Cake;
 import cc.simulation.elements.ConveyorCake;
 import cc.simulation.elements.LightSensor;
 import cc.simulation.elements.TouchSensor;
@@ -69,18 +70,35 @@ public class CakeSubsystem extends Node implements Observer {
 
 		for (int i = 0; i < elements.size(); i++) {
 			Spatial element = elements.get(i);
-			if (conv.hasCollision(element, false)) {
-				//if (element.getLocalTranslation().x < -1.8f) {
+			if (((Cake) element).falling) {
+				if (conv.hasCollision(element, false)) {
+					// if (element.getLocalTranslation().x < -1.8f) {
 					element.getLocalTranslation().y = 4.3f;
 					element.getLocalTranslation().x += conv.getVelocity()
 							* timePerFrame;
-//					System.out.println(element.getLocalTranslation().x);
-				//}
-					
-			} else if( (element.getLocalTranslation().y > 0) && (element.getLocalTranslation().x == -18f)){
-				element.getLocalTranslation().y -= 3 * timePerFrame;
-			} else if( (element.getLocalTranslation().y > 0) && (element.getLocalTranslation().x == 0f)){
-				element.setLocalTranslation(-18, 10f, -8.5f);
+					((Cake) element).falling = false;
+					// System.out.println(element.getLocalTranslation().x);
+					// }
+
+				} else if ((element.getLocalTranslation().y > 0)
+						&& (element.getLocalTranslation().x == -18f)) {
+					element.getLocalTranslation().y -= 3 * timePerFrame;
+				} else if ((element.getLocalTranslation().y > 0)
+						&& (element.getLocalTranslation().x == 0f)) {
+					element.setLocalTranslation(-18, 10f, -8.5f);
+				}
+			} else {
+				
+				if (conv.hasCollision(element, false)) {
+					element.getLocalTranslation().y = 4.3f;
+					element.getLocalTranslation().x += conv.getVelocity()
+							* timePerFrame;
+				}	
+//				} else if ((element.getLocalTranslation().y > 0)&&(element.getLocalTranslation().x < -3f)) {
+//						element.getLocalTranslation().y -= 3 * timePerFrame;
+//					 
+//				}
+
 			}
 
 			// Sensors detection
