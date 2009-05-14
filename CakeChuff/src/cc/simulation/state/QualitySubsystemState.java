@@ -14,6 +14,7 @@ public class QualitySubsystemState extends Observable {
 	private float conveyor_velocity = 0;
 	private boolean quality_check = false, quality_passed = false;
 	private float wrapper_secs = 0;
+	private boolean wrapup = false;
 
 	public final int INIT = 0;
 	public final int SUBSYSTEM = 1;
@@ -63,7 +64,7 @@ public class QualitySubsystemState extends Observable {
 
 	public void resetQualityCheck() {
 		this.quality_check = false;
-		
+
 	}
 
 	public boolean getIfQualityPassed() {
@@ -74,6 +75,28 @@ public class QualitySubsystemState extends Observable {
 	public void setIfQualityPassed(boolean quality) {
 		quality_passed = true;
 	}
+
+	// *+++++++++++++++
+
+	public boolean getWrappedUp() {
+		return wrapup;
+	}
+
+	public void setWrappedUp(boolean wrapup) {
+		this.wrapup = wrapup;
+		setChanged();
+		if (wrapup)
+			notifyObservers(1);
+		else
+			notifyObservers(0);
+	}
+
+	public void resetWrappedUp() {
+		this.wrapup = false;
+
+	}
+
+	// /*+++++++++++
 
 	public float getWrapper_secs() {
 		return wrapper_secs;

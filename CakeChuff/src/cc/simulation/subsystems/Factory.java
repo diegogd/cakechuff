@@ -90,10 +90,10 @@ public class Factory extends SimpleGame implements Observer{
 			numBlisters--;
 		}
 		
-		for(int i=0; i < numPackets; i++){
-			Wrap();
-			numPackets--;
-		}
+//		for(int i=0; i < numPackets; i++){
+//			Wrap();
+//			numPackets--;
+//		}
 		
 		// TODO Auto-generated method stub
 		super.simpleUpdate();
@@ -104,7 +104,7 @@ public class Factory extends SimpleGame implements Observer{
 		
 		blisterSub.update(blisters,time);
 		
-		qualitySub.update(combination,time);
+		qualitySub.update(blisters,time);
 		
 //		robot1.moveToSub1(time);
 		
@@ -252,17 +252,17 @@ public class Factory extends SimpleGame implements Observer{
 		combination.add(blister);
 	}
 	
-	private void Wrap() {
-		Packet packet = new Packet(packets.size());
-		packet.setLocalTranslation(15f, 10.2f, -8.1f);
-		packet.setLocalScale(-1.1f);
-		packet.updateRenderState();
-		rootNode.attachChild(packet);
-		rootNode.updateWorldBound();
-		rootNode.updateRenderState();
-		packets.add(packet);
-		combination.add(packet);
-	}
+//	private void Wrap() {
+//		Packet packet = new Packet(packets.size());
+//		packet.setLocalTranslation(15f, 10.2f, -8.1f);
+//		packet.setLocalScale(-1.1f);
+//		packet.updateRenderState();
+//		rootNode.attachChild(packet);
+//		rootNode.updateWorldBound();
+//		rootNode.updateRenderState();
+//		packets.add(packet);
+//		combination.add(packet);
+//	}
 
 	@Override
 	public void update(Observable o, Object arg) {
@@ -282,10 +282,10 @@ public class Factory extends SimpleGame implements Observer{
 			{
 				numBlisters++;
 			}
-			if(_state.makePacket())
-			{
-				numPackets++;
-			}
+//			if(_state.makePacket())
+//			{
+//				numPackets++;
+//			}
 		}
 	}
 

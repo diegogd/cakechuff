@@ -40,6 +40,8 @@ public class Blister extends Node {
 		hole2 = new Node();
 		hole3 = new Node();
 		hole4 = new Node();
+		
+		wrapper = new Node();
 
 		
 		Box base = new Box("base", new Vector3f(-0.5f,-0.5f,-0.5f),
@@ -51,6 +53,8 @@ public class Blister extends Node {
 		pivot.attachChild(hole2);
 		pivot.attachChild(hole3);
 		pivot.attachChild(hole4);
+		
+		pivot.attachChild(wrapper);
 //		pivot.setLocalTranslation(-5.2f,0f,7.4f);
 		
 //		hole1.setLocalTranslation(-1, 0, -1);
@@ -140,9 +144,15 @@ public class Blister extends Node {
 	}
 	
 	public void placeWrapper(Spatial wrapper) {
-		if (wrapper.removeFromParent()) {
+		//if (wrapper.removeFromParent()) {
 				this.wrapper.attachChild(wrapper);
+				this.wrapper.updateRenderState();
+				this.wrapper.setLocalScale(-1f);
+				wrapper.setLocalTranslation(10.9f, -9.55f, 15.2f);
+				//wrapper.setLocalScale(-1.1f);
+				wrapper.updateRenderState();
+				
 				wrapperIsPlaced = true;			
-		}
+		//}
 	}
 }

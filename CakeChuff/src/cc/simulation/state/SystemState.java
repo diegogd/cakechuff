@@ -66,18 +66,18 @@ public class SystemState extends Observable {
 			return makeBlister;			
 	}
 	
-	public void setMakePacket() {
-		this.makePacket = true;
-		setChanged();
-		notifyObservers();
-	}
-	
-	public boolean makePacket() {
-		if(makePacket){
-			makePacket = false;
-			return true;
-		}
-		else
-			return makePacket;			
-	}
+//	public void setMakePacket() {
+//		this.makePacket = true;
+//		setChanged();
+//		notifyObservers();
+//	}
+//	
+//	public boolean makePacket() {
+//		if(makePacket){
+//			makePacket = false;
+//			return true;
+//		}
+//		else
+//			return makePacket;			
+//	}
 }

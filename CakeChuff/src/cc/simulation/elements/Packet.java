@@ -22,7 +22,7 @@ public class Packet extends Node {
 ////		loadBox();
 //	}
 	
-	public Packet(int id) {
+	public Packet(String id) {
 		pivot  = new Node();
 		this.attachChild(pivot);
 		
@@ -32,7 +32,7 @@ public class Packet extends Node {
 		
 	}
 	
-	private void loadBox(int id){
+	private void loadBox(String id){
 		
 		Box blister = new Box("packet"+id,new Vector3f(-2f,0.99f,-2f), new Vector3f(2f, 1f, 2f));
 		
