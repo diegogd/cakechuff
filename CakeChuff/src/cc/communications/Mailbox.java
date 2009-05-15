@@ -37,7 +37,7 @@ public class Mailbox implements Runnable {
 		//Accept connections
 		try{
 			this.connect();
-			while(true){
+			while(!failure){
 				receiveMsgs();
 			}
 		}catch(IOException ioe){
@@ -49,7 +49,7 @@ public class Mailbox implements Runnable {
 	private void connect() throws IOException {
 		so = ss.accept();
 		din = new DataInputStream(so.getInputStream());
-		dout = new DataOutputStream(so.getOutputStream());
+		//dout = new DataOutputStream(so.getOutputStream());
 	}
 
 	private void receiveMsgs() {
@@ -59,7 +59,7 @@ public class Mailbox implements Runnable {
 				msg = din.readUTF();
 				owner.newMsg(msg);				
 			} catch (IOException ioe) {
-				// connection failure, put automaton into failure state
+				// connection failure
 			}
 		}
 	}
