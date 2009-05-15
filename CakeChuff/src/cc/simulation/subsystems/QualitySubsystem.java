@@ -120,12 +120,12 @@ public class QualitySubsystem extends Node implements Observer {
 		wrapper.setLocalTranslation(3f, 7f, 0f);
 		this.attachChild(wrapper);
 
-		goodBox = new PacketBox();
+		goodBox = new PacketBox("GoodBox");
 		goodBox.setLocalTranslation(20f, 3f, 4f);
 		goodBox.setLocalScale(1.5f);
 		this.attachChild(goodBox);
 
-		badBox = new PacketBox();
+		badBox = new PacketBox("BadBox");
 		badBox.setLocalTranslation(20f, 3f, -4f);
 		badBox.setLocalScale(1.5f);
 		this.attachChild(badBox);
