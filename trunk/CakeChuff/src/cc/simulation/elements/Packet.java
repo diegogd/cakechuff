@@ -44,7 +44,7 @@ public class Packet extends Node {
 	}
 	
 	private void loadModel(){
-		URL model=getClass().getClassLoader().getResource("model/blister.obj");
+		URL model=getClass().getClassLoader().getResource("model/wrap.obj");
 		pivot.attachChild(ModelLoader.loadOBJ(model));
 //		URL model2=getClass().getClassLoader().getResource("model/blister.obj");
 //		Spatial aux = ModelLoader.loadOBJ(model2);
