@@ -10,6 +10,7 @@ import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
+import com.jme.scene.shape.AxisRods;
 import com.jme.scene.shape.Cylinder;
 
 public class Robot extends Node {
@@ -174,6 +175,11 @@ public class Robot extends Node {
 		// pivotElement.attachChild(temp);
 
 		pivotHead.attachChild(pivotElement);
+		
+		AxisRods axis = new AxisRods("rods", true, 0.1f);
+		
+		pivotElement.attachChild(axis);
+		
 
 		this.setLocalScale(10);
 
@@ -275,52 +281,18 @@ public class Robot extends Node {
 				pivotElement.attachChild(element);
 
 				if (element instanceof Blister) {
-					// element.setLocalRotation(Rotations.rotateX(0f));
-					// element.getLocalTranslation().x -= 3.767264;
-					// element.getLocalTranslation().z -= 16.8;
-					// element.setLocalTranslation(3.767264f, -5f, 16.8f);
-					// (-13f, 0f, 16.8f);
-					// element.getLocalTranslation().x =
-					// pivotElement.getLocalTranslation().x;
-					// element.getLocalTranslation().y =
-					// pivotElement.getLocalTranslation().y;
-					// element.getLocalTranslation().z =
-					// pivotElement.getLocalTranslation().z;
-					// element.getLocalRotation().x =
-					// pivotElement.getLocalRotation().x;
-					// element.getLocalRotation().y =
-					// pivotElement.getLocalRotation().y;
-					// element.getLocalRotation().z =
-					// pivotElement.getLocalRotation().z;
-					// element.setLocalScale(1);
-
-					// element.setLocalTranslation(0, -1.5f, 0);
-					// element.setLocalScale(0.25f);
-					// Vector3f aux = new Vector3f();
-					// pivotElement.worldToLocal(in, aux);
-					// System.out.println(in.x + " " + in.y + " " + in.z);
-					// System.out.println(aux.x + " " + aux.y + " " + aux.z);
-					// System.out.println(pivotElement.getWorldTranslation().x
-					// + " " + pivotElement.getWorldTranslation().y + " "
-					// + pivotElement.getWorldTranslation().z);
-
-					// pivotElement.setLocalTranslation(0f,0f,0f);
 					
-					System.out.println("YEaaah!!");
-
+					element.setLocalTranslation(0, -0.0f, -0.0f);
+					pivotElement.setLocalScale(0.1f);
+					element.setLocalTranslation(6f, -5.0f, 8.5f);
+					
 					element.updateRenderState();
+					
 				} else if (element instanceof Cake) {
-					// element.setLocalRotation(Rotations.rotateX(0f));
-					// element.setLocalTranslation(0, -0.65f, 0);
-					// element.setLocalTranslation(0, -0.0f, 0);
-					// element.setLocalScale(0.25f);
-					// element.updateRenderState();
-					element.getLocalTranslation().x = pivotElement
-							.getLocalTranslation().x;
-					element.getLocalTranslation().y = pivotElement
-							.getLocalTranslation().y;
-					element.getLocalTranslation().z = pivotElement
-							.getLocalTranslation().z;
+					element.setLocalTranslation(0, -0.0f, -0.0f);
+					element.setLocalRotation(Rotations.rotateX(-0.5f));
+					pivotElement.setLocalScale(0.1f);
+					//element.setLocalTranslation(6f, 0f, 0f);
 				} else {
 					element.setLocalRotation(Rotations.rotateX(0f));
 					element.setLocalTranslation(0, -0.65f, 0);
