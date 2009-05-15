@@ -934,12 +934,17 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer {
 	}// GEN-LAST:event_jButtonTakeCakeActionPerformed
 
 	private void jButtonCamera1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonCamera1ActionPerformed
-		_systemState.setId_camera(1);
+		//_systemState.setId_camera(1);
+		_qualitySubState.setRobotGoToState(_qualitySubState.PICKUPPACKET);
+		
 		
 	}// GEN-LAST:event_jButtonCamera1ActionPerformed
 
 	private void jButtonCamera2ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonCamera2ActionPerformed
-		_systemState.setId_camera(2);
+		//_systemState.setId_camera(2);
+		_qualitySubState.setRobotGoToState(_qualitySubState.DROPGOODBOX);
+		
+		
 	}// GEN-LAST:event_jButtonCamera2ActionPerformed
 
 	private void jButtonCamera3ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonCamera3ActionPerformed

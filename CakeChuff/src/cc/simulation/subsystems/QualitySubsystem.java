@@ -121,13 +121,15 @@ public class QualitySubsystem extends Node implements Observer {
 		this.attachChild(wrapper);
 
 		goodBox = new PacketBox("GoodBox");
-		goodBox.setLocalTranslation(20f, 3f, 4f);
-		goodBox.setLocalScale(1.5f);
+		goodBox.setLocalRotation(Rotations.rotateY(0.25f));
+		goodBox.setLocalTranslation(20f, 0f, 5.5f);
+		// goodBox.setLocalScale(1.5f);
 		this.attachChild(goodBox);
 
 		badBox = new PacketBox("BadBox");
-		badBox.setLocalTranslation(20f, 3f, -4f);
-		badBox.setLocalScale(1.5f);
+		badBox.setLocalTranslation(20f, 0f, -5.5f);
+		badBox.setLocalRotation(Rotations.rotateY(-0.25f));
+		// badBox.setLocalScale(1.5f);
 		this.attachChild(badBox);
 	}
 
@@ -135,7 +137,7 @@ public class QualitySubsystem extends Node implements Observer {
 		boolean sen1 = false, sen2 = false, sen3 = false;
 
 		for (int i = 0; i < elements.size(); i++) {
-			Spatial element = elements.get(elements.size()-i-1);
+			Spatial element = elements.get(elements.size() - i - 1);
 
 			if ((conv.hasCollision(element, false))
 					&& (element instanceof Blister)) {
@@ -299,7 +301,7 @@ public class QualitySubsystem extends Node implements Observer {
 				elem = element.iterator();
 				while (elem.hasNext()) {
 					Spatial aux = elem.next();
-					if ((aux instanceof Packet)
+					if ((aux instanceof Blister)
 							&& (conv.hasCollision(aux, false))) {
 						if (pickUpPacket(time, aux)) {
 							_state.setRobotCurrentState(PICKUPPACKET);
@@ -367,14 +369,18 @@ public class QualitySubsystem extends Node implements Observer {
 				this.phase++;
 			break;
 		case 4:
-			if (robot2.openHandObject(0f, time, element))
+			if (robot2.openHandObject(0f, time, element)) {
 				this.phase++;
+			}
 			break;
 		case 5:
-			if (robot2.bendBody(1.5f, time))
-				this.phase++;
+			System.out.println("Im in 1!");
+			if (robot2.bendBody(0.5f, time))
+				System.out.println("Im in 2!");
+			this.phase++;
 			break;
 		case 6:
+			System.out.println("I finished!!!");
 			phase = 0;
 			return true;
 		}
