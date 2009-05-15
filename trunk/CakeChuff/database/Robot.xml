@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE robot SYSTEM "dtd/robot.dtd">
+
+<robot>
+	<pick_blister>5</pick_blister>
+	<defaultPick>5</defaultPick>
+	<move_place_cake>5</move_place_cake>
+	<defaultMove>5</defaultMove>
+	<state>init</state>
+</robot>
+
