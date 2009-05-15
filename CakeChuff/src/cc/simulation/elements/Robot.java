@@ -176,9 +176,9 @@ public class Robot extends Node {
 
 		pivotHead.attachChild(pivotElement);
 		
-		AxisRods axis = new AxisRods("rods", true, 0.1f);
-		
-		pivotElement.attachChild(axis);
+//		AxisRods axis = new AxisRods("rods", true, 0.1f);
+//		
+//		pivotElement.attachChild(axis);
 		
 
 		this.setLocalScale(10);
