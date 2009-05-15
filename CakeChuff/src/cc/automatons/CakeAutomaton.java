@@ -40,6 +40,8 @@ public class CakeAutomaton extends Automaton {
 			//subscribe
 			cakesystem = CakeSubsystemState.getInstance();
 			cakesystem.addObserver(this);
+			//tell the master the automaton is on
+			send("A1:ON");
 		}catch(UnknownHostException uhe){
 			
 		}catch(IOException ioe){

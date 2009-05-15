@@ -37,6 +37,8 @@ public class BlisterAutomaton extends Automaton {
 			//subscribe
 			blistersystem = BlisterSubsystemState.getInstance();
 			blistersystem.addObserver(this);
+			//tell the master the automaton is on
+			send("A2:ON");
 		}catch(UnknownHostException uhe){
 			
 		}catch(IOException ioe){

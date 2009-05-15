@@ -57,12 +57,13 @@ public class QCAutomaton extends Automaton {
 		this.t_stamp=t_stamp;
 		this.t_rob=t_rob;
 		state=START;
-		try{
+		/*try{
 			dout.writeChars("A3:START");
 		}catch(IOException ioe){
 			//connection failure
 			
-		}
+		}*/
+		send("A3:START");
 		
 	}
 	private void run_init(){
