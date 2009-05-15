@@ -196,7 +196,7 @@ public class SCADA {
 	 * @return A string 
 	 */
         public String sendRestartInfo(String subsystem_name){
-            String s = "RESTART" + ":";
+            String s = "RESTART" + ":" + subsystem_name + "$";
                 
             if (subsystem_name.compareTo("A1") ==0){
                 s.concat(this.getValue("state", "ss1Info") + "#" + this.sendAutomatonInfo1());
@@ -211,6 +211,10 @@ public class SCADA {
                
             return s;
 	}
+     
+        public void receiveRecover(){
+        	String a ="RECOVER:AUTOMATA";
+        }
         
        /**
 	 * Method that send the message to master automaton to stop the system
@@ -226,7 +230,7 @@ public class SCADA {
 	 * @return A string 
 	 */
         public String emergencyStop(){
-            return "EMERGENCY STOP";  
+            return "EMERGENCY";  
 	}
         
         /**
@@ -287,13 +291,13 @@ public class SCADA {
          * Method to receive the message from the master with the info about
          * the change in the state of a subsystem. Checks the subsystem 
          * who belongs the info, and change the state in the database. 
-         * @param info Subsystem_name +  "#" + state
+         * @param info Subsystem_name +  ":" + state
          * @return false if the info do not corresponds to any subsystem
          */
         public boolean stateChanged(String info){
             
             boolean ok = true;
-            String [] array = info.split("#");
+            String [] array = info.split(":");
             
             if (array[0].compareTo("A1") ==0){
                 this.setValues("ss1Info", "state", array[1]);
