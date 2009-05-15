@@ -437,8 +437,6 @@ public class Robot extends Node {
 					// pivotElement.detachChild(object);
 					((PacketBox)element).addInBox(this.object);
 					object = null;
-					
-					System.out.println("??!!");
 
 					return true;
 				}

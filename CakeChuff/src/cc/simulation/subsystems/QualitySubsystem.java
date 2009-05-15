@@ -123,12 +123,14 @@ public class QualitySubsystem extends Node implements Observer {
 		goodBox = new PacketBox("GoodBox");
 		goodBox.setLocalRotation(Rotations.rotateY(0.25f));
 		goodBox.setLocalTranslation(20f, 0f, 5.5f);
+		
 		// goodBox.setLocalScale(1.5f);
 		this.attachChild(goodBox);
 
 		badBox = new PacketBox("BadBox");
 		badBox.setLocalTranslation(20f, 0f, -5.5f);
 		badBox.setLocalRotation(Rotations.rotateY(-0.25f));
+		
 		// badBox.setLocalScale(1.5f);
 		this.attachChild(badBox);
 	}

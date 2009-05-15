@@ -62,7 +62,15 @@ public class PacketBox extends Node{
 		packets.add(element);
 		element.removeFromParent();
 		pivot.attachChild(element);
-		element.setLocalTranslation(14f, -5f+((float)numOfPackets()-1), 0);
+		
+		if(this.getLocalRotation().y > 0)	{
+			//System.out.println("GoodBox: "+this.getLocalRotation().y);
+			element.setLocalTranslation(14f, -5f+((float)numOfPackets()-1), 0);
+		}else {
+			//System.out.println("BadBox: "+this.getLocalRotation().y);
+			element.setLocalTranslation(14f, -5f+((float)numOfPackets()-1),16f);
+		}
+			
 	}
 	
 	public int numOfPackets(){
