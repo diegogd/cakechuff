@@ -301,8 +301,8 @@ public class QualitySubsystem extends Node implements Observer {
 				elem = element.iterator();
 				while (elem.hasNext()) {
 					Spatial aux = elem.next();
-					if ((aux instanceof Blister)
-							&& (conv.hasCollision(aux, false))) {
+					if ((aux instanceof Blister)) {
+//							&& (conv.hasCollision(aux, false))) {
 						if (pickUpPacket(time, aux)) {
 							_state.setRobotCurrentState(PICKUPPACKET);
 						}
