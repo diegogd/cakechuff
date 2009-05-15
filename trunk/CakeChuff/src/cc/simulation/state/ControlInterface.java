@@ -152,13 +152,7 @@ public class ControlInterface extends javax.swing.JFrame implements ActionListen
                 this.timelaststartup.setText(ht +  ":" + mt + ":" + st);
             }
 	}
-    
-    /*
-     *para ir actualizando
-     *long timeInSeconds = (initTime - System.currentTimeMilis()) / 1000; 
-     */
-
-    
+ 
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -872,10 +866,6 @@ public class ControlInterface extends javax.swing.JFrame implements ActionListen
         }
     }// </editor-fold>//GEN-END:initComponents
 
-     
-    
-    
-    
     private void keepValuesToDB() {
         for (int i=0; i< _params.length ; i++){
             if (_params[i] != -1){
@@ -985,7 +975,8 @@ private void StartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     this.starts.setText(prevValue + "");
     
     //Send the initial info to master
-    this._scada.sendInitInfo();   
+    this._scada.sendtoMaster(_scada.sendInitInfo());   
+    
 }//GEN-LAST:event_StartButtonActionPerformed
 
 private void StopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StopButtonActionPerformed
@@ -1009,7 +1000,7 @@ private void StopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     this.keepValuesToDB();
     
     //Send the order of stop to the master
-    this._scada.stop();
+    this._scada.sendtoMaster(_scada.stop()); 
 }//GEN-LAST:event_StopButtonActionPerformed
 
 private void EmergencyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EmergencyButtonActionPerformed
@@ -1034,7 +1025,7 @@ private void EmergencyButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
     this.keepValuesToDB();
     
     //Send the order of stop to the master
-    this._scada.emergencyStop();
+    this._scada.sendtoMaster(_scada.emergencyStop()); 
 }//GEN-LAST:event_EmergencyButtonActionPerformed
 
 private void GeneratePDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GeneratePDFActionPerformed
@@ -1207,13 +1198,5 @@ private void ResetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 
 /*	@Override
 	public void update(Observable arg0, Object arg1) {}*/
-        
-
-   /* @Override
-    public java.awt.Image getIconImage() {
-        java.awt.Image retValue = java.awt.Toolkit.getDefaultToolkit().
-                getImage(ClassLoader.getSystemResource("/cc/images/iconCakeChuff.png"));
-        return retValue;
-    }*/
 
 }
