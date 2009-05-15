@@ -65,19 +65,27 @@ public class MasterAutomaton extends Automaton {
 		rmovet=movet;
 	}
 	private void run_robot_blister(){
-		
+		//move blister to the packing table
+		//tell the blister automaton
 	}
 	private void run_robot_cake1(){
-		
+		//put cake in the blister
+		//tell the cake automaton
 	}
 	private void run_robot_cake2(){
-		
+		//put cake in the blister
+		//tell the cake automaton
 	}
 	private void run_robot_cake3(){
-		
+		//put cake in the blister
+		//tell the cake automaton
 	}
 	private void run_robot_full(){
-		
+		//put cake in the blister
+		//tell the cake automaton
+		//move full blister to the qc conveyor
+		//tell the qc automaton
+		//blisters waiting?
 	}
 	@Override
 	public synchronized void newMsg(String msg) {
