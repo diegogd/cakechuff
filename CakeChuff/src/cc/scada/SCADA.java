@@ -295,7 +295,7 @@ public class SCADA {
 		 * Method to send a message to the master
 		 * @param msg The message to be sent
 		 */
-		protected void sendtoMaster(String msg){
+		public void sendtoMaster(String msg){
 			
 			try{
 				dout.writeChars(msg);
