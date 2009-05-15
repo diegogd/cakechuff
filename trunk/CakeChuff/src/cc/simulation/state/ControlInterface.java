@@ -13,6 +13,8 @@ import java.util.Observer;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -48,6 +50,8 @@ public class ControlInterface extends javax.swing.JFrame implements ActionListen
     public ControlInterface() {
         // ^ Just notify no observer
         
+    	
+    	
         _scada = new SCADA();
             	    	
         initComponents();
@@ -56,6 +60,8 @@ public class ControlInterface extends javax.swing.JFrame implements ActionListen
         for (int i =0; i < _params.length; i++){
             _params[i] = -1;
         }
+        
+        setIconImage(new ImageIcon(getClass().getResource("/cc/images/iconCakeChuff.png")).getImage());
         
         //To set all the spinners, to the correct value from the database of SCADA
         this.updateValues();
@@ -460,7 +466,7 @@ public class ControlInterface extends javax.swing.JFrame implements ActionListen
         StopButton.addActionListener(this);
 
         EmergencyButton.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
-        EmergencyButton.setIcon(new javax.swing.ImageIcon("F:\\SI\\CakeChuff_ui5\\CakeChuff_ui\\CakeChuff\\src\\cc\\Images\\emergency.png")); // NOI18N
+        EmergencyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/cc/images/emergency.png"))); // NOI18N
         EmergencyButton.setText("Emergency Stop");
         EmergencyButton.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(204, 0, 0), new java.awt.Color(102, 0, 0), new java.awt.Color(204, 0, 0), new java.awt.Color(102, 0, 0)));
         EmergencyButton.setName("emergency"); // NOI18N
@@ -1203,10 +1209,10 @@ private void ResetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 	public void update(Observable arg0, Object arg1) {}*/
         
 
-    /*@Override
+   /* @Override
     public java.awt.Image getIconImage() {
         java.awt.Image retValue = java.awt.Toolkit.getDefaultToolkit().
-                getImage(ClassLoader.getSystemResource("cc/Images/iconCakeChuff.png"));
+                getImage(ClassLoader.getSystemResource("/cc/images/iconCakeChuff.png"));
         return retValue;
     }*/
 
