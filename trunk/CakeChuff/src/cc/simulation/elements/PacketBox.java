@@ -62,7 +62,7 @@ public class PacketBox extends Node{
 		packets.add(element);
 		element.removeFromParent();
 		pivot.attachChild(element);
-		element.setLocalTranslation(0, (float)numOfPackets()-1, 0);
+		element.setLocalTranslation(14f, -5f+((float)numOfPackets()-1), 0);
 	}
 	
 	public int numOfPackets(){
