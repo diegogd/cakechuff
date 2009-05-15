@@ -305,6 +305,8 @@ public class Robot extends Node {
 					// + pivotElement.getWorldTranslation().z);
 
 					// pivotElement.setLocalTranslation(0f,0f,0f);
+					
+					System.out.println("YEaaah!!");
 
 					element.updateRenderState();
 				} else if (element instanceof Cake) {
@@ -426,6 +428,17 @@ public class Robot extends Node {
 					Father.updateRenderState();
 					blister = null;
 					object = null;
+
+					return true;
+				}
+			}else if(element instanceof PacketBox){
+				if (this.object instanceof Blister) {
+					this.has_object = false;
+					// pivotElement.detachChild(object);
+					((PacketBox)element).addInBox(this.object);
+					object = null;
+					
+					System.out.println("??!!");
 
 					return true;
 				}

@@ -147,8 +147,8 @@ public class Blister extends Node {
 		//if (wrapper.removeFromParent()) {
 				this.wrapper.attachChild(wrapper);
 				this.wrapper.updateRenderState();
-				this.wrapper.setLocalScale(-1f);
-				wrapper.setLocalTranslation(10.9f, -9.55f, 15.2f);
+//				this.wrapper.setLocalScale(-1f);
+//				wrapper.setLocalTranslation(10.9f, -9.55f, 15.2f);
 				//wrapper.setLocalScale(-1.1f);
 				wrapper.updateRenderState();
 				
