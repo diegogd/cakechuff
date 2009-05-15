@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- DTD that represents the features and keeps the state of the robot -->
+
+	<!ELEMENT robot (pick_blister, defaultPick, move_place_cake, defaultMove, state )>
+		<!ELEMENT pick_blister (#PCDATA)>
+                <!ELEMENT defaultPick (#PCDATA)>
+		<!ELEMENT move_place_cake (#PCDATA)>
+                <!ELEMENT defaultMove (#PCDATA)>
+		<!--states: empty, blister, cake1, cake2, cake3, full-->
+		<!ELEMENT state (#PCDATA)>

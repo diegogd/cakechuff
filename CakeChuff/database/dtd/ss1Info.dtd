@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- DTD that represents the values for time and speed for subsystem one -->
+
+	<!ELEMENT ss1Info (defaultSpeed, conveyorSpeed, defaultv1, v1, defaultv2, v2 , conveyorLenght , defaultLenght, cakesCapacity, defaultCapacity, state )>
+		<!ELEMENT defaultSpeed (#PCDATA)>
+		<!ELEMENT conveyorSpeed (#PCDATA)>
+		<!--This is to maintain the defaultSpeed kept separately from the current one, for being able to reset the value if it is needed.-->
+		<!ELEMENT defaultv1 (#PCDATA)>
+		<!ELEMENT v1 (#PCDATA)><!--Opening time for valve 1 in seconds-->
+		<!ELEMENT defaultv2 (#PCDATA)>
+		<!ELEMENT v2 (#PCDATA)>	<!--Opening time for valve 2 in seconds-->
+		<!ELEMENT conveyorLenght (#PCDATA)>
+                <!ELEMENT defaultLenght (#PCDATA)>
+		<!ELEMENT cakesCapacity (#PCDATA)>
+                <!ELEMENT defaultCapacity (#PCDATA)>
+		<!--states: init, choc, choc-car, car, car-wait, wait-->
+		<!ELEMENT state (#PCDATA)>
