@@ -46,7 +46,7 @@ public class SCADA {
 	public String getValue(String key, String subsystem){
 
 		//Obtain the file
-		File f = new File ("docs/"+ subsystem+ ".xml");
+		File f = new File ("database/"+ subsystem+ ".xml");
 		LinkedHashMap h = XMLManager.getInstance().read(f);
 		String value = h.get(key).toString();
 
@@ -64,7 +64,7 @@ public class SCADA {
 	 */
 	public String getStatistics(String key){
 
-		File f = new File ("docs/statistics.xml");
+		File f = new File ("database/statistics.xml");
 		LinkedHashMap h = XMLManager.getInstance().read(f);
 		String value = h.get(key).toString();
 
@@ -89,14 +89,14 @@ public class SCADA {
 	 * @param value
 	 */
 	public void setValues(String subsystem, String key, String value){
-		File f = new File ("docs/"+ subsystem+ ".xml");
+		File f = new File ("database/"+ subsystem+ ".xml");
 		LinkedHashMap h = XMLManager.getInstance().read(f);
 		//the value is replaced in the hashmap
 		if (h.containsKey(key)==false){
 			System.out.println("Error: there is no key " + key + "in the statistics file");
 		}else{
 			h.put(key, value);
-			XMLManager.getInstance().generate(subsystem, "docs/"+ subsystem+ ".xml", h);
+			XMLManager.getInstance().generate(subsystem, "database/"+ subsystem+ ".xml", h);
 		}
 	}
 	
@@ -114,14 +114,14 @@ public class SCADA {
 	 * @param value 
 	 */
 	public void setStatistics(String key, String value){
-		File f = new File ("docs/statistics.xml");
+		File f = new File ("database/statistics.xml");
 		LinkedHashMap h = XMLManager.getInstance().read(f);
 		//the value is replaced in the hashmap
 		if (h.containsKey(key)==false){
 			System.out.println("Error: there is no key " + key + "in the statistics file");
 		}else{
 			h.put(key, value);
-			XMLManager.getInstance().generate("statistics", "docs/statistics.xml", h);
+			XMLManager.getInstance().generate("statistics", "database/statistics.xml", h);
 		}
 	}
 	
