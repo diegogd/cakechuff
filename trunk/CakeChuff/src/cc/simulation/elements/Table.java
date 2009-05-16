@@ -1,5 +1,9 @@
 package cc.simulation.elements;
 
+import java.net.URL;
+
+import cc.simulation.utils.ModelLoader;
+
 import com.jme.bounding.BoundingBox;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
@@ -8,8 +12,10 @@ import com.jme.scene.shape.Box;
 
 public class Table extends Node{
 
+	
 	public Table(){
-		loadBox();
+	//	loadBox();
+		loadModel();
 	}
 	
 	private void loadBox(){
@@ -24,4 +30,9 @@ public class Table extends Node{
 		this.attachChild(table);
 	}
 
+	private void loadModel(){
+		URL model=getClass().getClassLoader().getResource("model/table.obj");
+		this.attachChild(ModelLoader.loadOBJ(model));
+	}
+	
 }

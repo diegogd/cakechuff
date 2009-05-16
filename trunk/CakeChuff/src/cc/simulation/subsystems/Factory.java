@@ -163,7 +163,7 @@ public class Factory extends SimpleGame implements Observer{
 		rootNode.attachChild(qualitySub);
 		
 		table = new Table();
-		table.setLocalRotation(Rotations.rotateY(-0.785f));
+		table.setLocalRotation(Rotations.rotateY(0.785f));
 		table.setLocalTranslation(4f,2.2f,-8f);
 		
 		rootNode.attachChild(table);
