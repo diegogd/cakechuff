@@ -8,6 +8,7 @@ import java.util.Observable;
 
 import cc.communications.Mailbox;
 import cc.simulation.state.CakeSubsystemState;
+import cc.simulation.state.SystemState;
 
 import cc.simulation.elements.Sensor;
 import cc.simulation.elements.LightSensor;
@@ -26,20 +27,23 @@ public class CakeAutomaton extends Automaton {
 	
 	//parameters
 	private int speed, belt_lg, cake_cap, vt1, vt2;
+	private int ncakes;
 		
 	//simulation
 	private CakeSubsystemState cakesystem;
-	
+	private SystemState sys;
 	public CakeAutomaton(int portin, int portout, String master){
 		state=-1;
 		try{
 			mbox= new Mailbox(this, portin);
-			mbox.run();
+			(new Thread(mbox)).start();
 			sout= new Socket(master, portout);
 			dout = new DataOutputStream(sout.getOutputStream());
 			//subscribe
 			cakesystem = CakeSubsystemState.getInstance();
 			cakesystem.addObserver(this);
+			sys=SystemState.getInstance();
+			ncakes=cake_cap;
 			//tell the master the automaton is on
 			send("A1:ON");
 		}catch(UnknownHostException uhe){
@@ -65,11 +69,15 @@ public class CakeAutomaton extends Automaton {
 			//connection failure
 			
 		}*/
-		send("A1:START");
+		//send("A1:START");
+		run_init();
 	}
 	private void run_init(){
 		//start conveyor
+		cakesystem.setConveyor_velocity(speed);
 		//drop cake
+		sys.dropCake();
+		ncakes--;
 		/*
 		try{
 			dout.writeChars("A1:INIT");
@@ -77,12 +85,14 @@ public class CakeAutomaton extends Automaton {
 			//connection failure
 			
 		}*/
-		send("A1:INIT");
 		state= INIT;
+		send("A1:INIT");
 	}
 	private void run_choc(){
 		//stop conveyor
+		cakesystem.setConveyor_velocity(0);
 		//open chocolate valve
+		cakesystem.setValve1_open_secs(vt1);
 		state=CHOC;
 		/*
 		try{
@@ -95,9 +105,9 @@ public class CakeAutomaton extends Automaton {
 		try{
 			Thread.sleep(vt1*1000);
 		}catch(InterruptedException ie){}
-		//close chocolate valve
+		//close chocolate valve ¿?
 		//run conveyor
-		
+		cakesystem.setConveyor_velocity(speed);
 		
 	}
 	private void run_choc_car(){
@@ -111,7 +121,9 @@ public class CakeAutomaton extends Automaton {
 	}
 	private void run_car(){
 		//stop conveyor
+		cakesystem.setConveyor_velocity(0);
 		//open caramel valve
+		cakesystem.setValve2_open_secs(vt2);
 		state=CHOC;
 		/*try{
 			dout.writeChars("A1:CAR");
@@ -126,6 +138,7 @@ public class CakeAutomaton extends Automaton {
 		}catch(InterruptedException ie){}
 		//close caramel valve
 		//run conveyor
+		cakesystem.setConveyor_velocity(speed);
 	}
 	private void run_car_wait(){
 		state=CHOC_CAR;
@@ -137,6 +150,7 @@ public class CakeAutomaton extends Automaton {
 		send("A1:CAR_WAIT");
 	}
 	private void run_wait(){
+		cakesystem.setConveyor_velocity(0);
 		//stop conveyor
 		state=WAIT;
 		/*try{
@@ -194,5 +208,15 @@ public class CakeAutomaton extends Automaton {
 		}
 		
 	}
-
+	public static void main(String args[]){
+		CakeAutomaton aut=new CakeAutomaton(Integer.getInteger(args[0]),Integer.getInteger(args[1]),args[2]);
+		while(true){
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 }

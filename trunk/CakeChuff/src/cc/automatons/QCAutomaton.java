@@ -12,6 +12,7 @@ import cc.simulation.elements.Sensor;
 import cc.simulation.elements.TouchSensor;
 import cc.simulation.state.CakeSubsystemState;
 import cc.simulation.state.QualitySubsystemState;
+import cc.simulation.state.SystemState;
 
 public class QCAutomaton extends Automaton {
 	
@@ -29,15 +30,16 @@ public class QCAutomaton extends Automaton {
 	private static final int FAILURE=9;
 	
 	//parameters
-	int speed, belt_lg, t_stamp, t_rob;
+	int speed, belt_lg, t_stamp, t_rob,f_chance;
 
 	//simulation
 	QualitySubsystemState qcsystem;
+	boolean passed;
 	public QCAutomaton(int portin, int portout, String master){
 		state=0;
 		try{
 			mbox= new Mailbox(this, portin);
-			mbox.run();
+			(new Thread(mbox)).start();
 			sout= new Socket(master, portout);
 			dout = new DataOutputStream(sout.getOutputStream());
 			//subscribe
@@ -56,6 +58,7 @@ public class QCAutomaton extends Automaton {
 		this.belt_lg=belt_lg;
 		this.t_stamp=t_stamp;
 		this.t_rob=t_rob;
+		this.f_chance=0;
 		state=START;
 		/*try{
 			dout.writeChars("A3:START");
@@ -63,32 +66,60 @@ public class QCAutomaton extends Automaton {
 			//connection failure
 			
 		}*/
-		send("A3:START");
+		//send("A3:START");
+		//now wait for a cake pack
 		
 	}
 	private void run_init(){
-		
+		qcsystem.setConveyor_velocity(speed);
+		state=INIT;
+		send("A3:INIT");
 	}
 	private void run_QC(){
+		qcsystem.setConveyor_velocity(0);
+		state=QC;
+		send("A3:QC");
+		if(Math.random()*100<f_chance){
+			passed=false;
+			run_ko_mov();
+		}else{
+			passed=true;
+			run_qc_stamp();
+		}
 		
 	}
 	private void run_qc_stamp(){
-		
+		qcsystem.setConveyor_velocity(speed);
+		state=QC_STAMP;
+		send("A3:QC_STAMP");		
 	}
 	private void run_stamp(){
-		
+		qcsystem.setConveyor_velocity(0);
+		qcsystem.setWrapper_secs(8);
+		run_stamp_wait();
 	}
 	private void run_stamp_wait(){
+		qcsystem.setConveyor_velocity(speed);
+		state=STAMP_WAIT;
+		send("A3:STAMP_WAIT");
 		
 	}
 	private void run_ko_mov(){
-		
+		qcsystem.setConveyor_velocity(speed);
+		state=KO_MOV;
+		send("A3:KO_MOV");
 	}
 	private void run_ok_wait(){
-		
+		qcsystem.setConveyor_velocity(0);
+		state=OK_WAIT;
+		send("A3:OK_WAIT");
+		//pick and box
 	}
 	private void run_ko_wait(){
-		
+		qcsystem.setConveyor_velocity(0);
+		state=KO_WAIT;
+		send("A3:KO_WAIT");
+		//pick and dispose
 	}
 	private void run_failure(){
 		
@@ -135,6 +166,17 @@ public class QCAutomaton extends Automaton {
 				else run_ko_wait();
 		}
 
+	}
+	public static void main(String args[]){
+		QCAutomaton aut=new QCAutomaton(Integer.getInteger(args[0]),Integer.getInteger(args[1]),args[2]);
+		while(true){
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

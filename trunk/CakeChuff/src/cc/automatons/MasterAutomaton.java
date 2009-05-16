@@ -13,7 +13,7 @@ import cc.simulation.state.Robot1State;
 public class MasterAutomaton extends Automaton {
 	/* state for robot (inherited)*/
 	private Robot1State robot;
-	// empty, blister, cake1, cake2, cake3, full
+
 	private static final int START=0;
 	private static final int EMPTY=1;
 	private static final int BLISTER=2;
@@ -44,10 +44,18 @@ public class MasterAutomaton extends Automaton {
 		state = -1;
 
 		// comm
+		System.out.print("First mbox...");
 		mboxScada = new MasterMailbox(this, scada_in, scada_out, scada);
+		System.out.println("OK");
+		System.out.print("2nd mbox...");
 		mboxCake = new MasterMailbox(this, cake_in, cake_out, cake);
+		System.out.println("OK");
+		System.out.print("3rd mbox...");
 		mboxBlister = new MasterMailbox(this, blister_in, blister_out, blister);
+		System.out.println("OK");
+		System.out.print("4th mbox...");
 		mboxQC = new MasterMailbox(this, qc_in, qc_out, qc);
+		System.out.println("OK");		
 
 		// subscribe
 		robot = Robot1State.getInstance();
@@ -89,6 +97,7 @@ public class MasterAutomaton extends Automaton {
 	}
 	@Override
 	public synchronized void newMsg(String msg) {
+		System.out.println("Received: "+msg);
 		String[] content=msg.split(":");
 		if(content[0].equalsIgnoreCase("A1")){
 			if(content[1].equalsIgnoreCase("ON")){
@@ -163,5 +172,28 @@ public class MasterAutomaton extends Automaton {
 		// TODO Auto-generated method stub
 
 	}
+	public static void main(String args[]){
+		/*String scada, int scada_in, int scada_out,
+			String cake, int cake_in, int cake_out,
+			String blister,	int blister_in, int blister_out,
+			String qc, int qc_in, int qc_out
+			*/
+		try{
+		//MasterAutomaton aut=new MasterAutomaton(args[0],Integer.getInteger(args[1]),Integer.getInteger(args[2]), args[3],Integer.getInteger(args[4]),Integer.getInteger(args[5]), args[6],Integer.getInteger(args[7]),Integer.getInteger(args[8]), args[9],Integer.getInteger(args[10]),Integer.getInteger(args[11]));
+		MasterAutomaton aut=new MasterAutomaton( "localhost",9000,9009,"localhost",9000,9001,"localhost",9000,9002,"localhost",9000,9003);
 
+		System.out.println("Running:");
+		while(true){
+			try {
+				Thread.sleep(10000);
+				System.out.print(".");
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		}catch(Exception e){
+			System.out.println(e);;
+		}
+	}
 }
