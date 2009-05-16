@@ -31,7 +31,7 @@ public class BlisterAutomaton extends Automaton {
 	private SystemState sys;
 	
 	public BlisterAutomaton(int portin, int portout, String master){
-		state=0;
+		state=START;
 		try{
 			mbox= new Mailbox(this, portin);
 			(new Thread(mbox)).start();
@@ -78,7 +78,7 @@ public class BlisterAutomaton extends Automaton {
 	public void run_init(){
 		//start conveyor
 		blistersystem.setConveyor_velocity(speed);
-		state=START;
+		state=INIT;
 		//send new state
 		/*try{
 			dout.writeChars("A2:INIT");
@@ -142,12 +142,15 @@ public class BlisterAutomaton extends Automaton {
 	}
 	@Override
 	public synchronized void newMsg(String msg) {
-		String[] content= msg.split("#");
+		System.out.println("BlisterAutomaton: processing message");
+		String[] content= msg.split(":");
 		//Emergencies work for any state
 		if(content[0].equals("ER")) run_stop();
 		switch(state){
-		case START: if(content[0].equalsIgnoreCase("init")) run_start(Integer.parseInt(content[1]),
-													Integer.parseInt(content[2]));
+		case START: if(content[0].equalsIgnoreCase("init")){
+			String[] pars=content[1].split("\\#");
+			run_start(Integer.parseInt(content[1]),Integer.parseInt(content[2]));
+		}
 					break;
 		case INIT: break;
 		case PRESS: break;
