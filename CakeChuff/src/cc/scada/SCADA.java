@@ -9,19 +9,31 @@ public class SCADA {
 	
 	private ScadaMailbox _mailbox;
 	private Socket sout;
-	private DataOutputStream dout;
+	//private DataOutputStream dout;
+	private PrintWriter dout;
 	
 	//The masters keeps listening on port 9000
 	private int portout = 9000;
 	//Scada keeps listening on port 9009
 	private int portscada = 9009;
+	private String masterAddress;
 
 	public SCADA (){
-		try {
-			_mailbox = new ScadaMailbox (this, portscada);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		masterAddress="localhost";
+		boolean connected=false;
+		while (!connected) {
+			try {
+
+				sout = new Socket(masterAddress, portout);
+				_mailbox = new ScadaMailbox(this, portscada);
+				// dout = new DataOutputStream(sout.getOutputStream());
+				dout = new PrintWriter(sout.getOutputStream(), true);
+				connected = true;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+				System.out.println("Connecting...");
+			}
 		}
 	}
 	
@@ -298,8 +310,9 @@ public class SCADA {
 		public void sendtoMaster(String msg){
 			
 			try{
-				dout.writeChars(msg);
-			}catch(IOException ioe){
+				dout.println(msg);
+			}catch(Exception e){
+				e.printStackTrace();
 				//restart the receiving connection
 				if(!_mailbox.isFailure())_mailbox.setFailure(true);
 				//connection failure
@@ -307,7 +320,8 @@ public class SCADA {
 				while(!success){
 					try{
 					sout= new Socket("master", portout);
-					dout = new DataOutputStream(sout.getOutputStream());
+					//dout = new DataOutputStream(sout.getOutputStream());
+					dout = new PrintWriter(sout.getOutputStream(),true);
 					}catch(IOException ioe2){
 						//keep trying
 					}
