@@ -274,7 +274,23 @@ public class SCADA {
             }else if(array[0].compareTo("A2") ==0){
                 this.setValues("ss2Info", "state", array[1]); 
             }else if (array[0].compareTo("A3") ==0){
-                this.setValues("ss3Info", "state", array[1]); 
+                this.setValues("ss3Info", "state", array[1]);
+                //When we have the result of the quality control
+                //we have to modify the statistics
+                if(array[1].compareTo("ko_move") ==0){
+                	//it's a faulty blister
+                	int prevValue = Integer.parseInt(this.getStatistics("faultyPackages"));
+                	prevValue++;
+                    this.setStatistics("faultyPackages", prevValue + "");
+                    this.setStatistics("total_ko_cakes", (prevValue *4) + "");
+                }else if (array[1].compareTo("qc_stamp") ==0){
+                	//it's a correct one
+                	int prevValue = Integer.parseInt(this.getStatistics("faultyPackages"));
+                	prevValue++;
+                    this.setStatistics("procesedPackages", prevValue + "");
+                    this.setStatistics("total_ok_cakes", (prevValue *4) + "");
+                }
+                
             }else if(array[0].compareTo("R1") ==0){
                 this.setValues("robot", "state", array[1]); 
             }else{
