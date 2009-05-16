@@ -11,6 +11,7 @@ import cc.simulation.elements.TouchSensor;
 import cc.simulation.elements.Valve;
 import cc.simulation.state.CakeSubsystemState;
 
+import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 
@@ -56,11 +57,11 @@ public class CakeSubsystem extends Node implements Observer {
 		this.attachChild(s3);
 		_state.addSensor(s3);
 
-		chocolate = new Valve("chocolate");
+		chocolate = new Valve("chocolate", new ColorRGBA(0.305f,0.223f,0.047f,1f));
 		chocolate.setLocalTranslation(-2, 8, 0);
 		this.attachChild(chocolate);
 
-		caramel = new Valve("caramel");
+		caramel = new Valve("caramel", ColorRGBA.brown);
 		caramel.setLocalTranslation(3, 8, 0);
 		this.attachChild(caramel);
 	}

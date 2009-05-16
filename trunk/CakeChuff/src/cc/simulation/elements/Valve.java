@@ -10,6 +10,7 @@ import cc.simulation.utils.ModelLoader;
 import cc.simulation.utils.Rotations;
 
 import com.jme.animation.SpatialTransformer;
+import com.jme.math.FastMath;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
@@ -32,18 +33,17 @@ public class Valve extends Node{
 	private float timeOpen = 0;
 	private float totalAmount = 100;
 	
-	public Valve(String id) {
+	public Valve(String id, ColorRGBA color) {
 		this.setName(id);
 		loadShape();
-		content = new Cylinder("contentValve", 10, 20, 1f, 1.5f, true );
-		content.setLocalRotation(Rotations.rotateX(-0.5f));
-		content.getLocalTranslation().y += 1f;
-		content.setDefaultColor(ColorRGBA.brown);
+		float size = 0.5f;
+		content = new Cylinder("contentValve", 10, 20, 1f, 2.5f, true );
+		
+		content.getLocalTranslation().z -= 1f;
+		content.setDefaultColor(color);
 		pivot = new Node();
-		// pivot2.setLocalTranslation(0, -5, 0);
 		pivot.attachChild(content);
-		// pivot.attachChild(pivot2);
-		// pivot.getController(0).
+		pivot.getLocalRotation().fromAngles(new float[]{FastMath.PI/2,0,0});
 		this.attachChild(pivot);
 	}
 
@@ -56,11 +56,13 @@ public class Valve extends Node{
 	
 	public void update(float timeperframes)
 	{
-		if(pivot.getLocalScale().z < 0.2f) pivot.getLocalScale().z = 1;
+		if(pivot.getLocalScale().z < 0.02f) pivot.getLocalScale().z = 1;
+//		if(pivot.getLocalScale().y < 0.2f) pivot.getLocalScale().y = 1;
 		totalAmount--;
 		if(timeOpen > 0){
 			timeOpen -= timeperframes;
-			pivot.getLocalScale().z -= timeperframes*0.5;		
+//			pivot.getLocalScale().z -= timeperframes*0.3;
+			pivot.getLocalScale().z -= timeperframes*0.05;
 		}	
 	}
 	
