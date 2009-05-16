@@ -973,6 +973,11 @@ private void StartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     prevValue++;
     this._scada.setStatistics("start", prevValue + "");
     this.starts.setText(prevValue + "");
+    //Reset the history of blister
+    this.koblisters.setText("0");
+    this.okblisters.setText("0");
+    this._scada.setStatistics("procesedPackages", "0");
+    this._scada.setStatistics("faultyPackages", "0");
     
     //Send the initial info to master
     this._scada.sendtoMaster(_scada.sendInitInfo());   
