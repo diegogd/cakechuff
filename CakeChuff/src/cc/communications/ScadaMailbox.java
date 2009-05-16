@@ -1,8 +1,10 @@
 package cc.communications;
 
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -13,7 +15,8 @@ public class ScadaMailbox implements Runnable {
 
 	private ServerSocket ss;
 	private Socket so;
-	private DataInputStream din; 
+	//private DataInputStream din;
+	private BufferedReader din;
 	private DataOutputStream dout;
 	private ArrayList<String> msg_list;
 	private SCADA owner;
@@ -48,7 +51,8 @@ public class ScadaMailbox implements Runnable {
 
 	private void connect() throws IOException {
 		so = ss.accept();
-		din = new DataInputStream(so.getInputStream());
+		din= new BufferedReader(new InputStreamReader( so.getInputStream()));
+		//din = new DataInputStream(so.getInputStream());
 		//dout = new DataOutputStream(so.getOutputStream());
 	}
 
@@ -56,7 +60,8 @@ public class ScadaMailbox implements Runnable {
 		String msg;
 		while (true) {
 			try {
-				msg = din.readUTF();
+				//msg = din.readUTF();
+				msg=din.readLine();
 				owner.newMsg(msg);				
 			} catch (IOException ioe) {
 				// connection failure
