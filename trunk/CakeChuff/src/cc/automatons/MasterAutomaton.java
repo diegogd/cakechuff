@@ -98,7 +98,7 @@ public class MasterAutomaton extends Automaton {
 	}
 	@Override
 	public synchronized void newMsg(String msg) {
-		System.out.println("Received: "+msg);
+		System.out.println("Master->Received: "+msg);
 		String[] content=msg.split(":");
 		if(content[0].equalsIgnoreCase("A1")){
 			if(content[1].equalsIgnoreCase("ON")){
@@ -148,22 +148,19 @@ public class MasterAutomaton extends Automaton {
 		}else if(content[0].equalsIgnoreCase("INIT")){
 			System.out.println("Par2:"+content[1]);
 			String[] pars=content[1].split("\\$");
-			System.out.println("Has"+pars.length+" members");
-			mboxCake.send(pars[0]);
-			mboxBlister.send(pars[1]);
-			mboxQC.send(pars[2]);
-			System.out.println("Par3:"+pars[3]);
+			mboxCake.send("INIT:"+pars[0]);
+			mboxBlister.send("INIT:"+pars[1]);
+			mboxQC.send("INIT:"+pars[2]);
 			String[] parsrob=pars[3].split("\\#");
-			System.out.println("Has"+parsrob.length+" members");
 			run_robot_start(Integer.parseInt(parsrob[0]),Integer.parseInt(parsrob[1]));
 		}else if(content[0].equalsIgnoreCase("RESTART")){
 			String[] pars= content[1].split("\\$");
-			if(pars[1].equalsIgnoreCase("A1")){
-				mboxCake.send(pars[1]);
-			}else if(pars[1].equalsIgnoreCase("A2")){
-				mboxBlister.send(pars[1]);
-			}if(pars[1].equalsIgnoreCase("A3")){
-				mboxQC.send(pars[1]);
+			if(pars[0].equalsIgnoreCase("A1")){
+				mboxCake.send("RESTART:"+pars[1]);
+			}else if(pars[0].equalsIgnoreCase("A2")){
+				mboxBlister.send("RESTART:"+pars[1]);
+			}if(pars[0].equalsIgnoreCase("A3")){
+				mboxQC.send("RESTART:"+pars[1]);
 			}
 		}else if(content[0].equalsIgnoreCase("STOP")){
 			mboxCake.send(msg);
@@ -192,7 +189,7 @@ public class MasterAutomaton extends Automaton {
 		while(true){
 			try {
 				Thread.sleep(10000);
-				System.out.print(".");
+				//System.out.print(".");
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

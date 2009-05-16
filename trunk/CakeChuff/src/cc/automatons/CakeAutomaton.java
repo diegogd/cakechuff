@@ -27,14 +27,15 @@ public class CakeAutomaton extends Automaton {
 	private static final int FAILURE=7;
 	
 	//parameters
-	private int speed, belt_lg, cake_cap, vt1, vt2;
+	private int belt_lg, cake_cap, vt1, vt2;
+	private float speed;
 	private int ncakes;
 		
 	//simulation
 	private CakeSubsystemState cakesystem;
 	private SystemState sys;
 	public CakeAutomaton(int portin, int portout, String master){
-		state=-1;
+		state=START;
 		try{
 			mbox= new Mailbox(this, portin);
 			(new Thread(mbox)).start();
@@ -66,7 +67,8 @@ public class CakeAutomaton extends Automaton {
 		
 	}
 	private void run_start(int speed, int belt_lg, int cake_cap, int vt1, int vt2){
-		this.speed = speed;
+		System.out.println("Initializating cake automaton...");
+		this.speed = (float)speed/belt_lg;
 		this.belt_lg = belt_lg;
 		this.cake_cap = cake_cap;
 		this.vt1=vt1;
@@ -80,14 +82,16 @@ public class CakeAutomaton extends Automaton {
 			
 		}*/
 		//send("A1:START");
+		System.out.println("The Cake producing process will start now");
 		run_init();
 	}
 	private void run_init(){
+		
+		//drop cake
+		sys.setDropCake();
+		ncakes--;
 		//start conveyor
 		cakesystem.setConveyor_velocity(speed);
-		//drop cake
-		sys.dropCake();
-		ncakes--;
 		/*
 		try{
 			dout.writeChars("A1:INIT");
@@ -140,11 +144,12 @@ public class CakeAutomaton extends Automaton {
 		}catch(IOException ioe){
 			//connection failure	
 		}*/
+		
 		send("A1:CAR");
 		
 		//change to car_wait here??
 		try{
-			Thread.sleep(vt1*1000);
+			Thread.sleep(vt2*1000);
 		}catch(InterruptedException ie){}
 		//close caramel valve
 		//run conveyor
@@ -178,15 +183,21 @@ public class CakeAutomaton extends Automaton {
 	}
 	@Override
 	public synchronized void newMsg(String msg) {
-		String[] content= msg.split("#");
+		System.out.println("CakeAutomaton: processing message");
+		String[] content= msg.split(":");
 		//Emergencies work for any state
 		if(content[0].equals("ER")) run_stop();
 		switch(state){
-		case START: if(content[0].equalsIgnoreCase("init")) run_start(Integer.parseInt(content[1]),
-													Integer.parseInt(content[2]),
-													Integer.parseInt(content[3]),
-													Integer.parseInt(content[4]),
-													Integer.parseInt(content[5]));
+		case START: if(content[0].equalsIgnoreCase("INIT")){
+			System.out.println("CakeAutomaton: Received init signal");
+			String[] pars=content[1].split("\\#");
+			run_start(Integer.parseInt(pars[0]),
+					Integer.parseInt(pars[1]),
+					Integer.parseInt(pars[2]),
+					Integer.parseInt(pars[3]),
+					Integer.parseInt(pars[4]));
+			
+		}
 					break;
 		case INIT: break;
 		case CHOC: break;
@@ -206,21 +217,28 @@ public class CakeAutomaton extends Automaton {
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		// which sensor?
-		if(((Sensor)arg1).getName().equalsIgnoreCase("sensor1")){
-			if(((Sensor)arg1).isActived()) run_choc();
-			else run_choc_car();
-		}else if(((Sensor)arg1).getName().equalsIgnoreCase("sensor2")){
-			if(((Sensor)arg1).isActived()) run_car();
-			else run_car_wait();
-		}else if(((Sensor)arg1) instanceof TouchSensor) {
-			if(((Sensor)arg1).isActived()) run_wait();
-			//else -> no action, cake's pickup is received as a message  
+		if (arg1 instanceof Sensor) {
+			if (((Sensor) arg1).getName().equalsIgnoreCase("sensor1")) {
+				if (((Sensor) arg1).isActived())
+					run_choc();
+				else
+					run_choc_car();
+			} else if (((Sensor) arg1).getName().equalsIgnoreCase("sensor2")) {
+				if (((Sensor) arg1).isActived())
+					run_car();
+				else
+					run_car_wait();
+			} else if (((Sensor) arg1) instanceof TouchSensor) {
+				if (((Sensor) arg1).isActived())
+					run_wait();
+				// else -> no action, cake's pickup is received as a message
+			}
 		}
 		
 	}
 	public static void main(String args[]){
-		//CakeAutomaton aut=new CakeAutomaton(Integer.parseInt(args[0]),Integer.parseInt(args[1]),args[2]);
-		CakeAutomaton aut=new CakeAutomaton(9001,9000,"localhost");
+		CakeAutomaton aut=new CakeAutomaton(Integer.parseInt(args[0]),Integer.parseInt(args[1]),args[2]);
+		//CakeAutomaton aut=new CakeAutomaton(9001,9000,"localhost");
 		
 		while(true){
 			try {

@@ -13,9 +13,9 @@ public class SCADA {
 	private PrintWriter dout;
 	
 	//The masters keeps listening on port 9000
-	private int portout = 9000;
+	private int portout = 9009;
 	//Scada keeps listening on port 9009
-	private int portscada = 9009;
+	private int portscada = 9008;
 	private String masterAddress;
 
 	public SCADA (){
