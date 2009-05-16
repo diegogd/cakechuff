@@ -25,7 +25,7 @@ public class MasterMailbox implements Runnable{
 		this.destination=address;
 		try{
 			mbox= new Mailbox(owner, portin);
-			mbox.run();
+			(new Thread(mbox)).start();
 			//outgoing connection will be opened when the first message is sent
 		}catch(UnknownHostException uhe){
 			
