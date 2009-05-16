@@ -57,11 +57,11 @@ public class CakeSubsystem extends Node implements Observer {
 		this.attachChild(s3);
 		_state.addSensor(s3);
 
-		chocolate = new Valve("chocolate", new ColorRGBA(0.305f,0.223f,0.047f,1f));
+		chocolate = new Valve("chocolate", new ColorRGBA(0.31f,0.192f,0.0705f,1f));
 		chocolate.setLocalTranslation(-2, 8, 0);
 		this.attachChild(chocolate);
 
-		caramel = new Valve("caramel", ColorRGBA.brown);
+		caramel = new Valve("caramel", new ColorRGBA(0.6941f, 0.6196f, 0.02745f, 0.5f));
 		caramel.setLocalTranslation(3, 8, 0);
 		this.attachChild(caramel);
 	}
@@ -95,6 +95,7 @@ public class CakeSubsystem extends Node implements Observer {
 					element.getLocalTranslation().x += conv.getVelocity()
 							* timePerFrame;
 				}	
+				// Velocity limitations
 //				} else if ((element.getLocalTranslation().y > 0)&&(element.getLocalTranslation().x < -3f)) {
 //						element.getLocalTranslation().y -= 3 * timePerFrame;
 //					 

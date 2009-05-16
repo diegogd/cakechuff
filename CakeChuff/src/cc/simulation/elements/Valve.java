@@ -26,25 +26,51 @@ public class Valve extends Node{
 	/**
 	 * 
 	 */
-	private Cylinder content;
-	private Node pivot;
-	private Cylinder liquid;
+	private Cylinder content, liquidstream;
+	private Node contentPivot, liquidPivotUp, liquidPivotDown;
 	
 	private float timeOpen = 0;
 	private float totalAmount = 100;
+	boolean valveCompleteOpen = false, valveActived = false;
 	
 	public Valve(String id, ColorRGBA color) {
 		this.setName(id);
 		loadShape();
-		float size = 0.5f;
-		content = new Cylinder("contentValve", 10, 20, 1f, 2.5f, true );
 		
+		// Container liquid
+		content = new Cylinder("contentValve", 10, 20, 1f, 2.5f, true );
+
 		content.getLocalTranslation().z -= 1f;
 		content.setDefaultColor(color);
-		pivot = new Node();
-		pivot.attachChild(content);
-		pivot.getLocalRotation().fromAngles(new float[]{FastMath.PI/2,0,0});
-		this.attachChild(pivot);
+		
+		contentPivot = new Node();
+		contentPivot.attachChild(content);
+		contentPivot.getLocalRotation().fromAngles(new float[]{FastMath.PI/2,0,0});
+		
+		// Liquid Stream
+		liquidstream = new Cylinder("liquidStream", 10, 20, 0.06f, 1.2f, true);
+		liquidstream.getLocalTranslation().z -= 0.6f;
+		liquidstream.setDefaultColor(color);
+		
+		liquidPivotUp = new Node();
+		liquidPivotUp.attachChild(liquidstream);
+		
+		liquidPivotDown = new Node();
+		
+		//liquidPivotDown.getLocalTranslation().z -= 1f;
+		liquidPivotDown.attachChild(liquidPivotUp);
+		
+		
+		
+		//liquidPivotUp.getLocalTranslation().z += 3.2f;
+		liquidPivotDown.getLocalRotation().fromAngles(new float[]{-FastMath.PI/2,0,0});
+		liquidPivotUp.getLocalTranslation().z += 3.8f;	
+		liquidPivotDown.getLocalTranslation().y -= 4f;		
+		
+		
+		this.attachChild(contentPivot);
+		//this.attachChild(liquidPivotUp);
+		this.attachChild(liquidPivotDown);
 	}
 
 	public void loadShape(){
@@ -56,14 +82,28 @@ public class Valve extends Node{
 	
 	public void update(float timeperframes)
 	{
-		if(pivot.getLocalScale().z < 0.02f) pivot.getLocalScale().z = 1;
+		if(contentPivot.getLocalScale().z < 0.02f) contentPivot.getLocalScale().z = 1;
 //		if(pivot.getLocalScale().y < 0.2f) pivot.getLocalScale().y = 1;
 		totalAmount--;
 		if(timeOpen > 0){
+			valveActived = true;
 			timeOpen -= timeperframes;
-//			pivot.getLocalScale().z -= timeperframes*0.3;
-			pivot.getLocalScale().z -= timeperframes*0.05;
-		}	
+			contentPivot.getLocalScale().z -= timeperframes*0.01;
+			if(!valveCompleteOpen){
+				liquidPivotUp.getLocalScale().z += timeperframes*6;
+				if(liquidPivotUp.getLocalScale().z > 3.2){
+					valveCompleteOpen=true;
+				}
+			}
+		} else if(valveActived){
+			liquidPivotDown.getLocalScale().z -= timeperframes*3;
+			valveCompleteOpen=false;
+			if(liquidPivotDown.getLocalScale().z <= 0.02f){
+				valveActived = false;
+				liquidPivotDown.getLocalScale().z = 1f;
+				liquidPivotUp.getLocalScale().z = 1f;
+			}
+		}
 	}
 	
 	public void open(float seconds)
