@@ -2,6 +2,7 @@ package cc.communications;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Vector;
@@ -15,7 +16,8 @@ public class MasterMailbox implements Runnable{
 	private Thread receiving;
 	private MasterAutomaton owner;
 	private Socket sout;
-	private DataOutputStream dout;
+	//private DataOutputStream dout;
+	private PrintWriter dout;
 	private int portin, portout;
 	private String destination;
 	Vector<String> msgs;
@@ -23,6 +25,7 @@ public class MasterMailbox implements Runnable{
 		this.portin=portin;
 		this.portout=portout;
 		this.destination=address;
+		msgs=new Vector<String>();
 		try{
 			mbox= new Mailbox(owner, portin);
 			(new Thread(mbox)).start();
@@ -37,14 +40,17 @@ public class MasterMailbox implements Runnable{
 		
 	}
 	public void run(){
-		if(!sout.isConnected()){
+		if(sout==null || !sout.isConnected()){
 			connect();
 		}
 		while (msgs.size()>0){
 			try{
-				dout.writeChars(msgs.firstElement());
+				//dout.writeChars(msgs.firstElement());
+				dout.println(msgs.firstElement());
 				msgs.removeElementAt(0);
-			}catch(IOException ioe){
+			}catch(Exception e){
+				System.out.println("Error:");
+				e.printStackTrace();
 				//restart the receiving connection
 				if(!mbox.isFailure())mbox.setFailure(true);
 				connect();
@@ -61,7 +67,8 @@ public class MasterMailbox implements Runnable{
 			try{
 				sout=new Socket(destination,portout);
 				success=true;
-				dout=new DataOutputStream(sout.getOutputStream());
+				dout=  new PrintWriter(sout.getOutputStream(), true);
+				//dout=new DataOutputStream(sout.getOutputStream());
 			}catch(IOException ioe){
 				
 			}

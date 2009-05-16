@@ -1,8 +1,10 @@
 package cc.communications;
 
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -13,8 +15,9 @@ public class Mailbox implements Runnable {
 
 	private ServerSocket ss;
 	private Socket so;
-	private DataInputStream din; 
-	private DataOutputStream dout;
+	//private DataInputStream din;
+	private BufferedReader din;
+	//private DataOutputStream dout;
 	private ArrayList<String> msg_list;
 	private Automaton owner;
 	private boolean failure;
@@ -36,6 +39,7 @@ public class Mailbox implements Runnable {
 	public void run() {
 		//Accept connections
 		try{
+			System.out.println("Mailbox: Connecting...");
 			this.connect();
 			while(!failure){
 				receiveMsgs();
@@ -48,7 +52,8 @@ public class Mailbox implements Runnable {
 
 	private void connect() throws IOException {
 		so = ss.accept();
-		din = new DataInputStream(so.getInputStream());
+		din= new BufferedReader(new InputStreamReader( so.getInputStream()));
+		//din = new DataInputStream(so.getInputStream());
 		//dout = new DataOutputStream(so.getOutputStream());
 	}
 
@@ -56,7 +61,10 @@ public class Mailbox implements Runnable {
 		String msg;
 		while (true) {
 			try {
-				msg = din.readUTF();
+			System.out.println("Receiving message...");
+				//msg = din.readUTF();
+				msg=din.readLine();
+				System.out.println("Received");
 				owner.newMsg(msg);				
 			} catch (IOException ioe) {
 				// connection failure
