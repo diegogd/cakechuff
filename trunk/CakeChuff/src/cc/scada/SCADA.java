@@ -282,13 +282,15 @@ public class SCADA {
                 	int prevValue = Integer.parseInt(this.getStatistics("faultyPackages"));
                 	prevValue++;
                     this.setStatistics("faultyPackages", prevValue + "");
-                    this.setStatistics("total_ko_cakes", (prevValue *4) + "");
+                    prevValue = Integer.parseInt(this.getStatistics("total_ko_cakes"));
+                    this.setStatistics("total_ko_cakes", (prevValue +4) + "");
                 }else if (array[1].compareTo("qc_stamp") ==0){
                 	//it's a correct one
                 	int prevValue = Integer.parseInt(this.getStatistics("faultyPackages"));
                 	prevValue++;
                     this.setStatistics("procesedPackages", prevValue + "");
-                    this.setStatistics("total_ok_cakes", (prevValue *4) + "");
+                    prevValue = Integer.parseInt(this.getStatistics("total_ok_cakes"));
+                    this.setStatistics("total_ok_cakes", (prevValue +4) + "");
                 }
                 
             }else if(array[0].compareTo("R1") ==0){
