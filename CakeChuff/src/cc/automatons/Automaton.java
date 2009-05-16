@@ -2,6 +2,7 @@ package cc.automatons;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Observer;
 
@@ -13,7 +14,8 @@ public abstract class Automaton implements Observer{
 	
 	//comm
 	protected Socket sout;
-	protected DataOutputStream dout;
+	//protected DataOutputStream dout;
+	PrintWriter dout;
 	protected Mailbox mbox;
 	protected String master;
 	protected int portout;
@@ -32,10 +34,12 @@ public abstract class Automaton implements Observer{
 	 * @param msg Message to be sent.
 	 */
 	protected void send(String msg){
+		System.out.println("Sending: "+msg);
 		
 			try{
-				dout.writeChars(msg);
-			}catch(IOException ioe){
+				//dout.writeChars(msg);
+				dout.println(msg);
+			}catch(Exception e){
 				//restart the receiving connection
 				if(!mbox.isFailure())mbox.setFailure(true);
 				//connection failure
@@ -43,7 +47,9 @@ public abstract class Automaton implements Observer{
 				while(!success){
 					try{
 					sout= new Socket(master, portout);
-					dout = new DataOutputStream(sout.getOutputStream());
+					//dout = new DataOutputStream(sout.getOutputStream());
+					
+					dout = new PrintWriter(sout.getOutputStream(),true); 
 					}catch(IOException ioe2){
 						//keep trying
 					}

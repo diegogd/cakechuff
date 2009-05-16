@@ -23,7 +23,7 @@ public class MasterAutomaton extends Automaton {
 	private static final int FULL=6;
 	private static final int FAILURE=7;
 	//parameters for the robot
-	private int rmovet;
+	private int moveblistert,movecaket;
 	
 	//Mailboxes
 	private MasterMailbox mboxScada;
@@ -69,8 +69,9 @@ public class MasterAutomaton extends Automaton {
 		cake_waiting=false;
 		blister_waiting=false;
 	}
-	private void run_robot_start(int movet){
-		rmovet=movet;
+	private void run_robot_start(int movecaket, int moveblistert){
+		this.movecaket=movecaket;
+		this.moveblistert=moveblistert;
 	}
 	private void run_robot_blister(){
 		//move blister to the packing table
@@ -145,13 +146,18 @@ public class MasterAutomaton extends Automaton {
 				mboxScada.send(msg);
 			}
 		}else if(content[0].equalsIgnoreCase("INIT")){
-			String[] pars=content[1].split("$");
+			System.out.println("Par2:"+content[1]);
+			String[] pars=content[1].split("\\$");
+			System.out.println("Has"+pars.length+" members");
 			mboxCake.send(pars[0]);
 			mboxBlister.send(pars[1]);
 			mboxQC.send(pars[2]);
-			run_robot_start(Integer.getInteger(pars[3]));
+			System.out.println("Par3:"+pars[3]);
+			String[] parsrob=pars[3].split("\\#");
+			System.out.println("Has"+parsrob.length+" members");
+			run_robot_start(Integer.parseInt(parsrob[0]),Integer.parseInt(parsrob[1]));
 		}else if(content[0].equalsIgnoreCase("RESTART")){
-			String[] pars= content[1].split("$");
+			String[] pars= content[1].split("\\$");
 			if(pars[1].equalsIgnoreCase("A1")){
 				mboxCake.send(pars[1]);
 			}else if(pars[1].equalsIgnoreCase("A2")){
@@ -179,8 +185,8 @@ public class MasterAutomaton extends Automaton {
 			String qc, int qc_in, int qc_out
 			*/
 		try{
-		//MasterAutomaton aut=new MasterAutomaton(args[0],Integer.getInteger(args[1]),Integer.getInteger(args[2]), args[3],Integer.getInteger(args[4]),Integer.getInteger(args[5]), args[6],Integer.getInteger(args[7]),Integer.getInteger(args[8]), args[9],Integer.getInteger(args[10]),Integer.getInteger(args[11]));
-		MasterAutomaton aut=new MasterAutomaton( "localhost",9000,9009,"localhost",9000,9001,"localhost",9000,9002,"localhost",9000,9003);
+		MasterAutomaton aut=new MasterAutomaton(args[0],Integer.parseInt(args[1]),Integer.parseInt(args[2]), args[3],Integer.parseInt(args[4]),Integer.parseInt(args[5]), args[6],Integer.parseInt(args[7]),Integer.parseInt(args[8]), args[9],Integer.parseInt(args[10]),Integer.parseInt(args[11]));
+		//MasterAutomaton aut=new MasterAutomaton( "localhost",9000,9009,"localhost",9000,9001,"localhost",9000,9002,"localhost",9000,9003);
 
 		System.out.println("Running:");
 		while(true){
