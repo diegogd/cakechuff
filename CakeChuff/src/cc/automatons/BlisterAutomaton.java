@@ -12,6 +12,7 @@ import cc.simulation.elements.LightSensor;
 import cc.simulation.elements.TouchSensor;
 import cc.simulation.state.BlisterSubsystemState;
 import cc.simulation.state.CakeSubsystemState;
+import cc.simulation.state.SystemState;
 public class BlisterAutomaton extends Automaton {
 	
 	private static final int START=0;
@@ -26,17 +27,19 @@ public class BlisterAutomaton extends Automaton {
 	
 	//simulation
 	private BlisterSubsystemState blistersystem;
+	private SystemState sys;
 	
 	public BlisterAutomaton(int portin, int portout, String master){
 		state=0;
 		try{
 			mbox= new Mailbox(this, portin);
-			mbox.run();
+			(new Thread(mbox)).start();
 			sout= new Socket(master, portout);
 			dout = new DataOutputStream(sout.getOutputStream());
 			//subscribe
 			blistersystem = BlisterSubsystemState.getInstance();
 			blistersystem.addObserver(this);
+			sys=SystemState.getInstance();
 			//tell the master the automaton is on
 			send("A2:ON");
 		}catch(UnknownHostException uhe){
@@ -59,10 +62,12 @@ public class BlisterAutomaton extends Automaton {
 			
 		}*/
 		send("A2:START");
+		run_init();
 		
 	}
 	public void run_init(){
 		//start conveyor
+		blistersystem.setConveyor_velocity(speed);
 		state=START;
 		//send new state
 		/*try{
@@ -73,7 +78,12 @@ public class BlisterAutomaton extends Automaton {
 		}*/
 		send("A2:INIT");
 		//press timer...
+		try{
+			Thread.sleep(2*1000);
+		}catch(InterruptedException ie){}
 		//press down -> run_press() ??
+		blistersystem.setEngraver_secs(8);
+		sys.setMakeBlister();
 		
 	}
 	public void run_press(){
@@ -89,6 +99,7 @@ public class BlisterAutomaton extends Automaton {
 	}
 	public void run_cutting(){
 		//blade down
+		blistersystem.setCutter_secs(4);
 		state=CUTTING;
 		//send new state
 		/*try{
@@ -101,6 +112,7 @@ public class BlisterAutomaton extends Automaton {
 	}
 	public void run_blister_ready(){
 		//stop conveyor
+		blistersystem.setConveyor_velocity(0);
 		state=BLISTER_READY;
 		//send new state
 		/*try{
@@ -155,5 +167,15 @@ public class BlisterAutomaton extends Automaton {
 			// else -> no action, blister's pickup is received as a message
 		}
 	}
-
+	public static void main(String args[]){
+		BlisterAutomaton aut=new BlisterAutomaton(Integer.getInteger(args[0]),Integer.getInteger(args[1]),args[2]);
+		while(true){
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 }

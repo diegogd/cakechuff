@@ -18,24 +18,19 @@ public abstract class Automaton implements Observer{
 	protected String master;
 	protected int portout;
 	public Automaton() {
-		//_mailbox = new Mailbox();
 	}
-	/*
-	public abstract void start();
-	
-	public abstract void pause();
-	
-	public abstract void stop();
-	
-	public abstract void notifySensorChange(Sensor s);
-	*/
+
 	/*
 	 * Manage new messages in the mailbox.
 	 * The mailbox will run this method when a new message
-	 * (standard priority) arrives.
-	 * TODO: synchronized??
+	 * arrives.
+	 * @param msg Message received.
 	 */
 	public abstract void newMsg(String msg);
+	/*
+	 * Send a message to the master automaton.
+	 * @param msg Message to be sent.
+	 */
 	protected void send(String msg){
 		
 			try{
