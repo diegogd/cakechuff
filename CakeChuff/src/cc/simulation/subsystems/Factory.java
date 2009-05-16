@@ -212,12 +212,12 @@ public class Factory extends SimpleGame implements Observer{
 	public void loadCamera(int id){
 		switch(id){
 		case CAMERA_WHOLE: // Whole system
-			display.getRenderer().getCamera().setLocation(new Vector3f(50, 75, 50));
-			display.getRenderer().getCamera().lookAt(new Vector3f(0,-1,-5), Vector3f.UNIT_Y);
+			display.getRenderer().getCamera().setLocation(new Vector3f(33.5f, 38.5f, 45.7f));
+			display.getRenderer().getCamera().lookAt(new Vector3f(10,-1,-5), Vector3f.UNIT_Y);
 			break;
 		case CAMERA_CAKESUB: // Cake Subsystem
-			display.getRenderer().getCamera().setLocation(new Vector3f(-6, 10, 3));
-			display.getRenderer().getCamera().lookAt(new Vector3f(-10,6,-5), Vector3f.UNIT_Y);
+			display.getRenderer().getCamera().setLocation(new Vector3f(-4.7f, 12, 8));
+			display.getRenderer().getCamera().lookAt(new Vector3f(-9,6,-5), Vector3f.UNIT_Y);
 			break;
 		case CAMERA_BLISTERSUB: // Blister Subsystem
 			display.getRenderer().getCamera().setLocation(new Vector3f(-6, 10, 30));
