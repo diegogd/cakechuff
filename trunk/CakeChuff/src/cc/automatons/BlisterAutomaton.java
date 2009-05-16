@@ -2,6 +2,7 @@ package cc.automatons;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Observable;
@@ -34,8 +35,17 @@ public class BlisterAutomaton extends Automaton {
 		try{
 			mbox= new Mailbox(this, portin);
 			(new Thread(mbox)).start();
-			sout= new Socket(master, portout);
-			dout = new DataOutputStream(sout.getOutputStream());
+			boolean connected=false;
+			while(!connected){
+				try{
+					sout= new Socket(master, portout);
+					connected=true;
+				}catch(Exception e){
+					
+				}
+			}
+			//dout = new DataOutputStream(sout.getOutputStream());
+			dout = new PrintWriter(sout.getOutputStream(),true);
 			//subscribe
 			blistersystem = BlisterSubsystemState.getInstance();
 			blistersystem.addObserver(this);
@@ -136,8 +146,8 @@ public class BlisterAutomaton extends Automaton {
 		//Emergencies work for any state
 		if(content[0].equals("ER")) run_stop();
 		switch(state){
-		case START: if(content[0].equalsIgnoreCase("init")) run_start(Integer.getInteger(content[1]),
-													Integer.getInteger(content[2]));
+		case START: if(content[0].equalsIgnoreCase("init")) run_start(Integer.parseInt(content[1]),
+													Integer.parseInt(content[2]));
 					break;
 		case INIT: break;
 		case PRESS: break;
@@ -168,7 +178,7 @@ public class BlisterAutomaton extends Automaton {
 		}
 	}
 	public static void main(String args[]){
-		BlisterAutomaton aut=new BlisterAutomaton(Integer.getInteger(args[0]),Integer.getInteger(args[1]),args[2]);
+		BlisterAutomaton aut=new BlisterAutomaton(Integer.parseInt(args[0]),Integer.parseInt(args[1]),args[2]);
 		while(true){
 			try {
 				Thread.sleep(10000);
