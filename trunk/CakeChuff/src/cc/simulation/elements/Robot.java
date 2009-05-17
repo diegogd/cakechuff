@@ -201,34 +201,38 @@ public class Robot extends Node {
 		loadObject("robotBase.obj",this);
 		
 
-		lowerBody = new Cylinder("lowerBody", 5, 25, 0.1f, 0.6f, true);
-		lowerBody.setLocalRotation(Rotations.rotateX(0.5f));
-		lowerBody.setLocalTranslation(0, 0.35f, 0);
-		lowerBody.setDefaultColor(ColorRGBA.red);
-
-		lowerBody.setModelBound(new BoundingBox());
-		lowerBody.updateModelBound();
-		lowerBody.updateRenderState();
+//		lowerBody = new Cylinder("lowerBody", 5, 25, 0.1f, 0.6f, true);
+//		lowerBody.setLocalRotation(Rotations.rotateX(0.5f));
+//		lowerBody.setLocalTranslation(0, 0.35f, 0);
+//		lowerBody.setDefaultColor(ColorRGBA.red);
+//
+//		lowerBody.setModelBound(new BoundingBox());
+//		lowerBody.updateModelBound();
+//		lowerBody.updateRenderState();
+		
 
 		pivotBase = new Node();
 		pivotBase.setLocalRotation(Rotations.rotateX(-0.1f));
-		pivotBase.attachChild(lowerBody);
+//		pivotBase.attachChild(lowerBody);
+		
+		loadObject("robotLower.obj",pivotBase);
 		this.attachChild(pivotBase);
 
-		upperBody = new Cylinder("upperBody", 5, 25, 0.1f, 0.6f, true);
-		upperBody.setModelBound(new BoundingBox());
-		upperBody.updateModelBound();
-		upperBody.setLocalRotation(Rotations.rotateX(0.5f));
-		upperBody.setLocalTranslation(0, 0.3f, 0);
-
-		// upperBody.setDefaultColor(ColorRGBA.blue);
-		upperBody.setRandomColors();
-		upperBody.updateRenderState();
+//		upperBody = new Cylinder("upperBody", 5, 25, 0.1f, 0.6f, true);
+//		upperBody.setModelBound(new BoundingBox());
+//		upperBody.updateModelBound();
+//		upperBody.setLocalRotation(Rotations.rotateX(0.5f));
+//		upperBody.setLocalTranslation(0, 0.3f, 0);
+//
+//		// upperBody.setDefaultColor(ColorRGBA.blue);
+//		upperBody.setRandomColors();
+//		upperBody.updateRenderState();
 
 		pivotBody = new Node();
 		// pivot.setLocalRotation(Rotations.rotateX(0.5f));
 		pivotBody.setLocalTranslation(0, 0.65f, 0);
-		pivotBody.attachChild(upperBody);
+//		pivotBody.attachChild(upperBody);
+		loadObject("robotUpper.obj",pivotBody);
 
 		// Cylinder prueba = new Cylinder("prueba", 5, 25, 0.4f, 0.05f, true);
 		// prueba.setLocalRotation(Rotations.rotateX(0.5f));

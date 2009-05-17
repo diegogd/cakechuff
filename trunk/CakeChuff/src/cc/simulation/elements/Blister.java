@@ -58,7 +58,7 @@ public class Blister extends Node {
 //		pivot.setLocalTranslation(-5.2f,0f,7.4f);
 		
 //		hole1.setLocalTranslation(-1, 0, -1);
-		hole1.setLocalTranslation(-6.3f,0.1f,-8.5f);
+		hole1.setLocalTranslation(-6.3f,4.7f,-8.5f);
 //		hole1.setLocalTranslation(-1f, 0.1f, );
 //		Box box1 = new Box("box1", new Vector3f(-0.5f,-0.5f,-0.5f),
 //				new Vector3f(0.5f, 0.5f, 0.5f));
@@ -66,14 +66,14 @@ public class Blister extends Node {
 //		hole1.attachChild(box1);
 		
 //		hole2.setLocalTranslation(1, 0, -1);
-		hole2.setLocalTranslation(-4.2f,0.1f,-8.5f);
+		hole2.setLocalTranslation(-4.2f,4.7f,-8.5f);
 //		Box box2 = new Box("box2", new Vector3f(-0.5f,-0.5f,-0.5f),
 //				new Vector3f(0.5f, 0.5f, 0.5f));
 //		hole2.attachChild(box2);
 //		box2.setDefaultColor(ColorRGBA.yellow);
 		
 //		hole3.setLocalTranslation(-1, 0, 1);
-		hole3.setLocalTranslation(-6.3f,0.1f,-6.4f);
+		hole3.setLocalTranslation(-6.3f,4.7f,-6.4f);
 //		Box box3 = new Box("box3", new Vector3f(-0.5f,-0.5f,-0.5f),
 //				new Vector3f(0.5f, 0.5f, 0.5f));
 //		hole3.attachChild(box3);
@@ -81,7 +81,7 @@ public class Blister extends Node {
 		
 		
 //		hole4.setLocalTranslation(1, 0, 1);
-		hole4.setLocalTranslation(-4.2f,0.1f,-6.4f);
+		hole4.setLocalTranslation(-4.2f,4.7f,-6.4f);
 //		Box box4 = new Box("box4", new Vector3f(-0.5f,-0.5f,-0.5f),
 //				new Vector3f(0.5f, 0.5f, 0.5f));
 //		hole4.attachChild(box4);
