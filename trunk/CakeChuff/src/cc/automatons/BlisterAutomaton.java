@@ -84,14 +84,6 @@ public class BlisterAutomaton extends Automaton {
 		state=INIT;
 		//send new state
 		send("A2:init");
-		//press timer...
-		/*try{
-			System.out.println("BListerAutomaton: time to engrave: "+(int)(60/(speed*20)));
-			Thread.sleep((int)(60*1000/(speed*40)));
-		}catch(InterruptedException ie){}
-		//press down -> run_press() ??
-		blistersystem.setEngraver_secs(5);
-		sys.setMakeBlister();*/
 		stamper.work();
 		run_press();
 		
@@ -118,7 +110,23 @@ public class BlisterAutomaton extends Automaton {
 		send("A2:blister_ready");
 		
 	}
-	public void run_failure(){
+	public void run_failure(String data){
+		String pars[]=data.split("#");
+		this.belt_lg=Integer.parseInt(pars[2]);
+		this.speed=Float.parseFloat(pars[1])/(belt_lg*7);
+		if(pars[0].equalsIgnoreCase("INIT")){
+			run_init();
+		}else if(pars[0].equalsIgnoreCase("PRESS")){
+			state=PRESS;
+			blistersystem.setConveyor_velocity(speed);
+			stamper.work();
+		}else if(pars[0].equalsIgnoreCase("CUTTING")){
+			blistersystem.setConveyor_velocity(speed);
+			stamper.work();
+			run_cutting();
+		}else if(pars[0].equalsIgnoreCase("BLISTER_READY")){
+			run_blister_ready();
+		}
 		
 	}
 	public void run_stop(){
@@ -128,28 +136,41 @@ public class BlisterAutomaton extends Automaton {
 	}
 	@Override
 	public synchronized void newMsg(String msg) {
-		System.out.println("BlisterAutomaton: processing message "+msg);
-		String[] content= msg.split(":");
-		//Emergencies work for any state
-		if(content[0].equals("EMERGENCY")) run_stop();
-		else if (content[0].equalsIgnoreCase("STOP")) stop=true;
-		switch(state){
-		case START: if(content[0].equalsIgnoreCase("init")){
-			String[] pars=content[1].split("\\#");
-			run_start(Integer.parseInt(pars[0]),Integer.parseInt(pars[1]));
-		}
-					break;
-		case INIT: break;
-		case PRESS: break;
-		case CUTTING: break;
-		case BLISTER_READY:
-			if(content[0].equalsIgnoreCase("R1")&& content[1].equalsIgnoreCase("blister")){
-			run_init();
-		}
-			break;
-		case FAILURE: break;	
-		
-		}
+		System.out.println("BlisterAutomaton: processing message " + msg);
+		String[] content = msg.split(":");
+		// Emergencies work for any state
+		if (content[0].equals("EMERGENCY"))
+			run_stop();
+		else if (content[0].equalsIgnoreCase("STOP"))
+			stop = true;
+		else if (content[0].equalsIgnoreCase("RESTART")) {
+			String pars[] = content[1].split("\\$");
+			run_failure(pars[1]);
+		} else
+			switch (state) {
+			case START:
+				if (content[0].equalsIgnoreCase("init")) {
+					String[] pars = content[1].split("\\#");
+					run_start(Integer.parseInt(pars[0]), Integer
+							.parseInt(pars[1]));
+				}
+				break;
+			case INIT:
+				break;
+			case PRESS:
+				break;
+			case CUTTING:
+				break;
+			case BLISTER_READY:
+				if (content[0].equalsIgnoreCase("R1")
+						&& content[1].equalsIgnoreCase("blister")) {
+					run_init();
+				}
+				break;
+			case FAILURE:
+				break;
+
+			}
 
 	}
 	public void run(){
@@ -190,11 +211,13 @@ public class BlisterAutomaton extends Automaton {
 	}
 	private class Stamper implements Runnable{
 		private boolean working;
+		private float time;
 		//simulation
 		private BlisterSubsystemState blistersystem;
 		private int freq;
 		private SystemState sys;
 		private Stamper(BlisterSubsystemState blisters,SystemState sys, int speed){
+			time=0;
 			blistersystem=blisters;
 			this.sys=sys;
 			freq=(int)(60*1000*3/(speed));
@@ -209,12 +232,15 @@ public class BlisterAutomaton extends Automaton {
 		public void run(){
 			while(true){
 				try{
-					System.out.println("Duerme: " +freq);
-					Thread.sleep(freq);
+					Thread.sleep(500);
 				}catch(InterruptedException ie){}
 				if (working){
-					blistersystem.setEngraver_secs(5);
-					sys.setMakeBlister();
+					time=time+500;
+					if(time==freq){
+						blistersystem.setEngraver_secs(5);
+						sys.setMakeBlister();
+						time=0;
+					}
 				}
 			}
 

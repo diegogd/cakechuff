@@ -113,7 +113,12 @@ public class CakeAutomaton extends Automaton {
 	}
 	private void run_choc_car(){
 		state=CHOC_CAR;
-		if(ncakes>0){
+		/*There are cakes left
+		 * &
+		 * if the automaton is going to stop, the number of cakes dropped is nx4
+		 * (to complete n blisters)
+		 */		
+		if(ncakes>0 && (!stop||(cake_cap-ncakes)%4!=0)){
 			sys.setDropCake();
 			ncakes--;
 		}
@@ -147,7 +152,40 @@ public class CakeAutomaton extends Automaton {
 		state=WAIT;
 		send("A1:wait");
 	}
-	private void run_failure(){
+	/*
+	 * Recover form a failure
+	 */
+	private void run_failure(String data){
+		String pars[]=data.split("#");
+		//INIT,CHOC,CHOC_CAR,CAR,CAR_WAIT,WAIT
+		//int cake_cap, int speed, int belt_lg, int vt1, int vt2
+		
+		//Reload parameters
+		this.cake_cap = Integer.parseInt(pars[1]);
+		
+		this.belt_lg = Integer.parseInt(pars[3]);
+		this.speed = Float.parseFloat(pars[2])/(belt_lg*3);
+		this.ncakes=cake_cap;
+		this.vt1=Integer.parseInt(pars[4]);
+		this.vt2 =Integer.parseInt(pars[5]);
+		
+		//Recover state
+		if(pars[0].equalsIgnoreCase("INIT")){
+			run_init();
+		}else if(pars[0].equalsIgnoreCase("CHOC")){
+			state=CHOC;
+			(new Thread(this)).start();
+		}else if(pars[0].equalsIgnoreCase("CHOC_CAR")){
+			state=CHOC_CAR;
+			(new Thread(this)).start();
+		}else if(pars[0].equalsIgnoreCase("CAR")){
+			state=CAR;
+			(new Thread(this)).start();
+		}else if(pars[0].equalsIgnoreCase("CAR_WAIT")){
+			run_car_wait();
+		}else if(pars[0].equalsIgnoreCase("WAIT")){
+			run_wait();
+		}
 		
 	}
 	private void run_stop(){
@@ -159,35 +197,48 @@ public class CakeAutomaton extends Automaton {
 	@Override
 	public synchronized void newMsg(String msg) {
 		System.out.println("CakeAutomaton: processing message");
-		String[] content= msg.split(":");
-		//Emergencies work for any state
-		if(content[0].equals("EMERGENCY")) run_stop();
-		else if (content[0].equalsIgnoreCase("STOP")) stop=true;
-		switch(state){
-		case START: if(content[0].equalsIgnoreCase("INIT")){
-			System.out.println("CakeAutomaton: Received init signal");
-			String[] pars=content[1].split("\\#");
-			run_start(Integer.parseInt(pars[0]),
-					Integer.parseInt(pars[1]),
-					Integer.parseInt(pars[2]),
-					Integer.parseInt(pars[3]),
-					Integer.parseInt(pars[4]));
-			
-		}
-					break;
-		case INIT: break;
-		case CHOC: break;
-		case CHOC_CAR: break;
-		case CAR: break;
-		case CAR_WAIT: break;
-		case WAIT:
-			if(content[0].equalsIgnoreCase("R1")&& content[1].substring(0,4).equalsIgnoreCase("cake")){
-			run_init();
-		}
-			break;
-		case FAILURE: break;	
-		
-		}
+		String[] content = msg.split(":");
+		// Emergencies work for any state
+		if (content[0].equals("EMERGENCY"))
+			run_stop();
+		else if (content[0].equalsIgnoreCase("STOP"))
+			stop = true;
+		else if (content[0].equalsIgnoreCase("RESTART")) {
+			String pars[] = content[1].split("\\$");
+			run_failure(pars[1]);
+		} else
+			switch (state) {
+			case START:
+				if (content[0].equalsIgnoreCase("INIT")) {
+					System.out.println("CakeAutomaton: Received init signal");
+					String[] pars = content[1].split("\\#");
+					run_start(Integer.parseInt(pars[0]), Integer
+							.parseInt(pars[1]), Integer.parseInt(pars[2]),
+							Integer.parseInt(pars[3]), Integer
+									.parseInt(pars[4]));
+
+				}
+				break;
+			case INIT:
+				break;
+			case CHOC:
+				break;
+			case CHOC_CAR:
+				break;
+			case CAR:
+				break;
+			case CAR_WAIT:
+				break;
+			case WAIT:
+				if (content[0].equalsIgnoreCase("R1")
+						&& content[1].substring(0, 4).equalsIgnoreCase("cake")) {
+					run_init();
+				}
+				break;
+			case FAILURE:
+				break;
+
+			}
 	}
 
 	@Override
