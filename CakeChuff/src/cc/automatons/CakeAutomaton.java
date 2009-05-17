@@ -87,7 +87,7 @@ public class CakeAutomaton extends Automaton {
 		//start conveyor
 		cakesystem.setConveyor_velocity(speed);
 		state= INIT;
-		send("A1:INIT");
+		send("A1:init");
 	}
 	private void run_choc(){
 		//stop conveyor
@@ -95,7 +95,7 @@ public class CakeAutomaton extends Automaton {
 		//open chocolate valve
 		cakesystem.setValve1_open_secs(vt1);
 		state=CHOC;
-		send("A1:CHOC");
+		send("A1:choc");
 		//change to choc_car here??
 		//while(cakesystem.getValve1_open_secs()>0);
 		
@@ -117,7 +117,7 @@ public class CakeAutomaton extends Automaton {
 			sys.setDropCake();
 			ncakes--;
 		}
-		send("A1:CHOC_CAR");
+		send("A1:choc_car");
 	}
 	private void run_car(){
 		//stop conveyor
@@ -126,7 +126,7 @@ public class CakeAutomaton extends Automaton {
 		cakesystem.setValve2_open_secs(vt2);
 		state=CHOC;
 		
-		send("A1:CAR");
+		send("A1:car");
 		
 		//change to car_wait here??
 		try{
@@ -139,13 +139,13 @@ public class CakeAutomaton extends Automaton {
 	}
 	private void run_car_wait(){
 		state=CAR_WAIT;
-		send("A1:CAR_WAIT");
+		send("A1:car_wait");
 	}
 	private void run_wait(){
 		cakesystem.setConveyor_velocity(0);
 		//stop conveyor
 		state=WAIT;
-		send("A1:WAIT");
+		send("A1:wait");
 	}
 	private void run_failure(){
 		

@@ -74,7 +74,7 @@ public class BlisterAutomaton extends Automaton {
 		(new Thread(stamper)).start();
 		state=START;
 		//send new state
-		send("A2:START");
+		//send("A2:START");
 		run_init();
 		
 	}
@@ -83,7 +83,7 @@ public class BlisterAutomaton extends Automaton {
 		blistersystem.setConveyor_velocity(speed);
 		state=INIT;
 		//send new state
-		send("A2:INIT");
+		send("A2:init");
 		//press timer...
 		/*try{
 			System.out.println("BListerAutomaton: time to engrave: "+(int)(60/(speed*20)));
@@ -99,7 +99,7 @@ public class BlisterAutomaton extends Automaton {
 	public void run_press(){
 		state=PRESS;
 		//send new state
-		send("A2:PRESS");
+		send("A2:press");
 	}
 	public void run_cutting(){
 		//blade down
@@ -107,7 +107,7 @@ public class BlisterAutomaton extends Automaton {
 		blistersystem.setCutter_secs((int)(60/(speed*10)));
 		state=CUTTING;
 		//send new state
-		send("A2:CUTTING");
+		send("A2:cutting");
 	}
 	public void run_blister_ready(){
 		//stop conveyor
@@ -115,7 +115,7 @@ public class BlisterAutomaton extends Automaton {
 		stamper.stop();
 		state=BLISTER_READY;
 		//send new state
-		send("A2:BLISTER_READY");
+		send("A2:blister_ready");
 		
 	}
 	public void run_failure(){
