@@ -1,5 +1,6 @@
 package cc.scada;
 
+import cc.simulation.state.ControlInterface;
 import java.io.*;
 import java.net.Socket;
 import java.util.*;
@@ -17,8 +18,12 @@ public class SCADA {
 	//Scada keeps listening on port 9009
 	private int portscada = 9008;
 	private String masterAddress;
+	
+	private ControlInterface _ci;
 
-	public SCADA (){
+	public SCADA (ControlInterface ci){
+		_ci= ci;
+		
 		masterAddress="localhost";
 		boolean connected=false;
 		while (!connected) {
@@ -284,6 +289,7 @@ public class SCADA {
                     this.setStatistics("faultyPackages", prevValue + "");
                     prevValue = Integer.parseInt(this.getStatistics("total_ko_cakes"));
                     this.setStatistics("total_ko_cakes", (prevValue +4) + "");
+                    _ci.updateStadistics();
                 }else if (array[1].compareTo("qc_stamp") ==0){
                 	//it's a correct one
                 	int prevValue = Integer.parseInt(this.getStatistics("faultyPackages"));
@@ -291,6 +297,7 @@ public class SCADA {
                     this.setStatistics("procesedPackages", prevValue + "");
                     prevValue = Integer.parseInt(this.getStatistics("total_ok_cakes"));
                     this.setStatistics("total_ok_cakes", (prevValue +4) + "");
+                    _ci.updateStadistics();
                 }
                 
             }else if(array[0].compareTo("R1") ==0){
