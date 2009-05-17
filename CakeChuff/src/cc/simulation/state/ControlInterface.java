@@ -1034,7 +1034,10 @@ private void EmergencyButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
 }//GEN-LAST:event_EmergencyButtonActionPerformed
 
 private void GeneratePDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GeneratePDFActionPerformed
-// TODO add your handling code here:
+	GeneratePDF pdf = new GeneratePDF(this.okblisters.getText(), this.koblisters.getText(),
+						this.okcake.getText(), this.kocake.getText(), this.starts.getText(), 
+						this.stops.getText(),this.emerstops.getText());
+	pdf.generate();
 }//GEN-LAST:event_GeneratePDFActionPerformed
 
 private void spinnerCaramelStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinnerCaramelStateChanged
