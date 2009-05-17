@@ -52,7 +52,7 @@ public class ControlInterface extends javax.swing.JFrame implements ActionListen
         
     	
     	
-        _scada = new SCADA();
+        _scada = new SCADA(this);
             	    	
         initComponents();
                
@@ -1097,7 +1097,7 @@ private void ResetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
       
     }
     
-    private void updateStadistics(){
+    public void updateStadistics(){
         this.okblisters.setText(this._scada.getStatistics("procesedPackages"));
         this.koblisters.setText(this._scada.getStatistics("faultyPackages"));
         this.okcake.setText(this._scada.getStatistics("total_ok_cakes"));
