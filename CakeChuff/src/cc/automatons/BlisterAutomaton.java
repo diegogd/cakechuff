@@ -24,7 +24,8 @@ public class BlisterAutomaton extends Automaton {
 	private static final int FAILURE=5;
 	
 	//param
-	private int speed, belt_lg;
+	private int belt_lg;
+	private float speed;
 	
 	//simulation
 	private BlisterSubsystemState blistersystem;
@@ -41,9 +42,11 @@ public class BlisterAutomaton extends Automaton {
 					sout= new Socket(master, portout);
 					connected=true;
 				}catch(Exception e){
-					
+					System.out.println("BLISTERAutomaton Error:");
+					e.printStackTrace();
 				}
 			}
+			System.out.println("BlisterAutomaton connected");
 			//dout = new DataOutputStream(sout.getOutputStream());
 			dout = new PrintWriter(sout.getOutputStream(),true);
 			//subscribe
@@ -53,15 +56,18 @@ public class BlisterAutomaton extends Automaton {
 			//tell the master the automaton is on
 			send("A2:ON");
 		}catch(UnknownHostException uhe){
-			
+			System.out.println("BLISTERAutomaton Error:");
+			uhe.printStackTrace();
 		}catch(IOException ioe){
-			
+			System.out.println("BLISTERAutomaton Error:");
+			ioe.printStackTrace();
 		}catch(SecurityException se){
-			
+			System.out.println("BLISTERAutomaton Error:");
+			se.printStackTrace();
 		}
 	}
 	public void run_start(int speed, int belt_lg){
-		this.speed=speed;
+		this.speed=(float)speed/(belt_lg*6);
 		this.belt_lg=belt_lg;
 		state=START;
 		//send new state
@@ -89,10 +95,11 @@ public class BlisterAutomaton extends Automaton {
 		send("A2:INIT");
 		//press timer...
 		try{
-			Thread.sleep(2*1000);
+			System.out.println("BListerAutomaton: time to engrave: "+(int)(60/(speed*20)));
+			Thread.sleep((int)(60*1000/(speed*40)));
 		}catch(InterruptedException ie){}
 		//press down -> run_press() ??
-		blistersystem.setEngraver_secs(8);
+		blistersystem.setEngraver_secs(5);
 		sys.setMakeBlister();
 		
 	}
@@ -109,7 +116,8 @@ public class BlisterAutomaton extends Automaton {
 	}
 	public void run_cutting(){
 		//blade down
-		blistersystem.setCutter_secs(4);
+		System.out.println("Blade speed: " +(int)(60/(speed*10)));
+		blistersystem.setCutter_secs((int)(60/(speed*10)));
 		state=CUTTING;
 		//send new state
 		/*try{
@@ -142,14 +150,14 @@ public class BlisterAutomaton extends Automaton {
 	}
 	@Override
 	public synchronized void newMsg(String msg) {
-		System.out.println("BlisterAutomaton: processing message");
+		System.out.println("BlisterAutomaton: processing message "+msg);
 		String[] content= msg.split(":");
 		//Emergencies work for any state
 		if(content[0].equals("ER")) run_stop();
 		switch(state){
 		case START: if(content[0].equalsIgnoreCase("init")){
 			String[] pars=content[1].split("\\#");
-			run_start(Integer.parseInt(content[1]),Integer.parseInt(content[2]));
+			run_start(Integer.parseInt(pars[0]),Integer.parseInt(pars[1]));
 		}
 					break;
 		case INIT: break;
@@ -165,18 +173,29 @@ public class BlisterAutomaton extends Automaton {
 		}
 
 	}
-
+	public void run(){
+		switch(state){
+		case CUTTING:run_cutting();
+			break;
+		case BLISTER_READY:run_blister_ready();
+			break;
+		}
+	}
 	@Override
 	public void update(Observable o, Object arg) {
 		// which sensor?
 		if (arg instanceof LightSensor) {
-			if (((Sensor) arg).isActived())
-				run_cutting();
+			if (((Sensor) arg).isActived()){
+				state=CUTTING;
+				(new Thread(this)).start();
+			}
 			// else run_choc_car();
 
 		} else if (arg instanceof TouchSensor) {
-			if (((Sensor) arg).isActived())
-				run_blister_ready();
+			if (((Sensor) arg).isActived()){
+				state=BLISTER_READY;
+				(new Thread(this)).start();
+			}
 			// else -> no action, blister's pickup is received as a message
 		}
 	}
