@@ -41,9 +41,11 @@ public class MasterAutomaton extends Automaton {
 	//the automatons are running (used to check restarts)
 	private boolean cake_on,blister_on,qc_on;
 	//a cake is waiting but there is no blister
-	boolean cake_waiting;
+	private boolean cake_waiting;
 	//blister waiting for an empty table
-	boolean blister_waiting;
+	private boolean blister_waiting;
+	//qc is available
+	private boolean qc_free;
 	public MasterAutomaton(String scada, int scada_in, int scada_out,
 			String cake, int cake_in, int cake_out,
 			String blister,	int blister_in, int blister_out,
@@ -72,7 +74,7 @@ public class MasterAutomaton extends Automaton {
 		cake_on=false;
 		blister_on=false;
 		qc_on=false;
-		
+		qc_free=true;
 		cake_waiting=false;
 		blister_waiting=false;
 	}
@@ -171,11 +173,24 @@ public class MasterAutomaton extends Automaton {
 			}
 		}else if(content[0].equalsIgnoreCase("A3")){
 			if(content[1].equalsIgnoreCase("ON")){
-				if(qc_on==false)qc_on=true;
+				if(qc_on==false){
+					qc_free=true;
+					qc_on=true;
+				}
 				else mboxScada.send("RECOVER:A3"); //was already running so it must be a new instance
 			}else{
+				//store if the third conveyor is free to put a new blister
+				//it is free if it is just starting to run (first init) or if it is boxing its package
+				if(content[1].equalsIgnoreCase("KO_WAIT")||content[1].equalsIgnoreCase("OK_WAIT"))
+					qc_free=true;
+				else if ((content[1].equalsIgnoreCase("QC")))
+					qc_free=false;
 				//state change
 				mboxScada.send(msg);
+				if(qc_free && blister_waiting){
+					robot.setRobot_velocity(4f);
+					robot.setGoToState(PICKUPPACKET);
+				}
 			}
 		}else if(content[0].equalsIgnoreCase("INIT")){
 			stop=false;
@@ -261,7 +276,7 @@ public class MasterAutomaton extends Automaton {
 							robot.setRobot_velocity(4f);
 							robot.setGoToState(PICKUPCAKE);
 						}else robot.setGoToState(TABLE);
-					}else if(state==FULL){
+					}else if(state==FULL && qc_free){
 						robot.setRobot_velocity(4f);
 						robot.setGoToState(PICKUPPACKET);
 					}

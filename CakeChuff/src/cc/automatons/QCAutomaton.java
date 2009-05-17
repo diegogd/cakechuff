@@ -244,16 +244,16 @@ public class QCAutomaton extends Automaton {
 	public void update(Observable o, Object arg) {
 		// which sensor?
 		if (arg instanceof LightSensor) {
-			if(((LightSensor)arg).getName().equals("QualitySensor1")){
-				
-			if (((Sensor) arg).isActived()){
-				state=QC;
-				(new Thread(this)).start();
-			}
-			}else if(((LightSensor)arg).getName().equals("QualitySensor2")){
-				if(state==QC_STAMP){
-					if (((Sensor) arg).isActived()){
-						state=STAMP;
+			if (((LightSensor) arg).getName().equals("QualitySensor1")) {
+
+				if (((Sensor) arg).isActived()) {
+					state = QC;
+					(new Thread(this)).start();
+				}
+			} else if (((LightSensor) arg).getName().equals("QualitySensor2")) {
+				if (state == QC_STAMP) {
+					if (((Sensor) arg).isActived()) {
+						state = STAMP;
 						(new Thread(this)).start();
 					}
 				}
@@ -261,19 +261,18 @@ public class QCAutomaton extends Automaton {
 
 		} else if (arg instanceof TouchSensor) {
 			if (((Sensor) arg).isActived())
-				if(state==STAMP_WAIT){
-					state=OK_WAIT;
+				if (state == STAMP_WAIT) {
+					state = OK_WAIT;
 					(new Thread(this)).start();
-				}
-				else{
-					state=KO_WAIT;
+				} else {
+					state = KO_WAIT;
 					(new Thread(this)).start();
-				
+
 				}
-		}else if(o instanceof QualitySubsystemState){
+		} else if (o instanceof QualitySubsystemState) {
 			qcsystem.deleteObserver(this);
 			if (!qcsystem.getRobotIfMoving()) {
-				if (qcsystem.getRobotCurrentState()==qcsystem.PICKUPPACKET){
+				if (qcsystem.getRobotCurrentState() == qcsystem.PICKUPPACKET) {
 					if (state == OK_WAIT) {
 						qcsystem.setRobotGoToState(qcsystem.DROPGOODBOX);
 						qcsystem.setConveyor_velocity(speed);
