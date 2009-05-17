@@ -13,9 +13,9 @@ public class SCADA {
 	//private DataOutputStream dout;
 	private PrintWriter dout;
 	
-	//The masters keeps listening on port 9000
+	//The master keeps listening on port 9009
 	private int portout = 9009;
-	//Scada keeps listening on port 9009
+	//Scada keeps listening on port 9008
 	private int portscada = 9008;
 	private String masterAddress;
 	
@@ -31,6 +31,7 @@ public class SCADA {
 
 				sout = new Socket(masterAddress, portout);
 				_mailbox = new ScadaMailbox(this, portscada);
+				(new Thread(_mailbox)).start();
 				// dout = new DataOutputStream(sout.getOutputStream());
 				dout = new PrintWriter(sout.getOutputStream(), true);
 				connected = true;
@@ -282,7 +283,7 @@ public class SCADA {
                 this.setValues("ss3Info", "state", array[1]);
                 //When we have the result of the quality control
                 //we have to modify the statistics
-                if(array[1].compareTo("ko_move") ==0){
+                if(array[1].compareTo("ko_mov") ==0){
                 	//it's a faulty blister
                 	int prevValue = Integer.parseInt(this.getStatistics("faultyPackages"));
                 	prevValue++;
@@ -315,7 +316,6 @@ public class SCADA {
          */
 		public synchronized void newMsg(String msg) {
 			String [] array = msg.split(":");
-			
 			//The only thing that Scada receives from the master 
 			// is a change in the state, or a petition to restart.
 			if (array[0].compareTo("RESTART") ==0){

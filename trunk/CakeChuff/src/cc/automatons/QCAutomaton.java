@@ -80,15 +80,17 @@ public class QCAutomaton extends Automaton {
 		
 	}
 	private void run_init(){
-		System.out.println("Starting A2...");
-		qcsystem.setConveyor_velocity(speed);
-		state=INIT;
-		send("A3:INIT");
+		if(!stop){
+			System.out.println("Starting A2...");
+			qcsystem.setConveyor_velocity(speed);
+			state=INIT;
+			send("A3:init");
+		}
 	}
 	private void run_QC(){
 		qcsystem.setConveyor_velocity(0);
 		state=QC;
-		send("A3:QC");
+		send("A3:qc");
 		qcsystem.setQualityCheck(true);
 		try{
 			Thread.sleep(3*1000);
@@ -109,11 +111,11 @@ public class QCAutomaton extends Automaton {
 	private void run_qc_stamp(){
 		qcsystem.setConveyor_velocity(speed);
 		state=QC_STAMP;
-		send("A3:QC_STAMP");		
+		send("A3:qc_stamp");		
 	}
 	private void run_stamp(){
 		qcsystem.setConveyor_velocity(0);
-		qcsystem.setWrapper_secs(8);
+		qcsystem.setWrapper_secs(2);
 		try{
 			Thread.sleep(3*1000);
 		}catch(InterruptedException ie){
@@ -125,18 +127,18 @@ public class QCAutomaton extends Automaton {
 	private void run_stamp_wait(){
 		qcsystem.setConveyor_velocity(speed);
 		state=STAMP_WAIT;
-		send("A3:STAMP_WAIT");
+		send("A3:stamp_wait");
 		
 	}
 	private void run_ko_mov(){
 		qcsystem.setConveyor_velocity(speed);
 		state=KO_MOV;
-		send("A3:KO_MOV");
+		send("A3:ko_mov");
 	}
 	private void run_ok_wait(){
 		qcsystem.setConveyor_velocity(0);
 		state=OK_WAIT;
-		send("A3:OK_WAIT");
+		send("A3:ok_wait");
 		//pick and box
 		qcsystem.setRobot_velocity(4f);
 		qcsystem.setRobotGoToState(qcsystem.PICKUPPACKET);
@@ -144,7 +146,7 @@ public class QCAutomaton extends Automaton {
 	private void run_ko_wait(){
 		qcsystem.setConveyor_velocity(0);
 		state=KO_WAIT;
-		send("A3:KO_WAIT");
+		send("A3:ko_wait");
 		//pick and dispose
 		qcsystem.setRobotGoToState(qcsystem.PICKUPPACKET);
 	}
@@ -166,6 +168,7 @@ public class QCAutomaton extends Automaton {
 		else if (content[0].equalsIgnoreCase("STOP")) stop=true;
 		switch(state){
 		case START: if(content[0].equalsIgnoreCase("init")){
+			stop=false;
 			String[] pars=content[1].split("#");
 			run_start(Integer.parseInt(pars[0]),
 					Integer.parseInt(pars[1]),

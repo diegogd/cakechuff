@@ -17,7 +17,7 @@ public class ScadaMailbox implements Runnable {
 	private Socket so;
 	//private DataInputStream din;
 	private BufferedReader din;
-	private DataOutputStream dout;
+	//private DataOutputStream dout;
 	private ArrayList<String> msg_list;
 	private SCADA owner;
 	private boolean failure;
@@ -65,6 +65,7 @@ public class ScadaMailbox implements Runnable {
 				owner.newMsg(msg);				
 			} catch (IOException ioe) {
 				// connection failure
+				ioe.printStackTrace();
 			}
 		}
 	}

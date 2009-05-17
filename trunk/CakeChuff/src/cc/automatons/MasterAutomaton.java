@@ -158,26 +158,27 @@ public class MasterAutomaton extends Automaton {
 		}else if(content[0].equalsIgnoreCase("A2")){
 			System.out.println("Msg from AUT2");
 			if(content[1].equalsIgnoreCase("ON")){
-				if(cake_on==false)cake_on=true;
+				if(blister_on==false)blister_on=true;
 				else mboxScada.send("RECOVER:A2"); //was already running so it must be a new instance
 			}else{
 				//state change
 				mboxScada.send(msg);
 				if(content[1].equalsIgnoreCase("BLISTER_READY")){
-					if(state==EMPTY){
+					if(state==EMPTY && stop==false){
 						run_robot_blister();
 					}else blister_waiting=true;
 				}
 			}
 		}else if(content[0].equalsIgnoreCase("A3")){
 			if(content[1].equalsIgnoreCase("ON")){
-				if(cake_on==false)cake_on=true;
+				if(qc_on==false)qc_on=true;
 				else mboxScada.send("RECOVER:A3"); //was already running so it must be a new instance
 			}else{
 				//state change
 				mboxScada.send(msg);
 			}
 		}else if(content[0].equalsIgnoreCase("INIT")){
+			stop=false;
 			System.out.println("Par2:"+content[1]);
 			String[] pars=content[1].split("\\$");
 			mboxCake.send("INIT:"+pars[0]);
@@ -198,6 +199,7 @@ public class MasterAutomaton extends Automaton {
 			mboxCake.send(msg);
 			mboxBlister.send(msg);
 			mboxQC.send(msg);
+			stop=true;
 		}else if(content[0].equalsIgnoreCase("EMERGENCY")){
 			mboxCake.send(msg);
 			mboxBlister.send(msg);
@@ -272,9 +274,9 @@ public class MasterAutomaton extends Automaton {
 					robot.setRobot_velocity(4f);
 					robot.setGoToState(DROPINSUB3);
 				}else if(robot.getCurrentState()==DROPINSUB3){
-					mboxQC.send("R1:EMPTY");
+					mboxQC.send("R1:empty");
 					state=EMPTY;
-					if(blister_waiting){
+					if(blister_waiting && !stop){
 						robot.setRobot_velocity(4f);
 						robot.setGoToState(PICKUPBLISTER);
 					}else robot.setGoToState(TABLE);
@@ -295,7 +297,6 @@ public class MasterAutomaton extends Automaton {
 		MasterAutomaton aut=new MasterAutomaton(args[0],Integer.parseInt(args[1]),Integer.parseInt(args[2]), args[3],Integer.parseInt(args[4]),Integer.parseInt(args[5]), args[6],Integer.parseInt(args[7]),Integer.parseInt(args[8]), args[9],Integer.parseInt(args[10]),Integer.parseInt(args[11]));
 		//MasterAutomaton aut=new MasterAutomaton( "localhost",9000,9009,"localhost",9000,9001,"localhost",9000,9002,"localhost",9000,9003);
 
-		System.out.println("Running:");
 		while(true){
 			try {
 				Thread.sleep(10000);

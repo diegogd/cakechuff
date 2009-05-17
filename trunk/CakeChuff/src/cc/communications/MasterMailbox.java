@@ -46,8 +46,9 @@ public class MasterMailbox implements Runnable{
 		while (msgs.size()>0){
 			try{
 				//dout.writeChars(msgs.firstElement());
-				dout.println(msgs.firstElement());
-				msgs.removeElementAt(0);
+				dout.println(msgs.remove(0));
+				//msgs.firstElement()
+				//msgs.removeElementAt(0);
 			}catch(Exception e){
 				System.out.println("Error:");
 				e.printStackTrace();
