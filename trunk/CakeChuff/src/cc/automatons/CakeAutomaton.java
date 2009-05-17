@@ -82,14 +82,15 @@ public class CakeAutomaton extends Automaton {
 			
 		}*/
 		//send("A1:START");
+		sys.setDropCake();
+		ncakes--;
 		System.out.println("The Cake producing process will start now");
 		run_init();
 	}
 	private void run_init(){
 		
 		//drop cake
-		sys.setDropCake();
-		ncakes--;
+		
 		//start conveyor
 		cakesystem.setConveyor_velocity(speed);
 		/*
@@ -116,9 +117,15 @@ public class CakeAutomaton extends Automaton {
 		}*/
 		send("A1:CHOC");
 		//change to choc_car here??
+		//while(cakesystem.getValve1_open_secs()>0);
+		
 		try{
 			Thread.sleep(vt1*1000);
-		}catch(InterruptedException ie){}
+		}catch(InterruptedException ie){
+			System.out.println("Interrumpido");
+			ie.printStackTrace();
+		}
+		cakesystem.setValve1_open_secs(0);
 		//close chocolate valve ¿?
 		//run conveyor
 		cakesystem.setConveyor_velocity(speed);
@@ -131,6 +138,8 @@ public class CakeAutomaton extends Automaton {
 		}catch(IOException ioe){
 			//connection failure	
 		}*/
+		sys.setDropCake();
+		ncakes--;
 		send("A1:CHOC_CAR");
 	}
 	private void run_car(){
@@ -148,15 +157,19 @@ public class CakeAutomaton extends Automaton {
 		send("A1:CAR");
 		
 		//change to car_wait here??
+		//while(cakesystem.getValve1_open_secs()>0);
 		try{
 			Thread.sleep(vt2*1000);
 		}catch(InterruptedException ie){}
 		//close caramel valve
+		cakesystem.setValve2_open_secs(0);
 		//run conveyor
 		cakesystem.setConveyor_velocity(speed);
 	}
 	private void run_car_wait(){
-		state=CHOC_CAR;
+		state=CAR_WAIT;
+		//drop cake
+
 		/*try{
 			dout.writeChars("A1:CAR_WAIT");
 		}catch(IOException ioe){
@@ -219,22 +232,46 @@ public class CakeAutomaton extends Automaton {
 		// which sensor?
 		if (arg1 instanceof Sensor) {
 			if (((Sensor) arg1).getName().equalsIgnoreCase("sensor1")) {
-				if (((Sensor) arg1).isActived())
-					run_choc();
-				else
-					run_choc_car();
+				if (((Sensor) arg1).isActived()){
+					state=CHOC;
+					(new Thread(this)).start();
+				}
+				else{
+					state = CHOC_CAR;
+					(new Thread(this)).start();
+				}
+					
 			} else if (((Sensor) arg1).getName().equalsIgnoreCase("sensor2")) {
-				if (((Sensor) arg1).isActived())
-					run_car();
+				if (((Sensor) arg1).isActived()){
+					state=CAR;
+					(new Thread(this)).start();
+				}
 				else
 					run_car_wait();
 			} else if (((Sensor) arg1) instanceof TouchSensor) {
-				if (((Sensor) arg1).isActived())
-					run_wait();
+				if (((Sensor) arg1).isActived()){
+					state=WAIT;
+					(new Thread(this)).start();
+				}
 				// else -> no action, cake's pickup is received as a message
 			}
 		}
-		
+	}
+	public void run(){
+		switch(state){
+		case START:break;
+		case INIT: break;
+		case CHOC: run_choc();
+				break;
+		case CHOC_CAR: run_choc_car();
+				break;
+		case CAR:run_car();
+				break;
+		case CAR_WAIT:run_car_wait();
+				break;
+		case WAIT:run_wait();
+		break;
+		}
 	}
 	public static void main(String args[]){
 		CakeAutomaton aut=new CakeAutomaton(Integer.parseInt(args[0]),Integer.parseInt(args[1]),args[2]);

@@ -9,7 +9,7 @@ import java.util.Observer;
 import cc.communications.Mailbox;
 import cc.sensors.Sensor;
 
-public abstract class Automaton implements Observer{
+public abstract class Automaton implements Observer, Runnable{
 	protected int state;
 	
 	//comm

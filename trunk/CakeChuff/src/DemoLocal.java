@@ -40,7 +40,7 @@ public class DemoLocal {
                 new ControlInterface().setVisible(true);
             }
         });
-		master=new MasterAutomaton( "localhost",9009,9008,"localhost",9000,9001,"localhost",9003,9002,"localhost",9005,9004);
+		master=new MasterAutomaton("localhost",9009,9008,"localhost",9000,9001,"localhost",9003,9002,"localhost",9005,9004);
 		Factory factory = new Factory();
 		try {
 			factory.setConfigShowMode(ConfigShowMode.AlwaysShow,new File("").toURI().toURL());
@@ -50,8 +50,8 @@ public class DemoLocal {
 		}
 		
 		a1=new CakeAutomaton(9001,9000,"localhost");
-		a2 = new BlisterAutomaton(9003,9002,"localhost");
-		a3=new QCAutomaton(9005,9004,"llocalhost");
+		a2 = new BlisterAutomaton(9002,9003,"localhost");
+		a3=new QCAutomaton(9004,9005,"localhost");
 
 		factory.start();
 	}

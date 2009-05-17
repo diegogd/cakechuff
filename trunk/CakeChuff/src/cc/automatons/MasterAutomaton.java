@@ -13,7 +13,14 @@ import cc.simulation.state.Robot1State;
 public class MasterAutomaton extends Automaton {
 	/* state for robot (inherited)*/
 	private Robot1State robot;
-
+	private int staterobot;
+	private final int TABLE = 4;
+	private final int PICKUPCAKE = 5;
+	private final int DROPINTABLE = 6;
+	private final int PICKUPBLISTER = 7;
+	private final int PICKUPPACKET = 9;
+	private final int DROPINSUB3 = 10;
+	
 	private static final int START=0;
 	private static final int EMPTY=1;
 	private static final int BLISTER=2;
@@ -41,7 +48,7 @@ public class MasterAutomaton extends Automaton {
 			String cake, int cake_in, int cake_out,
 			String blister,	int blister_in, int blister_out,
 			String qc, int qc_in, int qc_out) {
-		state = -1;
+		state = EMPTY;
 
 		// comm
 		System.out.print("First mbox...");
@@ -72,24 +79,43 @@ public class MasterAutomaton extends Automaton {
 	private void run_robot_start(int movecaket, int moveblistert){
 		this.movecaket=movecaket;
 		this.moveblistert=moveblistert;
+		robot.setRobot_velocity(4f);
 	}
 	private void run_robot_blister(){
+		System.out.println("Robot1: Picking blister");
+		//move robot arm to the conveyor
+		robot.setGoToState(PICKUPBLISTER);
+		//pick blister
+		
 		//move blister to the packing table
+		
 		//tell the blister automaton
 	}
 	private void run_robot_cake1(){
+		state=CAKE1;
+		robot.setGoToState(PICKUPCAKE);
+		System.out.println("Picking cake 1");
 		//put cake in the blister
 		//tell the cake automaton
 	}
 	private void run_robot_cake2(){
+		state=CAKE2;
+		robot.setGoToState(PICKUPCAKE);
+		System.out.println("Picking cake 2");
 		//put cake in the blister
 		//tell the cake automaton
 	}
 	private void run_robot_cake3(){
+		state=CAKE3;
+		robot.setGoToState(PICKUPCAKE);
+		System.out.println("Picking cake 3");
 		//put cake in the blister
 		//tell the cake automaton
 	}
 	private void run_robot_full(){
+		state=FULL;
+		robot.setGoToState(PICKUPCAKE);
+		System.out.println("Picking last cake");
 		//put cake in the blister
 		//tell the cake automaton
 		//move full blister to the qc conveyor
@@ -125,6 +151,7 @@ public class MasterAutomaton extends Automaton {
 				
 			}
 		}else if(content[0].equalsIgnoreCase("A2")){
+			System.out.println("Msg from AUT2");
 			if(content[1].equalsIgnoreCase("ON")){
 				if(cake_on==false)cake_on=true;
 				else mboxScada.send("RECOVER:A2"); //was already running so it must be a new instance
@@ -172,9 +199,71 @@ public class MasterAutomaton extends Automaton {
 
 	@Override
 	public void update(Observable o, Object arg) {
-		// TODO Auto-generated method stub
+		if (o instanceof Robot1State){
+			robot.deleteObserver(this);
+			//System.out.println("Robot state changed");
+			if(!robot.getIfMoving()){
+				if(robot.getCurrentState()==PICKUPBLISTER){
+					robot.setGoToState(DROPINTABLE);
+					mboxBlister.send("R1:blister");
+				}else if(robot.getCurrentState()==DROPINTABLE){
+					if(state==EMPTY){
+						System.out.println("R1: EMPTY->BLISTER");
+						state=BLISTER;
+						if(cake_waiting){
+							state=CAKE1;
+							robot.setGoToState(PICKUPCAKE);
+						}
+					}else if(state==BLISTER){
+						System.out.println("R1: BLISTER->CAKE1");
+						
+						if(cake_waiting){
+							state=CAKE1;
+							robot.setGoToState(PICKUPCAKE);
+						}else robot.setGoToState(TABLE);
+					}else if(state==CAKE1){
+						System.out.println("R1: CAKE1->CAKE2");
+						
+						if(cake_waiting){
+							state=CAKE2;
+							robot.setGoToState(PICKUPCAKE);
+						}else robot.setGoToState(TABLE);
+					}else if(state==CAKE2){
+						System.out.println("R1: CAKE2->CAKE3");
+						
+						if(cake_waiting){
+							state=CAKE3;
+							robot.setGoToState(PICKUPCAKE);
+						}else robot.setGoToState(TABLE);
+					}else if(state==CAKE3){
+						System.out.println("R1: CAKE3->FULL");
+						
+						if(cake_waiting){
+							state=FULL;
+							robot.setGoToState(PICKUPCAKE);
+						}else robot.setGoToState(TABLE);
+					}else if(state==FULL){
+						robot.setGoToState(PICKUPPACKET);
+					}
+				}else if(robot.getCurrentState()==PICKUPCAKE){
+					robot.setGoToState(DROPINTABLE);
+					cake_waiting=false;
+					mboxCake.send("R1:cake");
+				}else if(robot.getCurrentState()==PICKUPPACKET){
+					robot.setGoToState(DROPINSUB3);
+				}else if(robot.getCurrentState()==DROPINSUB3){
+					mboxQC.send("R1:EMPTY");
+					state=EMPTY;
+					if(blister_waiting){
+						robot.setGoToState(PICKUPBLISTER);
+					}else robot.setGoToState(TABLE);
+				}
+			}
+			robot.addObserver(this);
+		}
 
 	}
+	public void run(){};
 	public static void main(String args[]){
 		/*String scada, int scada_in, int scada_out,
 			String cake, int cake_in, int cake_out,
