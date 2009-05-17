@@ -2,7 +2,6 @@ package cc.scada;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.awt.Color;
 
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.*;
@@ -11,17 +10,17 @@ import com.lowagie.text.pdf.*;
  * Class to generate the pdf reports
  * Author: CakeChuff team
  */
-public class PruebaPDF {
+public class GeneratePDF {
 	
-	private static String procesed_packs ="0";
-	private static String faulty_packs="0";
-	private static String total_ok_cakes="0";
-	private static String total_ko_cakes="0";
-	private static String starts="0";
-	private static String stops="0";
-	private static String emergency="0";
+	private String procesed_packs;
+	private String faulty_packs;
+	private String total_ok_cakes;
+	private String total_ko_cakes;
+	private String starts;
+	private String stops;
+	private String emergency;
 	
-	public void PruebaPDF (String p, String f, String ok, String ko, String sts, String stp, String e){
+	public GeneratePDF (String p, String f, String ok, String ko, String sts, String stp, String e){
 		this.procesed_packs = p;
 		this.faulty_packs = f;
 		this.total_ok_cakes =ok;
@@ -32,7 +31,7 @@ public class PruebaPDF {
 	}
 
 
-	public static void main(String[] args) {
+	public void generate() {
 
 		createPdf("reports/CakeChuff Summary Report1.pdf");
 
@@ -43,7 +42,7 @@ public class PruebaPDF {
 					"reports/CakeChuff Summary Report.pdf"));
 			// we create an Image we'll use as a Watermark
 			Image img = Image.getInstance("src/cc/images/logoCakeChuff.png");
-			img.setAbsolutePosition(100, 300);
+			img.setAbsolutePosition(350, 500);
 			// we create a Font for the text to add
 			BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA,
 					BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
@@ -65,7 +64,7 @@ public class PruebaPDF {
 			}
 			stamper.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("To generate the report please, close the file \" CakeChuff Summary Report.pdf\" ");
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		}
@@ -77,7 +76,7 @@ public class PruebaPDF {
 	 * 
 	 * @param filename The name of the PDF file.
 	 */
-	private static void createPdf(String filename) {
+	private void createPdf(String filename) {
 		// we create a document with multiple pages and bookmarks
 		Document document = new Document();
 		try {
@@ -104,33 +103,28 @@ public class PruebaPDF {
 			String sectitle = "\n\n On Last Execution: ";
 			document.add(new Paragraph(sectitle, new Font(
 					Font.HELVETICA, 14, Font.ITALIC, sc_cmyk)));
-			
-			String text = "\n Processed Blisters: " + procesed_packs;
-			Paragraph section = new Paragraph(text);
-			section.setIndentationRight(5.5f);
-			document.add(section);
-			text = "Faulty Blisters: " + faulty_packs + "\n";
-			section = new Paragraph(text);
-			section.setIndentationRight(1.5f);
-			document.add(section);
+			String text = "\n\t\t\t\t\t\t Processed Blisters: " + procesed_packs;
+			document.add(new Paragraph(text));
+			text = "\t\t\t\t\t\t Faulty Blisters: " + faulty_packs + "\n";
+			document.add(new Paragraph(text));
 			
 			sectitle = "\n Since The First Startup: ";
 			document.add(new Paragraph(sectitle, new Font(
 					Font.HELVETICA, 14, Font.ITALIC, sc_cmyk)));
-			text = "\n Total Number of Correct Cakes: " + total_ok_cakes;
+			text = "\n\t\t\t\t\t\t Total Number of Correct Cakes: " + total_ok_cakes;
 			document.add(new Paragraph(text));
-			text = "Total Number of Correct Cakes: " + total_ko_cakes + "\n";
+			text = "\t\t\t\t\t\t Total Number of Faulty Cakes: " + total_ko_cakes + "\n";
 			document.add(new Paragraph(text));
 			
 
 			sectitle = "\n Information About Executions Since the Installation: ";
 			document.add(new Paragraph(sectitle, new Font(
 					Font.HELVETICA, 14, Font.ITALIC, sc_cmyk)));
-			text = "\n Total Number of Starts: " + starts;
+			text = "\n\t\t\t\t\t\t Total Number of Starts: " + starts;
 			document.add(new Paragraph(text));
-			text = "Total Number of Stops: " + stops;
+			text = "\t\t\t\t\t\t Total Number of Stops: " + stops;
 			document.add(new Paragraph(text));
-			text = "Total Number of Emergency Stops: " + emergency ;
+			text = "\t\t\t\t\t\t Total Number of Emergency Stops: " + emergency ;
 			document.add(new Paragraph(text));
 			
 			
