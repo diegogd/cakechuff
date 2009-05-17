@@ -31,7 +31,8 @@ public class QCAutomaton extends Automaton {
 	private static final int FAILURE=9;
 	
 	//parameters
-	int speed, belt_lg, t_stamp, t_rob,f_chance;
+	private int belt_lg, t_stamp, t_rob,f_chance;
+	private float speed;
 
 	//simulation
 	QualitySubsystemState qcsystem;
@@ -66,18 +67,13 @@ public class QCAutomaton extends Automaton {
 		}
 	}
 	private void run_start(int speed,int belt_lg,int f_rate,int t_stamp,int t_rob){
-		this.speed=speed;
+		this.speed = (float)speed/(belt_lg*3);
 		this.belt_lg=belt_lg;
 		this.t_stamp=t_stamp;
 		this.t_rob=t_rob;
 		this.f_chance=f_rate;
 		state=START;
-		/*try{
-			dout.writeChars("A3:START");
-		}catch(IOException ioe){
-			//connection failure
-			
-		}*/
+
 		//send("A3:START");
 		//now wait for a cake pack
 		run_init();
@@ -156,14 +152,18 @@ public class QCAutomaton extends Automaton {
 		
 	}
 	private void run_stop(){
-		
+		qcsystem.setConveyor_velocity(0);
+		qcsystem.deleteObserver(this);
+		qcsystem.setRobotMoving(false);
+		state=START;
 	}
 	@Override
 	public synchronized void newMsg(String msg) {
 		System.out.println("QCAutomaton receives:"+msg);
 		String[] content= msg.split(":");
 		//Emergencies work for any state
-		if(content[0].equals("ER")) run_stop();
+		if(content[0].equals("EMERGENCY")) run_stop();
+		else if (content[0].equalsIgnoreCase("STOP")) stop=true;
 		switch(state){
 		case START: if(content[0].equalsIgnoreCase("init")){
 			String[] pars=content[1].split("#");
@@ -261,7 +261,6 @@ public class QCAutomaton extends Automaton {
 			try {
 				Thread.sleep(10000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
