@@ -150,8 +150,37 @@ public class QCAutomaton extends Automaton {
 		//pick and dispose
 		qcsystem.setRobotGoToState(qcsystem.PICKUPPACKET);
 	}
-	private void run_failure(){
-		
+	private void run_failure(String data){
+		String pars[]=data.split("#");
+		//(int speed,int belt_lg,int f_rate,int t_stamp,int t_rob){
+		stop=false;
+		this.belt_lg = Integer.parseInt(pars[2]);
+		this.speed = Float.parseFloat(pars[1])/(belt_lg*3);
+		this.t_stamp=Integer.parseInt(pars[4]);
+		this.t_rob=Integer.parseInt(pars[5]);
+		this.f_chance=Integer.parseInt(pars[3]);
+		//Recover state
+		if(pars[0].equalsIgnoreCase("INIT")){
+			run_init();
+		}else if(pars[0].equalsIgnoreCase("QC")){
+			state=QC;
+			(new Thread(this)).start();
+		}else if(pars[0].equalsIgnoreCase("QC_STAMP")){
+			run_qc_stamp();
+		}else if(pars[0].equalsIgnoreCase("STAMP")){
+			state=STAMP;
+			(new Thread(this)).start();
+		}else if(pars[0].equalsIgnoreCase("STAMP_WAIT")){
+			run_stamp_wait();
+		}else if(pars[0].equalsIgnoreCase("KO_MOV")){
+			run_ko_mov();
+		}else if(pars[0].equalsIgnoreCase("OK_WAIT")){
+			state=OK_WAIT;
+			(new Thread(this)).start();
+		}else if(pars[0].equalsIgnoreCase("KO_WAIT")){
+			state=KO_WAIT;
+			(new Thread(this)).start();
+		}
 	}
 	private void run_stop(){
 		qcsystem.setConveyor_velocity(0);
@@ -166,6 +195,10 @@ public class QCAutomaton extends Automaton {
 		//Emergencies work for any state
 		if(content[0].equals("EMERGENCY")) run_stop();
 		else if (content[0].equalsIgnoreCase("STOP")) stop=true;
+		else if (content[0].equalsIgnoreCase("RESTART")) {
+			String pars[] = content[1].split("\\$");
+			run_failure(pars[1]);
+		}else
 		switch(state){
 		case START: if(content[0].equalsIgnoreCase("init")){
 			stop=false;
