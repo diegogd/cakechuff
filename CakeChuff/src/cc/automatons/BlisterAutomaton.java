@@ -13,6 +13,7 @@ import cc.simulation.elements.LightSensor;
 import cc.simulation.elements.TouchSensor;
 import cc.simulation.state.BlisterSubsystemState;
 import cc.simulation.state.CakeSubsystemState;
+import cc.simulation.state.QualitySubsystemState;
 import cc.simulation.state.SystemState;
 public class BlisterAutomaton extends Automaton {
 	
@@ -30,9 +31,10 @@ public class BlisterAutomaton extends Automaton {
 	//simulation
 	private BlisterSubsystemState blistersystem;
 	private SystemState sys;
-	
+	private Stamper stamper;
 	public BlisterAutomaton(int portin, int portout, String master){
 		state=START;
+		stop=false;
 		try{
 			mbox= new Mailbox(this, portin);
 			(new Thread(mbox)).start();
@@ -47,7 +49,6 @@ public class BlisterAutomaton extends Automaton {
 				}
 			}
 			System.out.println("BlisterAutomaton connected");
-			//dout = new DataOutputStream(sout.getOutputStream());
 			dout = new PrintWriter(sout.getOutputStream(),true);
 			//subscribe
 			blistersystem = BlisterSubsystemState.getInstance();
@@ -67,16 +68,12 @@ public class BlisterAutomaton extends Automaton {
 		}
 	}
 	public void run_start(int speed, int belt_lg){
-		this.speed=(float)speed/(belt_lg*6);
+		this.speed=(float)speed/(belt_lg*7);
 		this.belt_lg=belt_lg;
+		stamper=new Stamper(blistersystem,sys,speed);
+		(new Thread(stamper)).start();
 		state=START;
 		//send new state
-		/*try{
-			dout.writeChars("A2:START");
-		}catch(IOException ioe){
-			//connection failure
-			
-		}*/
 		send("A2:START");
 		run_init();
 		
@@ -86,32 +83,22 @@ public class BlisterAutomaton extends Automaton {
 		blistersystem.setConveyor_velocity(speed);
 		state=INIT;
 		//send new state
-		/*try{
-			dout.writeChars("A2:INIT");
-		}catch(IOException ioe){
-			//connection failure
-
-		}*/
 		send("A2:INIT");
 		//press timer...
-		try{
+		/*try{
 			System.out.println("BListerAutomaton: time to engrave: "+(int)(60/(speed*20)));
 			Thread.sleep((int)(60*1000/(speed*40)));
 		}catch(InterruptedException ie){}
 		//press down -> run_press() ??
 		blistersystem.setEngraver_secs(5);
-		sys.setMakeBlister();
+		sys.setMakeBlister();*/
+		stamper.work();
+		run_press();
 		
 	}
 	public void run_press(){
 		state=PRESS;
 		//send new state
-		/*try{
-			dout.writeChars("A2:PRESS");
-		}catch(IOException ioe){
-			//connection failure
-			
-		}*/
 		send("A2:PRESS");
 	}
 	public void run_cutting(){
@@ -120,25 +107,14 @@ public class BlisterAutomaton extends Automaton {
 		blistersystem.setCutter_secs((int)(60/(speed*10)));
 		state=CUTTING;
 		//send new state
-		/*try{
-			dout.writeChars("A2:CUTTING");
-		}catch(IOException ioe){
-			//connection failure
-			
-		}*/
 		send("A2:CUTTING");
 	}
 	public void run_blister_ready(){
 		//stop conveyor
 		blistersystem.setConveyor_velocity(0);
+		stamper.stop();
 		state=BLISTER_READY;
 		//send new state
-		/*try{
-			dout.writeChars("A2:BLISTER_READY");
-		}catch(IOException ioe){
-			//connection failure
-			
-		}*/
 		send("A2:BLISTER_READY");
 		
 	}
@@ -146,14 +122,17 @@ public class BlisterAutomaton extends Automaton {
 		
 	}
 	public void run_stop(){
-		//stop conveyor
+		blistersystem.setConveyor_velocity(0);
+		stamper.stop();
+		state=START;
 	}
 	@Override
 	public synchronized void newMsg(String msg) {
 		System.out.println("BlisterAutomaton: processing message "+msg);
 		String[] content= msg.split(":");
 		//Emergencies work for any state
-		if(content[0].equals("ER")) run_stop();
+		if(content[0].equals("EMERGENCY")) run_stop();
+		else if (content[0].equalsIgnoreCase("STOP")) stop=true;
 		switch(state){
 		case START: if(content[0].equalsIgnoreCase("init")){
 			String[] pars=content[1].split("\\#");
@@ -205,9 +184,41 @@ public class BlisterAutomaton extends Automaton {
 			try {
 				Thread.sleep(10000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
+	private class Stamper implements Runnable{
+		private boolean working;
+		//simulation
+		private BlisterSubsystemState blistersystem;
+		private int freq;
+		private SystemState sys;
+		private Stamper(BlisterSubsystemState blisters,SystemState sys, int speed){
+			blistersystem=blisters;
+			this.sys=sys;
+			freq=(int)(60*1000*3/(speed));
+			working=false;
+		}
+		private void work(){
+			working=true;
+		}
+		private void stop(){
+			working=false;
+		}
+		public void run(){
+			while(true){
+				try{
+					System.out.println("Duerme: " +freq);
+					Thread.sleep(freq);
+				}catch(InterruptedException ie){}
+				if (working){
+					blistersystem.setEngraver_secs(5);
+					sys.setMakeBlister();
+				}
+			}
+
+		}
+	}
+
 }

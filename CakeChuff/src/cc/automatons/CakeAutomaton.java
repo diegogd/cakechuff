@@ -36,6 +36,7 @@ public class CakeAutomaton extends Automaton {
 	private SystemState sys;
 	public CakeAutomaton(int portin, int portout, String master){
 		state=START;
+		stop=false;
 		try{
 			mbox= new Mailbox(this, portin);
 			(new Thread(mbox)).start();
@@ -48,7 +49,6 @@ public class CakeAutomaton extends Automaton {
 					
 				}
 			}
-			//dout = new DataOutputStream(sout.getOutputStream());
 			dout = new PrintWriter(sout.getOutputStream(),true);
 			//subscribe
 			cakesystem = CakeSubsystemState.getInstance();
@@ -66,22 +66,15 @@ public class CakeAutomaton extends Automaton {
 		}
 		
 	}
-	private void run_start(int speed, int belt_lg, int cake_cap, int vt1, int vt2){
+	private void run_start(int cake_cap, int speed, int belt_lg, int vt1, int vt2){
 		System.out.println("Initializating cake automaton...");
-		this.speed = (float)speed/belt_lg;
+		this.speed = (float)speed/(belt_lg*3);
 		this.belt_lg = belt_lg;
 		this.cake_cap = cake_cap;
+		this.ncakes=cake_cap;
 		this.vt1=vt1;
 		this.vt2 = vt2;
 		state=START;
-		//send new state
-		/*try{
-			dout.writeChars("A1:START");
-		}catch(IOException ioe){
-			//connection failure
-			
-		}*/
-		//send("A1:START");
 		sys.setDropCake();
 		ncakes--;
 		System.out.println("The Cake producing process will start now");
@@ -93,13 +86,6 @@ public class CakeAutomaton extends Automaton {
 		
 		//start conveyor
 		cakesystem.setConveyor_velocity(speed);
-		/*
-		try{
-			dout.writeChars("A1:INIT");
-		}catch(IOException ioe){
-			//connection failure
-			
-		}*/
 		state= INIT;
 		send("A1:INIT");
 	}
@@ -109,12 +95,6 @@ public class CakeAutomaton extends Automaton {
 		//open chocolate valve
 		cakesystem.setValve1_open_secs(vt1);
 		state=CHOC;
-		/*
-		try{
-			dout.writeChars("A1:CHOC");
-		}catch(IOException ioe){
-			//connection failure	
-		}*/
 		send("A1:CHOC");
 		//change to choc_car here??
 		//while(cakesystem.getValve1_open_secs()>0);
@@ -133,13 +113,10 @@ public class CakeAutomaton extends Automaton {
 	}
 	private void run_choc_car(){
 		state=CHOC_CAR;
-		/*try{
-			dout.writeChars("A1:CHOC_CAR");
-		}catch(IOException ioe){
-			//connection failure	
-		}*/
-		sys.setDropCake();
-		ncakes--;
+		if(ncakes>0){
+			sys.setDropCake();
+			ncakes--;
+		}
 		send("A1:CHOC_CAR");
 	}
 	private void run_car(){
@@ -148,16 +125,10 @@ public class CakeAutomaton extends Automaton {
 		//open caramel valve
 		cakesystem.setValve2_open_secs(vt2);
 		state=CHOC;
-		/*try{
-			dout.writeChars("A1:CAR");
-		}catch(IOException ioe){
-			//connection failure	
-		}*/
 		
 		send("A1:CAR");
 		
 		//change to car_wait here??
-		//while(cakesystem.getValve1_open_secs()>0);
 		try{
 			Thread.sleep(vt2*1000);
 		}catch(InterruptedException ie){}
@@ -168,38 +139,30 @@ public class CakeAutomaton extends Automaton {
 	}
 	private void run_car_wait(){
 		state=CAR_WAIT;
-		//drop cake
-
-		/*try{
-			dout.writeChars("A1:CAR_WAIT");
-		}catch(IOException ioe){
-			//connection failure	
-		}*/
 		send("A1:CAR_WAIT");
 	}
 	private void run_wait(){
 		cakesystem.setConveyor_velocity(0);
 		//stop conveyor
 		state=WAIT;
-		/*try{
-			dout.writeChars("A1:WAIT");
-		}catch(IOException ioe){
-			//connection failure	
-		}*/
 		send("A1:WAIT");
 	}
 	private void run_failure(){
 		
 	}
 	private void run_stop(){
-		
+		cakesystem.setConveyor_velocity(0);
+		cakesystem.setValve1_open_secs(0);
+		cakesystem.setValve2_open_secs(0);
+		state=START;
 	}
 	@Override
 	public synchronized void newMsg(String msg) {
 		System.out.println("CakeAutomaton: processing message");
 		String[] content= msg.split(":");
 		//Emergencies work for any state
-		if(content[0].equals("ER")) run_stop();
+		if(content[0].equals("EMERGENCY")) run_stop();
+		else if (content[0].equalsIgnoreCase("STOP")) stop=true;
 		switch(state){
 		case START: if(content[0].equalsIgnoreCase("INIT")){
 			System.out.println("CakeAutomaton: Received init signal");

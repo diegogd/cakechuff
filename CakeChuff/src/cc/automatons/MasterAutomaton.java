@@ -84,6 +84,7 @@ public class MasterAutomaton extends Automaton {
 	private void run_robot_blister(){
 		System.out.println("Robot1: Picking blister");
 		//move robot arm to the conveyor
+		robot.setRobot_velocity(4f);
 		robot.setGoToState(PICKUPBLISTER);
 		//pick blister
 		
@@ -93,6 +94,7 @@ public class MasterAutomaton extends Automaton {
 	}
 	private void run_robot_cake1(){
 		state=CAKE1;
+		robot.setRobot_velocity(4f);
 		robot.setGoToState(PICKUPCAKE);
 		System.out.println("Picking cake 1");
 		//put cake in the blister
@@ -100,6 +102,7 @@ public class MasterAutomaton extends Automaton {
 	}
 	private void run_robot_cake2(){
 		state=CAKE2;
+		robot.setRobot_velocity(4f);
 		robot.setGoToState(PICKUPCAKE);
 		System.out.println("Picking cake 2");
 		//put cake in the blister
@@ -107,6 +110,7 @@ public class MasterAutomaton extends Automaton {
 	}
 	private void run_robot_cake3(){
 		state=CAKE3;
+		robot.setRobot_velocity(4f);
 		robot.setGoToState(PICKUPCAKE);
 		System.out.println("Picking cake 3");
 		//put cake in the blister
@@ -114,6 +118,7 @@ public class MasterAutomaton extends Automaton {
 	}
 	private void run_robot_full(){
 		state=FULL;
+		robot.setRobot_velocity(4f);
 		robot.setGoToState(PICKUPCAKE);
 		System.out.println("Picking last cake");
 		//put cake in the blister
@@ -193,6 +198,12 @@ public class MasterAutomaton extends Automaton {
 			mboxCake.send(msg);
 			mboxBlister.send(msg);
 			mboxQC.send(msg);
+		}else if(content[0].equalsIgnoreCase("EMERGENCY")){
+			mboxCake.send(msg);
+			mboxBlister.send(msg);
+			mboxQC.send(msg);
+			robot.deleteObserver(this);
+			robot.setMoving(false);
 		}
 
 	}
@@ -204,6 +215,7 @@ public class MasterAutomaton extends Automaton {
 			//System.out.println("Robot state changed");
 			if(!robot.getIfMoving()){
 				if(robot.getCurrentState()==PICKUPBLISTER){
+					robot.setRobot_velocity(4f);
 					robot.setGoToState(DROPINTABLE);
 					mboxBlister.send("R1:blister");
 				}else if(robot.getCurrentState()==DROPINTABLE){
@@ -212,6 +224,7 @@ public class MasterAutomaton extends Automaton {
 						state=BLISTER;
 						if(cake_waiting){
 							state=CAKE1;
+							robot.setRobot_velocity(4f);
 							robot.setGoToState(PICKUPCAKE);
 						}
 					}else if(state==BLISTER){
@@ -219,6 +232,7 @@ public class MasterAutomaton extends Automaton {
 						
 						if(cake_waiting){
 							state=CAKE1;
+							robot.setRobot_velocity(4f);
 							robot.setGoToState(PICKUPCAKE);
 						}else robot.setGoToState(TABLE);
 					}else if(state==CAKE1){
@@ -226,6 +240,7 @@ public class MasterAutomaton extends Automaton {
 						
 						if(cake_waiting){
 							state=CAKE2;
+							robot.setRobot_velocity(4f);
 							robot.setGoToState(PICKUPCAKE);
 						}else robot.setGoToState(TABLE);
 					}else if(state==CAKE2){
@@ -233,6 +248,7 @@ public class MasterAutomaton extends Automaton {
 						
 						if(cake_waiting){
 							state=CAKE3;
+							robot.setRobot_velocity(4f);
 							robot.setGoToState(PICKUPCAKE);
 						}else robot.setGoToState(TABLE);
 					}else if(state==CAKE3){
@@ -240,21 +256,26 @@ public class MasterAutomaton extends Automaton {
 						
 						if(cake_waiting){
 							state=FULL;
+							robot.setRobot_velocity(4f);
 							robot.setGoToState(PICKUPCAKE);
 						}else robot.setGoToState(TABLE);
 					}else if(state==FULL){
+						robot.setRobot_velocity(4f);
 						robot.setGoToState(PICKUPPACKET);
 					}
 				}else if(robot.getCurrentState()==PICKUPCAKE){
+					robot.setRobot_velocity(4f);
 					robot.setGoToState(DROPINTABLE);
 					cake_waiting=false;
 					mboxCake.send("R1:cake");
 				}else if(robot.getCurrentState()==PICKUPPACKET){
+					robot.setRobot_velocity(4f);
 					robot.setGoToState(DROPINSUB3);
 				}else if(robot.getCurrentState()==DROPINSUB3){
 					mboxQC.send("R1:EMPTY");
 					state=EMPTY;
 					if(blister_waiting){
+						robot.setRobot_velocity(4f);
 						robot.setGoToState(PICKUPBLISTER);
 					}else robot.setGoToState(TABLE);
 				}
@@ -278,9 +299,7 @@ public class MasterAutomaton extends Automaton {
 		while(true){
 			try {
 				Thread.sleep(10000);
-				//System.out.print(".");
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
