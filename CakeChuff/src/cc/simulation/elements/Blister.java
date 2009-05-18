@@ -44,10 +44,10 @@ public class Blister extends Node {
 		wrapper = new Node();
 
 		
-		Box base = new Box("base", new Vector3f(-0.5f,-0.5f,-0.5f),
-				new Vector3f(0.5f, 0.5f, 0.5f));
-		base.setDefaultColor(ColorRGBA.cyan);
-		pivot.attachChild(base);
+//		Box base = new Box("base", new Vector3f(-0.5f,-0.5f,-0.5f),
+//				new Vector3f(0.5f, 0.5f, 0.5f));
+//		base.setDefaultColor(ColorRGBA.cyan);
+//		pivot.attachChild(base);
 		
 		pivot.attachChild(hole1);
 		pivot.attachChild(hole2);

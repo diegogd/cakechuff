@@ -251,20 +251,6 @@ public class Robot extends Node {
 		return speed;
 	}
 
-	// public boolean isMoving() {
-	// return _moving;
-	// }
-	//
-	// public boolean closeHand() {
-	// if (!has_object) {
-	//
-	// // Animation of taking an object (closing hand)
-	//
-	// has_object = true;
-	// _moving = true;
-	// }
-	// _moving = false;
-	// }
 
 	public boolean openHand(float angle, float time) {
 		// Calculate direction of movement
@@ -349,14 +335,14 @@ public class Robot extends Node {
 //						element.setLocalTranslation(-6f, 1f, -3f);
 						element.setLocalTranslation(0, -0.0f, -0.0f);
 						pivotElement.setLocalScale(0.1f);
-						element.setLocalTranslation(6f, -5.0f, 8.5f);
+						element.setLocalTranslation(6f, 0.0f, 8.5f);
 						
 						element.updateRenderState();
 					}else{
 						//Blister del sub2
 						element.setLocalTranslation(0, -0.0f, -0.0f);
 						pivotElement.setLocalScale(0.1f);
-						element.setLocalTranslation(6f, -5.0f, 8.5f);
+						element.setLocalTranslation(6f, 0.0f, 8.5f);
 						
 						element.updateRenderState();	
 					}
@@ -365,7 +351,7 @@ public class Robot extends Node {
 					element.setLocalTranslation(0, -0.0f, -0.0f);
 					//element.setLocalRotation(Rotations.rotateX(-0.5f));
 					pivotElement.setLocalScale(0.1f);
-					//element.setLocalTranslation(6f, 0f, 0f);
+					element.setLocalTranslation(0f, 6.5f, 0f);
 				} else {
 					element.setLocalRotation(Rotations.rotateX(0f));
 					element.setLocalTranslation(0, -0.65f, 0);
@@ -378,10 +364,8 @@ public class Robot extends Node {
 			}
 		} else {
 			if (direction > 0) {
-				if (!lowerHeadLeft.hasCollision(element, false)
-						&& !upperHeadLeft.hasCollision(element, false)
-						&& !lowerHeadRight.hasCollision(element, false)
-						&& !upperHeadRight.hasCollision(element, false)) {
+				if (!pivotHeadLeft.hasCollision(element,false)
+						&& !pivotHeadRight.hasCollision(element,false)) {
 					if (time < 1) {
 						angleClaws -= time * speed;
 					}
@@ -444,6 +428,7 @@ public class Robot extends Node {
 				} else if (this.object instanceof Cake) {
 					if (blister != null) {
 						this.has_object = false;
+						object.setLocalTranslation(0,0,0);
 						System.out.println(Father.toString());
 						//element.setLocalRotation(Rotations.rotateX(0.5f));
 						((Blister) blister).placeCake(object);
