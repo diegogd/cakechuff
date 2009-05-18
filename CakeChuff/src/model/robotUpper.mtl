@@ -167,6 +167,30 @@ Tf 0.55 0.55 0.55
 Ni 1.00
 Ks 0.50 0.50 0.50
 Ns 18.00
+newmtl phong6SG
+illum 4
+Kd 1.00 0.00 0.00
+Ka 0.17 0.17 0.17
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 0.50 0.50 0.50
+Ns 18.00
+newmtl phong7SG
+illum 4
+Kd 0.20 0.20 0.20
+Ka 0.13 0.13 0.13
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 0.50 0.50 0.50
+Ns 18.00
+newmtl phong8SG
+illum 4
+Kd 0.83 0.83 0.83
+Ka 0.18 0.18 0.18
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 0.50 0.50 0.50
+Ns 18.00
 newmtl robot:blinn2SG
 illum 4
 Kd 0.00 0.00 0.00

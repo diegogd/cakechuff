@@ -151,7 +151,7 @@ public class Factory extends SimpleGame implements Observer{
 		rootNode.attachChild(floor);
 			
 		cakeSub = new CakeSubsystem();
-		cakeSub.setLocalTranslation(new Vector3f(-11,0,-8.5f));
+		cakeSub.setLocalTranslation(new Vector3f(-11,0,-7.5f));
 		rootNode.attachChild(cakeSub);
 		
 		blisterSub = new BlisterSubsystem();
@@ -159,12 +159,12 @@ public class Factory extends SimpleGame implements Observer{
 		rootNode.attachChild(blisterSub);
 		
 		qualitySub = new QualitySubsystem();
-		qualitySub.setLocalTranslation(18, 0, 0);
+		qualitySub.setLocalTranslation(16, 0, 0);
 		rootNode.attachChild(qualitySub);
 		
 		table = new Table();
-		table.setLocalRotation(Rotations.rotateY(0.785f));
-		table.setLocalTranslation(4f,2.2f,-8f);
+		table.setLocalRotation(Rotations.rotateY(0.35f));
+		table.setLocalTranslation(3.5f,0f,-8f);
 		
 		rootNode.attachChild(table);
 		
@@ -233,7 +233,7 @@ public class Factory extends SimpleGame implements Observer{
 	
 	public void dropCake(){
 		Cake cake = new Cake(cakes.size());
-		cake.setLocalTranslation(-18, 10f, -8.5f);
+		cake.setLocalTranslation(-18, 10f, -7.5f);
 		rootNode.attachChild(cake);
 		rootNode.updateWorldBound();
 		rootNode.updateRenderState();
@@ -243,7 +243,7 @@ public class Factory extends SimpleGame implements Observer{
 	
 	private void Engrave() {
 		Blister blister = new Blister(blisters.size());
-		blister.setLocalTranslation(-13f, 0f, 16.8f);
+		blister.setLocalTranslation(-11f, -1f, 16.8f);
 		blister.setLocalScale(1.1f);
 		rootNode.attachChild(blister);
 		rootNode.updateWorldBound();

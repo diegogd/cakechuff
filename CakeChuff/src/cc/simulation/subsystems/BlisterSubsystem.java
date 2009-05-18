@@ -49,22 +49,23 @@ public class BlisterSubsystem extends Node implements Observer {
 		conv.setVelocity(0);
 		this.attachChild(conv);
 		supplier = new PlasticSupplier();
-		supplier.setLocalTranslation(-12, 4.1f, 0);
+		supplier.setLocalTranslation(-10, 3.1f, 0);
 		this.attachChild(supplier);
 		engraver = new Engraver();
-		engraver.setLocalTranslation(-8, 7f, 0f);
+		engraver.setLocalTranslation(-6, 7f, 0f);
 		this.attachChild(engraver);
 		cutter = new Cutter();
-		cutter.setLocalTranslation(2, 9f, 0f);
+		cutter.setLocalTranslation(0, 8.6f, 0f);
 		this.attachChild(cutter);
 
 		sensor1 = new LightSensor("BlisterSensor1");
-		sensor1.setLocalTranslation(3, 5.1f, 0f);
+		sensor1.setLocalTranslation(2.8f, 4.3f, 0f);
+		sensor1.setLocalScale(new Vector3f(1f,1f,2f));
 		this.attachChild(sensor1);
 		_state.addSensor(sensor1);
 
 		sensor2 = new TouchSensor("BlisterSensor2");
-		sensor2.setLocalTranslation(7.5f, 5f, 0);
+		sensor2.setLocalTranslation(7.5f, 4.2f, 0);
 		this.attachChild(sensor2);
 		_state.addSensor(sensor2);
 	}
