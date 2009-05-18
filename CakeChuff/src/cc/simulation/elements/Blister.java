@@ -113,16 +113,16 @@ public class Blister extends Node {
 	}
 	
 	public Spatial getHole1() {
-		return hole1;
+		return hole1.getChild(0);
 	}
 	public Spatial getHole2() {
-		return hole2;
+		return hole2.getChild(0);
 	}
 	public Spatial getHole3() {
-		return hole3;
+		return hole3.getChild(0);
 	}
 	public Spatial getHole4() {
-		return hole4;
+		return hole4.getChild(0);
 	}
 
 	public void placeCake(Spatial cake) {
