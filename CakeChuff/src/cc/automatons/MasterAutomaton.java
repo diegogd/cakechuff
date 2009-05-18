@@ -247,15 +247,16 @@ public class MasterAutomaton extends Automaton {
 	@Override
 	public void update(Observable o, Object arg) {
 		if (o instanceof Robot1State && ((Robot1State) o).isChanged_CS()) {
-			System.out.println("update robot");
+			System.out.println("********************update robot******************");
 			// robot.deleteObserver(this);
 			// System.out.println("Robot state changed");
 			switch (robot.getCurrentState()) {
 
-			case (PICKUPBLISTER):
+			case (PICKUPCAKE):
 				robot.setRobot_velocity(4f);
 				robot.setGoToState(DROPINTABLE);
-				mboxBlister.send("R1:blister");
+				cake_waiting = false;
+				mboxCake.send("R1:cake");
 				break;
 			case (DROPINTABLE):
 				if (state == EMPTY) {
@@ -307,12 +308,13 @@ public class MasterAutomaton extends Automaton {
 					robot.setGoToState(PICKUPPACKET);
 				}
 				break;
-			case (PICKUPCAKE):
+
+			case (PICKUPBLISTER):
 				robot.setRobot_velocity(4f);
 				robot.setGoToState(DROPINTABLE);
-				cake_waiting = false;
-				mboxCake.send("R1:cake");
+				mboxBlister.send("R1:blister");
 				break;
+
 			case (PICKUPPACKET):
 				robot.setRobot_velocity(4f);
 				robot.setGoToState(DROPINSUB3);
