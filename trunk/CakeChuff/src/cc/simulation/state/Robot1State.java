@@ -31,6 +31,7 @@ public class Robot1State extends Observable {
 	final int DROPINSUB3 = 10;
 
 	int current_state, goToState;
+	boolean changed_CS=false, changed_GTS=false;
 	boolean _moving;
 
 	public Robot1State() {
@@ -64,12 +65,11 @@ public class Robot1State extends Observable {
 	
 	//LLamada para cambiar los estados!!
 	public void setGoToState(int goToState) {
-		setChanged();
-		notifyObservers();
-		this.goToState = goToState;
-//		if (this.current_state != this.goToState) {
-//			_moving = true;
-//		}
+		if(this.goToState != goToState){
+			this.goToState = goToState;
+			this.changed_GTS = true;
+			this.setMoving(true);
+		}
 	}
 
 	public int getGoToState() {
@@ -78,33 +78,40 @@ public class Robot1State extends Observable {
 
 	
 	public void setCurrentState(int currentState) {
-		setChanged();
-		notifyObservers();
-		this.current_state = currentState;
-//		if (this.current_state != this.goToState) {
-//			_moving = true;
-//		}
+		if( this.current_state != currentState ){
+			System.out.println("Changing State...");
+			this.current_state = currentState;
+			this.changed_CS = true;
+			this.setMoving(false);
+			setChanged();
+			notifyObservers();
+		}
 	}
 
 	public int getCurrentState() {
 		return current_state;
 	}
 
-	public boolean getIfMoving() {
-		if (current_state == goToState) {
-			_moving = false;
-		} else {
-			_moving = true;
-		}
-		setChanged();
-		notifyObservers();
+	public boolean getIfMoving() {				
 		return _moving;
 	}
 	
 	public void setMoving(boolean moving){
-		setChanged();
-		notifyObservers();
-		_moving = moving;
+		if( _moving != moving ){
+			_moving = moving;		
+		}
+	}
+
+	public boolean isChanged_CS() {
+		boolean value = changed_CS;
+		changed_CS = false;
+		return value;
+	}
+
+	public boolean isChanged_GTS() {
+		boolean value = changed_GTS;
+		changed_GTS = false;
+		return value;
 	}
 
 //	public void checkPositionChanges() {
@@ -121,5 +128,6 @@ public class Robot1State extends Observable {
 //		}
 //	}
 
+	
 
 }
