@@ -1,5 +1,6 @@
 package cc.scada;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -69,6 +70,14 @@ public class GeneratePDF {
 			e.printStackTrace();
 		}
 		
+		File fichero = new File("reports/CakeChuff Summary Report1.pdf");
+
+		if (fichero.delete())
+			System.out.println("El fichero ha sido borrado satisfactoriamente");
+		else
+
+			System.out.println("El fichero no puede ser borrado");
+
 	}
 
 	/**
