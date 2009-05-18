@@ -275,17 +275,15 @@ public class Robot1 extends Node implements Observer {
 	}
 
 	@Override
-	public void update(Observable arg0, Object arg1) {
-		// TODO Auto-generated method stub
-		if (arg1 == null) {
-			if (_state.getRobot_velocity() > 0) {
-				robot.setSpeed(_state.getRobot_velocity());
-			}
+	public void update(Observable arg0, Object arg1) {		
+		if (_state.getRobot_velocity() > 0) {
+			robot.setSpeed(_state.getRobot_velocity());
 		}
-
 	}
 
-	// //Gestionar los estados y las llamadas a las funciones en el update
+	/**
+	 * Gestionar los estados y las llamadas a las funciones en el update
+	 */
 	public void update(float time, List<Spatial> element) {
 		Iterator<Spatial> elem;
 		if (_state.getIfMoving()) {
@@ -322,6 +320,7 @@ public class Robot1 extends Node implements Observer {
 					if (aux instanceof Cake) {
 						if (pickUpCake(time, aux)) {
 							_state.setCurrentState(PICKUPCAKE);
+							// element.remove(aux);
 						}
 					}
 				}
@@ -340,12 +339,14 @@ public class Robot1 extends Node implements Observer {
 				break;
 				
 			case PICKUPBLISTER:
+				// 
 				elem = element.iterator();
 				while (elem.hasNext()) {
 					Spatial aux = elem.next();
 					if (aux instanceof Blister) {
 						if (pickUpBlister(time,aux)){
 							_state.setCurrentState(PICKUPBLISTER);
+							System.out.println("PICKUPBLISTER");
 						}
 					}
 				}
@@ -391,7 +392,7 @@ public class Robot1 extends Node implements Observer {
 					_state.setCurrentState(INIT);
 				break;
 			}
-			_state.setMoving(false); // It has finished moving
+			// _state.setMoving(false); // It has finished moving
 		}
 	}
 }

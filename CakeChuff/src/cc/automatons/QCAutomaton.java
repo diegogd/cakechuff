@@ -116,6 +116,7 @@ public class QCAutomaton extends Automaton {
 	private void run_stamp(){
 		qcsystem.setConveyor_velocity(0);
 		qcsystem.setWrapper_secs(2);
+		qcsystem.setWrappedUp(true);
 		try{
 			Thread.sleep(3*1000);
 		}catch(InterruptedException ie){
