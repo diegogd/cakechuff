@@ -365,7 +365,7 @@ public class QualitySubsystem extends Node implements Observer {
 				this.phase++;
 			break;
 		case 2:
-			if (robot2.openHand(-0.785f, time))
+			if (robot2.openHand(-0.3f, time))
 				this.phase++;
 			break;
 		case 3:
