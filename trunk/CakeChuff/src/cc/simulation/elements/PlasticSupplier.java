@@ -39,9 +39,9 @@ public class PlasticSupplier extends Node{
 	}
 	
 	public void grow(float amount){
-		plastic.setLocalScale(new Vector3f(plastic.getLocalScale().x+amount,1,1));
+		plastic.setLocalScale(new Vector3f(plastic.getLocalScale().x+amount/2,1,1));
 		
-		if(plastic.getLocalScale().x > 10)
+		if(plastic.getLocalScale().x > 3)
 			plastic.setLocalScale(new Vector3f(2f,1,1));
 	}
 	

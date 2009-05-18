@@ -24,7 +24,7 @@ public class Robot1 extends Node implements Observer {
 
 	Robot1State _state;
 
-	private float angleSubsystem1 = 3.752f;
+	private float angleSubsystem1 = 3.6f;
 	private float angleSubsystem2 = 5.847f;
 	private float angleSubsystem3 = FastMath.PI / 2;
 	private float angleTable = 2.705f;
@@ -96,11 +96,11 @@ public class Robot1 extends Node implements Observer {
 				this.phase++;
 			break;
 		case 2:
-			if (robot.openHand(-0.785f, time))
+			if (robot.openHand(-0.1f, time))
 				this.phase++;
 			break;
 		case 3:
-			if (robot.bendBody(2.005f, time))
+			if (robot.bendBody(2.1f, time))
 				this.phase++;
 			break;
 		case 4:
@@ -131,7 +131,7 @@ public class Robot1 extends Node implements Observer {
 				this.phase++;
 			break;
 		case 2:
-			if (robot.bendBody(2.005f, time))
+			if (robot.bendBody(2.1f, time))
 				this.phase++;
 			break;
 		case 3:
@@ -165,7 +165,7 @@ public class Robot1 extends Node implements Observer {
 				this.phase++;
 			break;
 		case 3:
-			if (robot.bendBody(2.005f, time))
+			if (robot.bendBody(2.1f, time))
 				this.phase++;
 			break;
 		case 4:
@@ -194,7 +194,7 @@ public class Robot1 extends Node implements Observer {
 				this.phase++;
 			break;
 		case 2:
-			if (robot.bendBody(2.005f, time))
+			if (robot.bendBody(2.1f, time))
 				this.phase++;
 			break;
 		case 3:
@@ -227,7 +227,7 @@ public class Robot1 extends Node implements Observer {
 				this.phase++;
 			break;
 		case 3:
-			if (robot.bendBody(2.005f, time))
+			if (robot.bendBody(2.1f, time))
 				this.phase++;
 			break;
 		case 4:
@@ -256,7 +256,7 @@ public class Robot1 extends Node implements Observer {
 				this.phase++;
 			break;
 		case 2:
-			if (robot.bendBody(2.005f, time))
+			if (robot.bendBody(2.1f, time))
 				this.phase++;
 			break;
 		case 3:

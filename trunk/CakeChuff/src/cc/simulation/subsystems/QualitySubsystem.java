@@ -75,18 +75,18 @@ public class QualitySubsystem extends Node implements Observer {
 
 		qa1 = new LightSensor("quality1");
 		qa1.setLocalRotation(Rotations.rotateX(0.5f));
-		qa1.setLocalTranslation(-1, 0, -1);
+		qa1.setLocalTranslation(-1.1f, 0, -1.0f);
 		qa2 = new LightSensor("quality2");
 		qa2.setLocalRotation(Rotations.rotateX(0.5f));
-		qa2.setLocalTranslation(-1, 0, 1);
+		qa2.setLocalTranslation(-1.1f, 0, 1.0f);
 		qa3 = new LightSensor("quality3");
 		qa3.setLocalRotation(Rotations.rotateX(0.5f));
-		qa3.setLocalTranslation(1, 0, -1);
+		qa3.setLocalTranslation(1.1f, 0, -1.0f);
 		qa4 = new LightSensor("quality4");
 		qa4.setLocalRotation(Rotations.rotateX(0.5f));
-		qa4.setLocalTranslation(1, 0, 1);
-		Box top = new Box("", new Vector3f(-1.2f, 1, -1.2f), new Vector3f(1.2f,
-				1.1f, 1.2f));
+		qa4.setLocalTranslation(1.1f, 0, 1.0f);
+		Box top = new Box("", new Vector3f(-2f, 1, -2f), new Vector3f(2f,
+				1.1f, 2f));
 		top.setDefaultColor(ColorRGBA.darkGray);
 		Node sensors = new Node();
 		sensors.attachChild(qa1);
@@ -95,21 +95,23 @@ public class QualitySubsystem extends Node implements Observer {
 		sensors.attachChild(qa4);
 		sensors.attachChild(top);
 
-		sensors.setLocalTranslation(-5, 6, 0);
+		sensors.setLocalTranslation(-3, 5, 0);
 		this.attachChild(sensors);
 
 		sensor1 = new LightSensor("QualitySensor1");
-		sensor1.setLocalTranslation(-2.5f, 5.1f, 0f);
+		sensor1.setLocalTranslation(-1.0f, 4.3f, 0f);
+		sensor1.setLocalScale(new Vector3f(1f, 1f, 2f));
 		this.attachChild(sensor1);
 		_state.addSensor(sensor1);
 
 		sensor2 = new LightSensor("QualitySensor2");
-		sensor2.setLocalTranslation(5f, 5.1f, 0);
+		sensor2.setLocalTranslation(3.1f, 4.3f, 0);
+		sensor2.setLocalScale(new Vector3f(1f, 1f, 2f));
 		this.attachChild(sensor2);
 		_state.addSensor(sensor2);
 
 		sensor3 = new TouchSensor("QualitySensor3");
-		sensor3.setLocalTranslation(9f, 5.1f, 0);
+		sensor3.setLocalTranslation(8f, 4.2f, 0);
 		this.attachChild(sensor3);
 		_state.addSensor(sensor3);
 
@@ -117,20 +119,20 @@ public class QualitySubsystem extends Node implements Observer {
 		this.attachChild(robot2);
 
 		wrapper = new Wrapper();
-		wrapper.setLocalTranslation(3f, 7f, 0f);
+		wrapper.setLocalTranslation(1.1f, 7f, 0f);
 		this.attachChild(wrapper);
 
 		goodBox = new PacketBox("GoodBox");
 		goodBox.setLocalRotation(Rotations.rotateY(0.25f));
 		goodBox.setLocalTranslation(20f, 0f, 5.5f);
-		
+
 		// goodBox.setLocalScale(1.5f);
 		this.attachChild(goodBox);
 
 		badBox = new PacketBox("BadBox");
 		badBox.setLocalTranslation(20f, 0f, -5.5f);
 		badBox.setLocalRotation(Rotations.rotateY(-0.25f));
-		
+
 		// badBox.setLocalScale(1.5f);
 		this.attachChild(badBox);
 	}
@@ -304,7 +306,7 @@ public class QualitySubsystem extends Node implements Observer {
 				while (elem.hasNext()) {
 					Spatial aux = elem.next();
 					if ((aux instanceof Blister)) {
-//							&& (conv.hasCollision(aux, false))) {
+						// && (conv.hasCollision(aux, false))) {
 						if (pickUpPacket(time, aux)) {
 							_state.setRobotCurrentState(PICKUPPACKET);
 						}
@@ -367,7 +369,7 @@ public class QualitySubsystem extends Node implements Observer {
 				this.phase++;
 			break;
 		case 3:
-			if (robot2.bendBody(2.005f, time))
+			if (robot2.bendBody(2.1f, time))
 				this.phase++;
 			break;
 		case 4:
@@ -376,13 +378,14 @@ public class QualitySubsystem extends Node implements Observer {
 			}
 			break;
 		case 5:
-			System.out.println("Im in 1!");
-			if (robot2.bendBody(0.5f, time))
-				System.out.println("Im in 2!");
-			this.phase++;
+			// System.out.println("Im in 1!");
+			if (robot2.bendBody(0.5f, time)) {
+				// System.out.println("Im in 2!");
+				this.phase++;
+			}
 			break;
 		case 6:
-			System.out.println("I finished!!!");
+			//System.out.println("I finished!!!");
 			phase = 0;
 			return true;
 		}
@@ -406,7 +409,7 @@ public class QualitySubsystem extends Node implements Observer {
 
 			break;
 		case 2:
-			if (robot2.bendBody(2.005f, time))
+			if (robot2.bendBody(2.1f, time))
 				this.phase++;
 			break;
 		case 3:

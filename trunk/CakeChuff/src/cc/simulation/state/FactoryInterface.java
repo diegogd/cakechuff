@@ -919,7 +919,7 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer {
 
 		
 		_qualitySubState.setQualityCheck(false);
-		_robot1State.setRobot_velocity(4f);
+		_robot1State.setRobot_velocity(1f);
 		_robot1State.setGoToState(5);
 		
 

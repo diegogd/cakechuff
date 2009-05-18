@@ -49,7 +49,7 @@ public class Wrapper extends Node {
 					// Approach 2
 					finished = true;
 					speed = 0;
-					System.out.println("Finished!!");
+//					System.out.println("Finished!!");
 				} else {
 					pivot.getLocalTranslation().y += speed * timeperframes;
 				}
@@ -57,14 +57,14 @@ public class Wrapper extends Node {
 
 				// if (pivot.getLocalTranslation().y <= -1.6f) {
 				if (pivot.hasCollision(element, false)
-						&& (pivot.getLocalTranslation().y <= -1.6f)) {
+						&& (pivot.getLocalTranslation().y <= -2.6f)) {
 					// pivot.getLocalTranslation().y = -1.6f;
 					direction = true;
 
 					WrapUp(element);
 					// Cargar Blister?
 
-				} else if (pivot.getLocalTranslation().y <= -1.6f) {
+				} else if (pivot.getLocalTranslation().y <= -2.6f) {
 					direction = true;
 				} else {
 					pivot.getLocalTranslation().y -= speed * timeperframes;
