@@ -228,22 +228,22 @@ public class QualitySubsystem extends Node implements Observer {
 				if (element instanceof Blister) {
 					// if (element instanceof Cake) {
 					if (!sen1
-							&& qa1.hasCollision((Cake)((Blister) element).getHole1(),
+							&& qa1.hasCollision(((Blister) element).getHole1(),
 									false)) {
 						sen1 = true;
 					}
 					if (!sen2
-							&& qa2.hasCollision((Cake)((Blister) element).getHole3(),
+							&& qa2.hasCollision(((Blister) element).getHole3(),
 									false)) {
 						sen2 = true;
 					}
 					if (!sen3
-							&& qa3.hasCollision((Cake)((Blister) element).getHole2(),
+							&& qa3.hasCollision(((Blister) element).getHole2(),
 									false)) {
 						sen3 = true;
 					}
 					if (!sen4
-							&& qa4.hasCollision((Cake)((Blister) element).getHole4(),
+							&& qa4.hasCollision(((Blister) element).getHole4(),
 									false)) {
 						sen4 = true;
 					}
