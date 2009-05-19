@@ -106,10 +106,12 @@ public class CakeSubsystem extends Node implements Observer {
 			// Sensors detection
 			if (!sen1 && s1.hasCollision(element, false)) {
 				sen1 = true;
+				((Cake)element).changeTextureToChocolate();
 			}
 
 			if (!sen2 && s2.hasCollision(element, false)) {
 				sen2 = true;
+				((Cake)element).changeTextureToCaramel();
 			}
 
 			if (!sen3 && s3.hasCollision(element, false)) {
