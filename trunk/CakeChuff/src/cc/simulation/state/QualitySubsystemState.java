@@ -26,7 +26,7 @@ public class QualitySubsystemState extends Observable {
 	public final int DROPBADBOX = 6;
 
 	int robot_current_state, robot_goToState;
-	boolean robot_moving,robot_changed_GTS,robot_changed_CS;
+	boolean robot_moving, robot_changed_GTS, robot_changed_CS;
 	private float robot_velocity;
 
 	public QualitySubsystemState() {
@@ -58,14 +58,17 @@ public class QualitySubsystemState extends Observable {
 	}
 
 	public void setQualityCheck(boolean quality) {
-		this.quality_check = quality;
-		setChanged();
-		notifyObservers(quality);
+		//if (quality != quality_check) {
+			this.quality_check = quality;
+			numcakes_passed = 0;
+			setChanged();
+			notifyObservers(quality);
+		//}
 	}
 
 	public void resetQualityCheck() {
 		this.quality_check = false;
-//		numcakes_passed = 0;
+		// numcakes_passed = 0;
 	}
 
 	public int getIfQualityPassed() {
@@ -142,7 +145,7 @@ public class QualitySubsystemState extends Observable {
 
 	public void setRobotCurrentState(int currentState) {
 		if (this.robot_current_state != currentState) {
-			//System.out.println("Changing State...");
+			// System.out.println("Changing State...");
 			this.robot_current_state = currentState;
 			this.robot_changed_CS = true;
 			this.setRobotMoving(false);
@@ -157,7 +160,7 @@ public class QualitySubsystemState extends Observable {
 	}
 
 	public boolean getRobotIfMoving() {
-			return robot_moving;
+		return robot_moving;
 	}
 
 	public void setRobotMoving(boolean moving) {
@@ -165,7 +168,7 @@ public class QualitySubsystemState extends Observable {
 			robot_moving = moving;
 		}
 	}
-	
+
 	public boolean isChanged_CS() {
 		boolean value = robot_changed_CS;
 		robot_changed_CS = false;
