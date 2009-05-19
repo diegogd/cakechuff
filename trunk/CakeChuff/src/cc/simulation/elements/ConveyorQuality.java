@@ -25,4 +25,8 @@ public class ConveyorQuality extends Conveyor {
 //		this.attachChild(plc);
 	}	
 	
+	@Override
+	public void setVelocity(float velocity) {
+		super.current_velocity = velocity;
+	}
 }

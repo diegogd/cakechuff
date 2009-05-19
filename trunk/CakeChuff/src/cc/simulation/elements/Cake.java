@@ -26,8 +26,11 @@ import com.jmex.model.converters.ObjToJme;
 
 public class Cake extends Node{
 	
+	public boolean falling=true;
 	public boolean inSub=true;
 	public DisplaySystem mainDisplay = null;
+	public boolean withChocolate = false;
+	public boolean withCaramel = false;
 	
 	/**
 	 * 
@@ -51,6 +54,18 @@ public class Cake extends Node{
 		ts.setTexture(TextureManager.loadTexture(this.getClass().getResource("/model/texture/cake/chocolate.jpg"),
 				MinificationFilter.BilinearNearestMipMap, MagnificationFilter.Bilinear));
 		this.setRenderState(ts);
+		this.updateRenderState();
+		this.withChocolate = true;
+	}
+	
+	public void changeTextureToCaramelAndChocolate(){
+		TextureState ts = mainDisplay.getRenderer().createTextureState();
+		ts.setTexture(TextureManager.loadTexture(this.getClass().getResource("/model/texture/cake/choccaram.jpg"),
+				MinificationFilter.BilinearNearestMipMap, MagnificationFilter.Bilinear));
+		this.setRenderState(ts);
+		this.updateRenderState();
+		this.withCaramel = true;
+		this.withChocolate = true;
 	}
 	
 	public void changeTextureToCaramel(){
@@ -58,6 +73,8 @@ public class Cake extends Node{
 		ts.setTexture(TextureManager.loadTexture(this.getClass().getResource("/model/texture/cake/caramel.jpg"),
 				MinificationFilter.BilinearNearestMipMap, MagnificationFilter.Bilinear));
 		this.setRenderState(ts);
+		this.updateRenderState();
+		this.withCaramel = true;
 	}
 	
 	private void loadCylinder(){
@@ -78,6 +95,12 @@ public class Cake extends Node{
 				MinificationFilter.BilinearNearestMipMap, MagnificationFilter.Bilinear));
 		this.setRenderState(ts);
 	}
-	
 
+	public boolean isWithChocolate() {
+		return withChocolate;
+	}
+
+	public boolean isWithCaramel() {
+		return withCaramel;
+	}
 }
