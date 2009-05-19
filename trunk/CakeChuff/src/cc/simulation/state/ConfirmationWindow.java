@@ -6,6 +6,8 @@
 
 package cc.simulation.state;
 
+import javax.swing.ImageIcon;
+
 import cc.scada.*;
 
 /**
@@ -22,6 +24,7 @@ public class ConfirmationWindow extends javax.swing.JFrame {
         _scada =s;
         _ui =c;
         initComponents();
+        setIconImage(new ImageIcon(getClass().getResource("/cc/images/iconCakeChuff.png")).getImage());
     }
 
     /** This method is called from within the constructor to
