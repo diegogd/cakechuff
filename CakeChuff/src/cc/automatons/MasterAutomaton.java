@@ -15,6 +15,9 @@ public class MasterAutomaton extends Automaton {
 	/* state for robot (inherited) */
 	private Robot1State robot;
 	private int staterobot;
+	private final int SUBSYSTEM1 = 1;
+	private final int SUBSYSTEM2 = 2;
+	private final int SUBSYSTEM3 = 3;
 	private final int TABLE = 4;
 	private final int PICKUPCAKE = 5;
 	private final int DROPINTABLE = 6;
@@ -52,6 +55,8 @@ public class MasterAutomaton extends Automaton {
 	private boolean qc_free;
 	
 	private long lastupdate;
+	
+	private boolean mistake;
 
 	public MasterAutomaton(String scada, int scada_in, int scada_out,
 			String cake, int cake_in, int cake_out, String blister,
@@ -106,8 +111,14 @@ public class MasterAutomaton extends Automaton {
 
 	private void run_robot_cake1() {
 		state = CAKE1;
-		robot.setRobot_velocity(movecaket);
-		robot.setGoToState(PICKUPCAKE);
+		if(!mistake){
+			robot.setRobot_velocity(movecaket);
+			robot.setGoToState(PICKUPCAKE);
+		}else{
+			robot.setRobot_velocity(movecaket);
+			robot.setGoToState(SUBSYSTEM1);
+			mistake=false;
+		}
 		System.out.println("Picking cake 1");
 		// put cake in the blister
 		// tell the cake automaton
@@ -145,7 +156,7 @@ public class MasterAutomaton extends Automaton {
 
 	@Override
 	public synchronized void newMsg(String msg) {
-		while (treatingupdate){
+		while (treatingupdate) {
 			try {
 				Thread.sleep(500);
 			} catch (InterruptedException e) {
@@ -166,39 +177,37 @@ public class MasterAutomaton extends Automaton {
 				mboxScada.send(msg);
 				if (content[1].equalsIgnoreCase("WAIT")) {
 					System.out.println("Cake awaiting");
-					//Error chance
-					if ((Math.random()*100)>f_chance){
-						if (state == BLISTER) {
-							run_robot_cake1();
-						} else if (state == CAKE1) {
-							run_robot_cake2();
-						} else if (state == CAKE2) {
-							run_robot_cake3();
-						} else if (state == CAKE3) {
-							run_robot_full();
-						} else {
+					// Error chance
+					if ((Math.random() * 100) < f_chance) {
+						System.out.println("Simulated error");
+						mistake = true;
+					}
+					if (state == BLISTER) {
+						run_robot_cake1();
+					} else if (state == CAKE1) {
+						run_robot_cake2();
+					} else if (state == CAKE2) {
+						run_robot_cake3();
+					} else if (state == CAKE3) {
+						run_robot_full();
+					} else {
 						// the cake must wait for a blister
 						cake_waiting = true;
-						}
-					}else {
-						System.out.println("Simulated error");
-						if (state == BLISTER) {
-							state=CAKE1;
-						} else if (state == CAKE1) {
-							state=CAKE2;
-						} else if (state == CAKE2) {
-							state=CAKE3;
-						} else if (state == CAKE3) {
-							state=FULL;
-							robot.setRobot_velocity(moveblistert);
-							robot.setGoToState(PICKUPPACKET);
-						}
-						mboxCake.send("R1:cake");
 					}
-
+					/*
+					 * }else {
+					 * 
+					 * mboxCake.send("R1:cake"); if (state == BLISTER) {
+					 * state=CAKE1; } else if (state == CAKE1) { state=CAKE2; }
+					 * else if (state == CAKE2) { state=CAKE3; } else if (state
+					 * == CAKE3) { state=FULL;
+					 * robot.setRobot_velocity(moveblistert);
+					 * robot.setGoToState(PICKUPPACKET); }
+					 */
 				}
 
 			}
+
 		} else if (content[0].equalsIgnoreCase("A2")) {
 			System.out.println("Msg from AUT2");
 			if (content[1].equalsIgnoreCase("ON")) {
@@ -293,6 +302,12 @@ public class MasterAutomaton extends Automaton {
 			System.out.println(time.toString()+":Robot state changed");
 			System.out.println("New Robot1 state:"+robot.getCurrentState());
 			switch (robot.getCurrentState()) {
+			case (SUBSYSTEM1):
+				//Simulated error
+				System.out.println("R1: CAKE -> TABLE... ups!!");
+				cake_waiting = false;
+				mboxCake.send("R1:cake");
+				break;
 			case (PICKUPCAKE):
 				System.out.println("R1: CAKE -> TABLE");
 				cake_waiting = false;

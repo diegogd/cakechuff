@@ -200,6 +200,7 @@ public class CakeAutomaton extends Automaton {
 	}
 	@Override
 	public synchronized void newMsg(String msg) {
+		System.out.println("My Cakemessage-Sense is tickling... " + msg);
 		while (treatingupdate){
 			try {
 				Thread.sleep(500);
@@ -240,8 +241,8 @@ public class CakeAutomaton extends Automaton {
 			case CAR_WAIT:
 				break;
 			case WAIT:
-				if (content[0].equalsIgnoreCase("R1")
-						&& content[1].substring(0, 4).equalsIgnoreCase("cake")) {
+				if (content[0].equalsIgnoreCase("R1")){
+						System.out.println("Cake taken. Or not...");
 					run_init();
 				}
 				break;

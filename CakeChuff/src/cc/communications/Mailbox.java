@@ -64,7 +64,7 @@ public class Mailbox implements Runnable {
 			//System.out.println("Receiving message...");
 				//msg = din.readUTF();
 				msg=din.readLine();
-				System.out.println("Received:"+msg);
+				//System.out.println("Received:"+msg);
 				owner.newMsg(msg);				
 			} catch (IOException ioe) {
 				// connection failure
