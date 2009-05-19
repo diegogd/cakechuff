@@ -320,6 +320,7 @@ public class Robot1 extends Node implements Observer {
 					if (aux instanceof Cake) {
 						if (pickUpCake(time, aux)) {
 							_state.setCurrentState(PICKUPCAKE);
+							break;
 							// element.remove(aux);
 						}
 					}
@@ -332,6 +333,7 @@ public class Robot1 extends Node implements Observer {
 					if (aux instanceof Table) {
 						if (dropCake(time,aux)){
 							_state.setCurrentState(DROPINTABLE);
+							break;
 						}
 					}
 				}
@@ -347,6 +349,7 @@ public class Robot1 extends Node implements Observer {
 						if (pickUpBlister(time,aux)){
 							_state.setCurrentState(PICKUPBLISTER);
 							System.out.println("PICKUPBLISTER");
+							break;
 						}
 					}
 				}
@@ -371,6 +374,7 @@ public class Robot1 extends Node implements Observer {
 					if (aux instanceof Blister) {
 						if (pickUpPacket(time,aux)){
 							_state.setCurrentState(PICKUPPACKET);
+							break;
 						}
 					}
 				}
@@ -382,6 +386,7 @@ public class Robot1 extends Node implements Observer {
 					if (aux instanceof QualitySubsystem) {
 						if (dropPacket(time,aux)){
 							_state.setCurrentState(DROPINSUB3);
+							break;
 						}
 					}
 				}
