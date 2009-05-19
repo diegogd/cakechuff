@@ -21,62 +21,71 @@ public class GeneratePDF {
 	private String stops;
 	private String emergency;
 	
-	public GeneratePDF (String p, String f, String ok, String ko, String sts, String stp, String e){
+	private String path; 
+	
+	public GeneratePDF (String path, String p, String f, String ok, String ko, String sts, String stp, String e){
 		this.procesed_packs = p;
 		this.faulty_packs = f;
 		this.total_ok_cakes =ok;
 		this.total_ko_cakes =ko;
 		this.starts =sts;
 		this.stops =stp;
-		this.emergency = e;		
+		this.emergency = e;	
+		
+		this.path = path;
 	}
 
 
-	public void generate() {
+	public boolean generate() {
+		
+		boolean success = true; 
 
-		createPdf("reports/CakeChuff Summary Report1.pdf");
+		if(!createPdf(path + "1.pdf")){
+			success = false;
+		}else{
 
-		try {
-			// we create a PdfReader object
-			PdfReader reader = new PdfReader("reports/CakeChuff Summary Report1.pdf");
-			PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(
-					"reports/CakeChuff Summary Report.pdf"));
-			// we create an Image we'll use as a Watermark
-			Image img = Image.getInstance("src/cc/images/logoCakeChuff.png");
-			img.setAbsolutePosition(350, 500);
-			// we create a Font for the text to add
-			BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA,
-					BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
-			// these are the canvases we are going to use
-			PdfContentByte under, over;
-			int total = reader.getNumberOfPages() + 1;
-			for (int i = 1; i < total; i++) {
-				under = stamper.getUnderContent(i);
-				under.addImage(img);
-				// text over the existing page
-				over = stamper.getOverContent(i);
-				over.beginText();
-				over.setFontAndSize(bf, 18);
-				over.setTextMatrix(30, 30);
-				over.endText();
-				over.setRGBColorStroke(0xFF, 0x00, 0x00);
-				over.setLineWidth(5f);
-				over.stroke();
+			try {
+				// we create a PdfReader object
+				PdfReader reader = new PdfReader(path + "1.pdf");
+				PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(path + ".pdf"));
+				// we create an Image we'll use as a Watermark
+				Image img = Image.getInstance("src/cc/images/logoCakeChuff.png");
+				img.setAbsolutePosition(350, 500);
+				// we create a Font for the text to add
+				BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA,
+						BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
+				// these are the canvases we are going to use
+				PdfContentByte under, over;
+				int total = reader.getNumberOfPages() + 1;
+				for (int i = 1; i < total; i++) {
+					under = stamper.getUnderContent(i);
+					under.addImage(img);
+					// text over the existing page
+					over = stamper.getOverContent(i);
+					over.beginText();
+					over.setFontAndSize(bf, 18);
+					over.setTextMatrix(30, 30);
+					over.endText();
+					over.setRGBColorStroke(0xFF, 0x00, 0x00);
+					over.setLineWidth(5f);
+					over.stroke();
+				}
+				stamper.close();
+			} catch (IOException e) {
+				success = false;
+			} catch (DocumentException e) {
+				success = false;
 			}
-			stamper.close();
-		} catch (IOException e) {
-			System.out.println("To generate the report please, close the file \" CakeChuff Summary Report.pdf\" ");
-		} catch (DocumentException e) {
-			e.printStackTrace();
 		}
 		
-		File fichero = new File("reports/CakeChuff Summary Report1.pdf");
+		File fichero = new File(path + "1.pdf");
 
 		if (fichero.delete())
 			System.out.println("El fichero ha sido borrado satisfactoriamente");
 		else
-
-			System.out.println("El fichero no puede ser borrado");
+			success = false;
+		
+		return success;
 
 	}
 
@@ -85,7 +94,9 @@ public class GeneratePDF {
 	 * 
 	 * @param filename The name of the PDF file.
 	 */
-	private void createPdf(String filename) {
+	private boolean createPdf(String filename) {
+		boolean success = true; 
+		
 		// we create a document with multiple pages and bookmarks
 		Document document = new Document();
 		try {
@@ -138,10 +149,12 @@ public class GeneratePDF {
 			
 			
 		} catch (DocumentException de) {
-			System.err.println(de.getMessage());
+			success = false;
 		} catch (IOException ioe) {
-			System.err.println(ioe.getMessage());
+			success = false;
 		}
 		document.close();
+		
+		return success;
 	}
 }
