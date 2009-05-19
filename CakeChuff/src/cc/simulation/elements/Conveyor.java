@@ -10,7 +10,8 @@ import com.jme.scene.shape.Box;
 public class Conveyor extends Node {
 	
 	private Spatial _conveyor;
-	private float velocity;
+	protected float final_velocity, current_velocity;
+	private float acceleration;
 	
 	// If we want to add physics - stopping and starting leasing
 	private boolean starting = true;
@@ -22,7 +23,8 @@ public class Conveyor extends Node {
 	private static final long serialVersionUID = 4528261348415945355L;
 	
 	public Conveyor(){
-		this.velocity = 3f;
+		this.current_velocity = 3f;
+		this.acceleration = 4f;
 	}
 	
 	public Conveyor(String id) {
@@ -36,7 +38,12 @@ public class Conveyor extends Node {
 		conveyor.updateModelBound();
 		
 		this.attachChild(conveyor);
-		this.velocity = 3f;
+		this.current_velocity = 3f;
+		this.acceleration = 4f;
+	}
+	
+	public void setAcceleration(float acceleration){
+		this.acceleration = acceleration;
 	}
 	
 	public void translate(Vector3f newPosition){
@@ -44,11 +51,27 @@ public class Conveyor extends Node {
 	}
 
 	public float getVelocity() {
-		return velocity;
+		return current_velocity;
 	}
 
 	public void setVelocity(float velocity) {
-		this.velocity = velocity;
+		this.final_velocity = velocity;
+	}
+	
+	/**
+	 * This methods is implemented to reduce the velocity 
+	 * in the animation.
+	 */
+	public void updateParameters(float tps){
+		float increment = 0; 
+		
+		if(current_velocity > final_velocity){
+			increment = -1*(acceleration*tps);
+		} else {
+			increment = (acceleration*tps);
+		}
+		
+		current_velocity += increment; 
 	}
 
 }

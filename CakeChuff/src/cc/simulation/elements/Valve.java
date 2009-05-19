@@ -10,6 +10,7 @@ import cc.simulation.utils.ModelLoader;
 import cc.simulation.utils.Rotations;
 
 import com.jme.animation.SpatialTransformer;
+import com.jme.bounding.BoundingBox;
 import com.jme.math.FastMath;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
@@ -51,6 +52,8 @@ public class Valve extends Node{
 		liquidstream = new Cylinder("liquidStream", 10, 20, 0.06f, 1.2f, true);
 		liquidstream.getLocalTranslation().z -= 0.6f;
 		liquidstream.setDefaultColor(color);
+		liquidstream.setModelBound(new BoundingBox());
+		liquidstream.updateModelBound();
 		
 		liquidPivotUp = new Node();
 		liquidPivotUp.attachChild(liquidstream);
@@ -106,13 +109,16 @@ public class Valve extends Node{
 		}
 	}
 	
+	public boolean checkCollision(Spatial element){
+		if(valveCompleteOpen && liquidstream.hasCollision(element, false)){
+			return true;
+		}
+		return false;
+	}
+	
 	public void open(float seconds)
 	{
 		timeOpen = seconds;
 	}
 	
-	public void close(float timeperframe)
-	{
-		
-	}
 }

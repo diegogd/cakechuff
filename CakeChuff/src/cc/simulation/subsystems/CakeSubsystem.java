@@ -23,6 +23,7 @@ public class CakeSubsystem extends Node implements Observer {
 
 	// Conveyor
 	ConveyorCake conv;
+	float lastVelocity;
 
 	// Valves
 	Valve chocolate;
@@ -69,6 +70,9 @@ public class CakeSubsystem extends Node implements Observer {
 	public void update(Vector<Spatial> elements, float timePerFrame) {
 		boolean sen1 = false, sen2 = false, sen3 = false;
 
+		// For implementing deceleration
+		conv.updateParameters(timePerFrame);
+		
 		for (int i = 0; i < elements.size(); i++) {
 			Spatial element = elements.get(i);
 			if (((Cake) element).inSub) {
@@ -77,6 +81,7 @@ public class CakeSubsystem extends Node implements Observer {
 					element.getLocalTranslation().y = 4.3f;
 					element.getLocalTranslation().x += conv.getVelocity()
 							* timePerFrame;
+					
 					// System.out.println(element.getLocalTranslation().x);
 					// }
 
@@ -96,17 +101,30 @@ public class CakeSubsystem extends Node implements Observer {
 			// Sensors detection
 			if (!sen1 && s1.hasCollision(element, false)) {
 				sen1 = true;
-				((Cake)element).changeTextureToChocolate();
 			}
 
 			if (!sen2 && s2.hasCollision(element, false)) {
 				sen2 = true;
-				((Cake)element).changeTextureToCaramel();
 			}
 
 			if (!sen3 && s3.hasCollision(element, false)) {
 				sen3 = true;
 			}
+			
+			// Check Valves
+			if( element instanceof Cake ){
+				if( !((Cake)element).isWithChocolate() ){
+					if( chocolate.checkCollision(element) ){
+						((Cake)element).changeTextureToChocolate();
+					} else if( !((Cake)element).isWithCaramel() && 
+							   caramel.checkCollision(element) ){
+						((Cake)element).changeTextureToCaramel();
+					}
+				} else if( !((Cake)element).isWithCaramel() && 
+						   caramel.checkCollision(element) ){
+					((Cake)element).changeTextureToCaramelAndChocolate();
+				}
+			} 
 		}
 
 		if (!sen1)
