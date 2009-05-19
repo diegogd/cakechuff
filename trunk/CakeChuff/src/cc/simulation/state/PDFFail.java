@@ -37,7 +37,9 @@ public class PDFFail extends javax.swing.JFrame {
         yesbutton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
+        setTitle("PDF Creation Failed");
+        setAlwaysOnTop(true);
+        
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("<html> <P Align=\"center\"> An error occurred in the creation of the PDF file. <br> <br> Please, be sure the file is not used by other program.</p>");
