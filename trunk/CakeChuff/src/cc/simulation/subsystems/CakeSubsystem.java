@@ -71,36 +71,26 @@ public class CakeSubsystem extends Node implements Observer {
 
 		for (int i = 0; i < elements.size(); i++) {
 			Spatial element = elements.get(i);
-			if (((Cake) element).falling) {
+			if (((Cake) element).inSub) {
 				if (conv.hasCollision(element, false)) {
 					// if (element.getLocalTranslation().x < -1.8f) {
 					element.getLocalTranslation().y = 4.3f;
 					element.getLocalTranslation().x += conv.getVelocity()
 							* timePerFrame;
-					((Cake) element).falling = false;
 					// System.out.println(element.getLocalTranslation().x);
 					// }
 
 				} else if ((element.getLocalTranslation().y > 0)
 						&& (element.getLocalTranslation().x == -18f)) {
 					element.getLocalTranslation().y -= 3 * timePerFrame;
-				} else if ((element.getLocalTranslation().y > 0)
-						&& (element.getLocalTranslation().x == 0f)) {
-					element.setLocalTranslation(-18, 10f, -8.5f);
-				}
-			} else {
 				
-				if (conv.hasCollision(element, false)) {
-					element.getLocalTranslation().y = 4.3f;
-					element.getLocalTranslation().x += conv.getVelocity()
-							* timePerFrame;
-				}	
-				// Velocity limitations
-//				} else if ((element.getLocalTranslation().y > 0)&&(element.getLocalTranslation().x < -3f)) {
-//						element.getLocalTranslation().y -= 3 * timePerFrame;
-//					 
-//				}
-
+				}else{
+					if(element.getLocalTranslation().y > 0){
+						element.getLocalTranslation().y -= 3 * timePerFrame;
+					}
+				}
+			}else{
+				elements.removeElementAt(i);
 			}
 
 			// Sensors detection

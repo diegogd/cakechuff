@@ -52,7 +52,7 @@ public class Factory extends SimpleGame implements Observer{
 	QualitySubsystem qualitySub;
 	SystemState _state;
 	Conveyor cb2, cb3;
-	Vector<Spatial> cakes,blisters,packets, combination;
+	Vector<Spatial> cakes,blisters, combination;
 	
 	Table table;
 	
@@ -73,7 +73,6 @@ public class Factory extends SimpleGame implements Observer{
 		_state.addObserver(this);
 		cakes = new Vector<Spatial>();
 		blisters = new Vector<Spatial>();
-		packets = new Vector<Spatial>();
 		combination = new Vector<Spatial>();
 	}
 	

@@ -348,10 +348,12 @@ public class Robot extends Node {
 					}
 					
 				} else if (element instanceof Cake) {
+					((Cake) element).inSub = false;
 					element.setLocalTranslation(0, -0.0f, -0.0f);
 					//element.setLocalRotation(Rotations.rotateX(-0.5f));
 					pivotElement.setLocalScale(0.1f);
-					element.setLocalTranslation(0f, 6.5f, 0f);
+					element.setLocalTranslation(0f, 5.5f, 0f);
+					
 				} else {
 					element.setLocalRotation(Rotations.rotateX(0f));
 					element.setLocalTranslation(0, -0.65f, 0);
