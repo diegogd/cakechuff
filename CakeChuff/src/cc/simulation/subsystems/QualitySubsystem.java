@@ -252,27 +252,34 @@ public class QualitySubsystem extends Node implements Observer {
 				}
 			}
 
+			int num_cakes = 0;
+
 			if (!sen1)
 				qa1.setOff();
-			else
+			else {
 				qa1.setOn();
+				num_cakes++;
+			}
 			if (!sen2)
 				qa2.setOff();
-			else
+			else {
 				qa2.setOn();
+				num_cakes++;
+			}
 			if (!sen3)
 				qa3.setOff();
-			else
+			else {
 				qa3.setOn();
+				num_cakes++;
+			}
 			if (!sen4)
 				qa4.setOff();
-			else
+			else {
 				qa4.setOn();
+				num_cakes++;
+			}
 
-			if ((sen1) && (sen2) && (sen3) && (sen4))
-				_state.setIfQualityPassed(true);
-			else
-				_state.setIfQualityPassed(false);
+			_state.setIfQualityPassed(num_cakes);
 
 			_state.resetQualityCheck();
 		}

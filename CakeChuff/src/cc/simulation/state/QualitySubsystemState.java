@@ -12,9 +12,10 @@ public class QualitySubsystemState extends Observable {
 	private Vector<Sensor> sensors;
 
 	private float conveyor_velocity = 0;
-	private boolean quality_check = false, quality_passed = false;
+	private boolean quality_check = false;
 	private float wrapper_secs = 0;
 	private boolean wrapup = false;
+	private int numcakes_passed = 0;
 
 	public final int INIT = 0;
 	public final int SUBSYSTEM = 1;
@@ -64,16 +65,16 @@ public class QualitySubsystemState extends Observable {
 
 	public void resetQualityCheck() {
 		this.quality_check = false;
-
+		numcakes_passed = 0;
 	}
 
-	public boolean getIfQualityPassed() {
-		return quality_passed;
+	public int getIfQualityPassed() {
+		return numcakes_passed;
 	}
 
 	// Esta funcion es interna (no se deberia de usar en la logica)
-	public void setIfQualityPassed(boolean quality) {
-		quality_passed = true;
+	public void setIfQualityPassed(int numcakes) {
+		numcakes_passed = numcakes;
 	}
 
 	// *+++++++++++++++
