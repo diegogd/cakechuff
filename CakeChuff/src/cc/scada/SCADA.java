@@ -293,7 +293,7 @@ public class SCADA {
                     _ci.updateStadistics();
                 }else if (array[1].compareTo("qc_stamp") ==0){
                 	//it's a correct one
-                	int prevValue = Integer.parseInt(this.getStatistics("faultyPackages"));
+                	int prevValue = Integer.parseInt(this.getStatistics("procesedPackages"));
                 	prevValue++;
                     this.setStatistics("procesedPackages", prevValue + "");
                     prevValue = Integer.parseInt(this.getStatistics("total_ok_cakes"));
