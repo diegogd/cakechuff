@@ -196,6 +196,13 @@ public class CakeAutomaton extends Automaton {
 	}
 	@Override
 	public synchronized void newMsg(String msg) {
+		while (treatingupdate){
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+
+			}
+		}
 		System.out.println("CakeAutomaton: processing message");
 		String[] content = msg.split(":");
 		// Emergencies work for any state
@@ -243,6 +250,7 @@ public class CakeAutomaton extends Automaton {
 
 	@Override
 	public void update(Observable arg0, Object arg1) {
+		treatingupdate=true;
 		// which sensor?
 		if (arg1 instanceof Sensor) {
 			if (((Sensor) arg1).getName().equalsIgnoreCase("sensor1")) {
@@ -262,13 +270,16 @@ public class CakeAutomaton extends Automaton {
 				}
 				else
 					run_car_wait();
-			} else if (((Sensor) arg1) instanceof TouchSensor) {
-				if (((Sensor) arg1).isActived()){
+			} else if (((Sensor) arg1).getName().equalsIgnoreCase("sensor3")) {
+				
+				if (((Sensor) arg1).isActived() && state!=WAIT){
+					System.out.println("A1: TOCADO SENSOR DE FINAL DE LA CINTA POR UNA TARTA QUE PASABA POR AHÍ.");
 					state=WAIT;
 					(new Thread(this)).start();
 				}
 				// else -> no action, cake's pickup is received as a message
 			}
+			treatingupdate=false;;
 		}
 	}
 	public void run(){

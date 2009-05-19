@@ -21,6 +21,7 @@ public class MasterAutomaton extends Automaton {
 	private final int PICKUPPACKET = 9;
 	private final int DROPINSUB3 = 10;
 
+
 	private static final int START = 0;
 	private static final int EMPTY = 1;
 	private static final int BLISTER = 2;
@@ -138,6 +139,13 @@ public class MasterAutomaton extends Automaton {
 
 	@Override
 	public synchronized void newMsg(String msg) {
+		while (treatingupdate){
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+
+			}
+		}
 		System.out.println("Master->Received: " + msg);
 		String[] content = msg.split(":");
 		if (content[0].equalsIgnoreCase("A1")) {
@@ -246,16 +254,16 @@ public class MasterAutomaton extends Automaton {
 
 	@Override
 	public void update(Observable o, Object arg) {
+		treatingupdate=true;
 		if (o instanceof Robot1State && ((Robot1State) o).isChanged_CS()) {
-			System.out.println("********************update robot******************");
 			// robot.deleteObserver(this);
 			// System.out.println("Robot state changed");
 			switch (robot.getCurrentState()) {
 
 			case (PICKUPCAKE):
+				cake_waiting = false;
 				robot.setRobot_velocity(4f);
 				robot.setGoToState(DROPINTABLE);
-				cake_waiting = false;
 				mboxCake.send("R1:cake");
 				break;
 			case (DROPINTABLE):
@@ -263,44 +271,44 @@ public class MasterAutomaton extends Automaton {
 					System.out.println("R1: EMPTY->BLISTER");
 					state = BLISTER;
 					if (cake_waiting) {
-						state = CAKE1;
 						robot.setRobot_velocity(4f);
 						robot.setGoToState(PICKUPCAKE);
+						state = CAKE1;
 					}
 				} else if (state == BLISTER) {
 					System.out.println("R1: BLISTER->CAKE1");
 
 					if (cake_waiting) {
-						state = CAKE1;
 						robot.setRobot_velocity(4f);
 						robot.setGoToState(PICKUPCAKE);
+						state = CAKE1;
 					} else
 						robot.setGoToState(TABLE);
 				} else if (state == CAKE1) {
 					System.out.println("R1: CAKE1->CAKE2");
 
 					if (cake_waiting) {
-						state = CAKE2;
 						robot.setRobot_velocity(4f);
 						robot.setGoToState(PICKUPCAKE);
+						state = CAKE2;
 					} else
 						robot.setGoToState(TABLE);
 				} else if (state == CAKE2) {
 					System.out.println("R1: CAKE2->CAKE3");
 
 					if (cake_waiting) {
-						state = CAKE3;
 						robot.setRobot_velocity(4f);
 						robot.setGoToState(PICKUPCAKE);
+						state = CAKE3;
 					} else
 						robot.setGoToState(TABLE);
 				} else if (state == CAKE3) {
 					System.out.println("R1: CAKE3->FULL");
 
 					if (cake_waiting) {
-						state = FULL;
 						robot.setRobot_velocity(4f);
 						robot.setGoToState(PICKUPCAKE);
+						state = FULL;
 					} else
 						robot.setGoToState(TABLE);
 				} else if (state == FULL && qc_free) {
@@ -323,6 +331,7 @@ public class MasterAutomaton extends Automaton {
 				mboxQC.send("R1:empty");
 				state = EMPTY;
 				if (blister_waiting && !stop) {
+					state=BLISTER;
 					robot.setRobot_velocity(4f);
 					robot.setGoToState(PICKUPBLISTER);
 				} else
@@ -331,6 +340,7 @@ public class MasterAutomaton extends Automaton {
 			}
 
 		}
+		treatingupdate=false;
 		// robot.addObserver(this);
 	}
 

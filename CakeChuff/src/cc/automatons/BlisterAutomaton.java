@@ -136,6 +136,13 @@ public class BlisterAutomaton extends Automaton {
 	}
 	@Override
 	public synchronized void newMsg(String msg) {
+		while (treatingupdate){
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+
+			}
+		}
 		System.out.println("BlisterAutomaton: processing message " + msg);
 		String[] content = msg.split(":");
 		// Emergencies work for any state
@@ -180,24 +187,27 @@ public class BlisterAutomaton extends Automaton {
 		case BLISTER_READY:run_blister_ready();
 			break;
 		}
+		treatingupdate=false;
 	}
 	@Override
 	public void update(Observable o, Object arg) {
+		treatingupdate=true;
 		// which sensor?
 		if (arg instanceof LightSensor) {
 			if (((Sensor) arg).isActived()){
 				state=CUTTING;
 				(new Thread(this)).start();
-			}
+			}else treatingupdate=false;
 			// else run_choc_car();
 
 		} else if (arg instanceof TouchSensor) {
-			if (((Sensor) arg).isActived()){
+			if (((Sensor) arg).isActived()&&state!=BLISTER_READY){
+				System.out.println("Coge el blister, maldito!!!");
 				state=BLISTER_READY;
 				(new Thread(this)).start();
-			}
+			}else treatingupdate=false;
 			// else -> no action, blister's pickup is received as a message
-		}
+		}else treatingupdate=false;
 	}
 	public static void main(String args[]){
 		BlisterAutomaton aut=new BlisterAutomaton(Integer.parseInt(args[0]),Integer.parseInt(args[1]),args[2]);

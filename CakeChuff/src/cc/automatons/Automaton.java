@@ -12,6 +12,7 @@ import cc.sensors.Sensor;
 public abstract class Automaton implements Observer, Runnable{
 	protected int state;
 	protected boolean stop;
+	protected boolean treatingupdate;
 	//comm
 	protected Socket sout;
 	//protected DataOutputStream dout;
