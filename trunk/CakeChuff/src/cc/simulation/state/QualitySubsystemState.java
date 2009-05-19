@@ -65,7 +65,7 @@ public class QualitySubsystemState extends Observable {
 
 	public void resetQualityCheck() {
 		this.quality_check = false;
-		numcakes_passed = 0;
+//		numcakes_passed = 0;
 	}
 
 	public int getIfQualityPassed() {
