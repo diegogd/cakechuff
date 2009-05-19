@@ -202,6 +202,7 @@ public class BlisterAutomaton extends Automaton {
 
 		} else if (arg instanceof TouchSensor) {
 			if (((Sensor) arg).isActived()&&state!=BLISTER_READY){
+				//TODO: Quitar paridas
 				System.out.println("Coge el blister, maldito!!!");
 				state=BLISTER_READY;
 				(new Thread(this)).start();

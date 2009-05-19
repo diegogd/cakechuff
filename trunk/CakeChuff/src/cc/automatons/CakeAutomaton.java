@@ -30,6 +30,7 @@ public class CakeAutomaton extends Automaton {
 	private int belt_lg, cake_cap, vt1, vt2;
 	private float speed;
 	private int ncakes;
+	private boolean waitingcake;
 		
 	//simulation
 	private CakeSubsystemState cakesystem;
@@ -83,7 +84,7 @@ public class CakeAutomaton extends Automaton {
 	private void run_init(){
 		
 		//drop cake
-
+		waitingcake=false;
 		//start conveyor
 		cakesystem.setConveyor_velocity(speed);
 		state= INIT;
@@ -102,13 +103,13 @@ public class CakeAutomaton extends Automaton {
 		try{
 			Thread.sleep(vt1*1000);
 		}catch(InterruptedException ie){
-			System.out.println("Interrumpido");
+			//System.out.println("Interrupted");
 			ie.printStackTrace();
 		}
 		cakesystem.setValve1_open_secs(0);
 		//close chocolate valve ¿?
 		//run conveyor
-		cakesystem.setConveyor_velocity(speed);
+		if(!waitingcake)cakesystem.setConveyor_velocity(speed);
 		
 	}
 	private void run_choc_car(){
@@ -141,7 +142,7 @@ public class CakeAutomaton extends Automaton {
 		//close caramel valve
 		cakesystem.setValve2_open_secs(0);
 		//run conveyor
-		cakesystem.setConveyor_velocity(speed);
+		if(!waitingcake)cakesystem.setConveyor_velocity(speed);
 	}
 	private void run_car_wait(){
 		state=CAR_WAIT;
@@ -153,6 +154,7 @@ public class CakeAutomaton extends Automaton {
 		//stop conveyor
 		state=WAIT;
 		send("A1:wait");
+		waitingcake=true;
 	}
 	/*
 	 * Recover form a failure
@@ -205,7 +207,6 @@ public class CakeAutomaton extends Automaton {
 
 			}
 		}
-		System.out.println("CakeAutomaton: processing message");
 		String[] content = msg.split(":");
 		// Emergencies work for any state
 		if (content[0].equals("EMERGENCY"))
