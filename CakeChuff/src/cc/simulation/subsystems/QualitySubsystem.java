@@ -85,8 +85,8 @@ public class QualitySubsystem extends Node implements Observer {
 		qa4 = new LightSensor("quality4");
 		qa4.setLocalRotation(Rotations.rotateX(0.5f));
 		qa4.setLocalTranslation(1.1f, 0, 1.0f);
-		Box top = new Box("", new Vector3f(-2f, 1, -2f), new Vector3f(2f,
-				1.1f, 2f));
+		Box top = new Box("", new Vector3f(-2f, 1, -2f), new Vector3f(2f, 1.1f,
+				2f));
 		top.setDefaultColor(ColorRGBA.darkGray);
 		Node sensors = new Node();
 		sensors.attachChild(qa1);
@@ -145,14 +145,16 @@ public class QualitySubsystem extends Node implements Observer {
 
 			if ((conv.hasCollision(element, false))
 					&& (element instanceof Blister)) {
-				element.getLocalTranslation().x += conv.getVelocity()
-						* timePerFrame;
-				if (_state.getWrappedUp()) {
-					// System.out.println("Getting inside!");
-					if (!wrapper.finished)
-						wrapper.update(timePerFrame, element);
-					else
-						_state.setWrappedUp(false);
+				if (element.getParent() == this.parent) {
+					element.getLocalTranslation().x += conv.getVelocity()
+							* timePerFrame;
+					if (_state.getWrappedUp()) {
+						// System.out.println("Getting inside!");
+						if (!wrapper.finished)
+							wrapper.update(timePerFrame, element);
+						else
+							_state.setWrappedUp(false);
+					}
 				}
 			}
 
@@ -343,7 +345,7 @@ public class QualitySubsystem extends Node implements Observer {
 					_state.setRobotCurrentState(INIT);
 				break;
 			}
-			_state.setRobotMoving(false); // It has finished moving
+			// _state.setRobotMoving(false); // It has finished moving
 		}
 	}
 
@@ -385,7 +387,7 @@ public class QualitySubsystem extends Node implements Observer {
 			}
 			break;
 		case 6:
-			//System.out.println("I finished!!!");
+			// System.out.println("I finished!!!");
 			phase = 0;
 			return true;
 		}
