@@ -25,7 +25,7 @@ public class QualitySubsystemState extends Observable {
 	public final int DROPBADBOX = 6;
 
 	int robot_current_state, robot_goToState;
-	boolean robot_moving;
+	boolean robot_moving,robot_changed_GTS,robot_changed_CS;
 	private float robot_velocity;
 
 	public QualitySubsystemState() {
@@ -117,18 +117,22 @@ public class QualitySubsystemState extends Observable {
 	}
 
 	public void setRobot_velocity(float robot_velocity) {
-		this.robot_velocity = robot_velocity;
-		setChanged();
-		notifyObservers();
+		if (!getRobotIfMoving()) {
+			this.robot_velocity = robot_velocity;
+			setChanged();
+			notifyObservers();
+		}
 	}
 
 	public void setRobotGoToState(int goToState) {
-		setChanged();
-		notifyObservers();
-		this.robot_goToState = goToState;
-		// if (this.current_state != this.goToState) {
-		// _moving = true;
-		// }
+		if (!getRobotIfMoving()) {
+			if (this.robot_goToState != goToState) {
+				this.robot_goToState = goToState;
+				this.robot_changed_GTS = true;
+				this.setRobotMoving(true);
+				// this.setFinished(false);
+			}
+		}
 	}
 
 	public int getRobotGoToState() {
@@ -136,12 +140,15 @@ public class QualitySubsystemState extends Observable {
 	}
 
 	public void setRobotCurrentState(int currentState) {
-		setChanged();
-		notifyObservers();
-		this.robot_current_state = currentState;
-		// if (this.current_state != this.goToState) {
-		// _moving = true;
-		// }
+		if (this.robot_current_state != currentState) {
+			//System.out.println("Changing State...");
+			this.robot_current_state = currentState;
+			this.robot_changed_CS = true;
+			this.setRobotMoving(false);
+			// this.setFinished(true);
+			setChanged();
+			notifyObservers();
+		}
 	}
 
 	public int getRobotCurrentState() {
@@ -149,20 +156,25 @@ public class QualitySubsystemState extends Observable {
 	}
 
 	public boolean getRobotIfMoving() {
-		if (robot_current_state == robot_goToState) {
-			robot_moving = false;
-		} else {
-			robot_moving = true;
-		}
-		setChanged();
-		notifyObservers();
-		return robot_moving;
+			return robot_moving;
 	}
 
 	public void setRobotMoving(boolean moving) {
-		setChanged();
-		notifyObservers();
-		robot_moving = moving;
+		if (robot_moving != moving) {
+			robot_moving = moving;
+		}
+	}
+	
+	public boolean isChanged_CS() {
+		boolean value = robot_changed_CS;
+		robot_changed_CS = false;
+		return value;
+	}
+
+	public boolean isChanged_GTS() {
+		boolean value = robot_changed_GTS;
+		robot_changed_GTS = false;
+		return value;
 	}
 
 	public void addSensor(Sensor s) {
