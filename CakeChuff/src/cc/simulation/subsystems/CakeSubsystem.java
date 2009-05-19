@@ -44,12 +44,12 @@ public class CakeSubsystem extends Node implements Observer {
 		this.attachChild(conv);
 
 		s1 = new LightSensor("sensor1");
-		s1.setLocalTranslation(-2, 4.3f, 0f);
+		s1.setLocalTranslation(-1.5f, 4.3f, 0f);
 		this.attachChild(s1);
 		_state.addSensor(s1);
 
 		s2 = new LightSensor("sensor2");
-		s2.setLocalTranslation(3, 4.3f, 0f);
+		s2.setLocalTranslation(3.5f, 4.3f, 0f);
 		this.attachChild(s2);
 		_state.addSensor(s2);
 

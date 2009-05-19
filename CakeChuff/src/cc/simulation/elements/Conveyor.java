@@ -55,7 +55,8 @@ public class Conveyor extends Node {
 	}
 
 	public void setVelocity(float velocity) {
-		this.final_velocity = velocity;
+//this.final_velocity = velocity;		
+		this.current_velocity = velocity;
 	}
 	
 	/**
@@ -63,15 +64,15 @@ public class Conveyor extends Node {
 	 * in the animation.
 	 */
 	public void updateParameters(float tps){
-		float increment = 0; 
-		
-		if(current_velocity > final_velocity){
-			increment = -1*(acceleration*tps);
-		} else {
-			increment = (acceleration*tps);
-		}
-		
-		current_velocity += increment; 
+//		float increment = 0; 
+//		
+//		if(current_velocity > final_velocity){
+//			increment = -1*(acceleration*tps);
+//		} else {
+//			increment = (acceleration*tps);
+//		}
+//		
+//		current_velocity += increment; 
 	}
 
 }
