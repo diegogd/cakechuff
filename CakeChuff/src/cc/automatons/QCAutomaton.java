@@ -33,7 +33,7 @@ public class QCAutomaton extends Automaton {
 	//parameters
 	private int belt_lg, t_stamp, t_rob,f_chance;
 	private float speed;
-
+	private int cakes_blister;
 	//simulation
 	QualitySubsystemState qcsystem;
 	boolean passed;
@@ -70,7 +70,7 @@ public class QCAutomaton extends Automaton {
 		this.speed = (float)speed/(belt_lg*3);
 		this.belt_lg=belt_lg;
 		this.t_stamp=t_stamp;
-		this.t_rob=t_rob;
+		this.t_rob=13/t_rob;
 		this.f_chance=f_rate;
 		state=START;
 
@@ -92,20 +92,32 @@ public class QCAutomaton extends Automaton {
 		state=QC;
 		send("A3:qc");
 		qcsystem.setQualityCheck(true);
+		
 		try{
 			Thread.sleep(3*1000);
 		}catch(InterruptedException ie){
-			System.out.println("Interrumpido");
+			//System.out.println("Interrupted");
 			ie.printStackTrace();
 		}
+		cakes_blister=qcsystem.getIfQualityPassed();
 		qcsystem.setQualityCheck(false);
-		if(Math.random()*100<f_chance){
+		if(cakes_blister==4){
+			passed=true;
+			
+			run_qc_stamp();
+		}else{
+			passed=false;
+			run_ko_mov();
+		}
+		/* Simulated quality check
+		  qcsystem.setQualityCheck(false);
+		 if(Math.random()*100<f_chance){
 			passed=false;
 			run_ko_mov();
 		}else{
 			passed=true;
 			run_qc_stamp();
-		}
+		}*/
 		
 	}
 	private void run_qc_stamp(){
@@ -115,12 +127,12 @@ public class QCAutomaton extends Automaton {
 	}
 	private void run_stamp(){
 		qcsystem.setConveyor_velocity(0);
-		qcsystem.setWrapper_secs(2);
+		qcsystem.setWrapper_secs(t_stamp);
 		qcsystem.setWrappedUp(true);
 		try{
-			Thread.sleep(3*1000);
+			Thread.sleep(t_stamp*1000);
 		}catch(InterruptedException ie){
-			System.out.println("Interrumpido");
+			//System.out.println("Interrupted");
 			ie.printStackTrace();
 		}
 		run_stamp_wait();
@@ -134,14 +146,14 @@ public class QCAutomaton extends Automaton {
 	private void run_ko_mov(){
 		qcsystem.setConveyor_velocity(speed);
 		state=KO_MOV;
-		send("A3:ko_mov");
+		send("A3:ko_mov:"+cakes_blister);
 	}
 	private void run_ok_wait(){
 		qcsystem.setConveyor_velocity(0);
 		state=OK_WAIT;
 		send("A3:ok_wait");
 		//pick and box
-		qcsystem.setRobot_velocity(4f);
+		qcsystem.setRobot_velocity(t_rob);
 		qcsystem.setRobotGoToState(qcsystem.PICKUPPACKET);
 	}
 	private void run_ko_wait(){
@@ -191,7 +203,7 @@ public class QCAutomaton extends Automaton {
 	}
 	@Override
 	public synchronized void newMsg(String msg) {
-		System.out.println("QCAutomaton receives:"+msg);
+		//System.out.println("QCAutomaton receives:"+msg);
 		String[] content= msg.split(":");
 		//Emergencies work for any state
 		if(content[0].equals("EMERGENCY")) run_stop();
