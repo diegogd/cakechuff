@@ -61,7 +61,7 @@ public class Mailbox implements Runnable {
 		String msg;
 		while (true) {
 			try {
-			System.out.println("Receiving message...");
+			//System.out.println("Receiving message...");
 				//msg = din.readUTF();
 				msg=din.readLine();
 				System.out.println("Received:"+msg);

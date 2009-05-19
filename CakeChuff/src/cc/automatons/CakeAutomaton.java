@@ -83,7 +83,7 @@ public class CakeAutomaton extends Automaton {
 	private void run_init(){
 		
 		//drop cake
-		
+
 		//start conveyor
 		cakesystem.setConveyor_velocity(speed);
 		state= INIT;
@@ -113,15 +113,16 @@ public class CakeAutomaton extends Automaton {
 	}
 	private void run_choc_car(){
 		state=CHOC_CAR;
+		if(ncakes>0 && (!stop||(cake_cap-ncakes)%4!=0)){
+			sys.setDropCake();
+			ncakes--;
+		}
 		/*There are cakes left
 		 * &
 		 * if the automaton is going to stop, the number of cakes dropped is nx4
 		 * (to complete n blisters)
 		 */		
-		if(ncakes>0 && (!stop||(cake_cap-ncakes)%4!=0)){
-			sys.setDropCake();
-			ncakes--;
-		}
+		
 		send("A1:choc_car");
 	}
 	private void run_car(){
@@ -148,6 +149,7 @@ public class CakeAutomaton extends Automaton {
 	}
 	private void run_wait(){
 		cakesystem.setConveyor_velocity(0);
+
 		//stop conveyor
 		state=WAIT;
 		send("A1:wait");
@@ -273,7 +275,6 @@ public class CakeAutomaton extends Automaton {
 			} else if (((Sensor) arg1).getName().equalsIgnoreCase("sensor3")) {
 				
 				if (((Sensor) arg1).isActived() && state!=WAIT){
-					System.out.println("A1: TOCADO SENSOR DE FINAL DE LA CINTA POR UNA TARTA QUE PASABA POR AHÍ.");
 					state=WAIT;
 					(new Thread(this)).start();
 				}
