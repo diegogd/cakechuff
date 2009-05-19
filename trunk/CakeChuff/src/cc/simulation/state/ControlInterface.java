@@ -15,17 +15,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 //import javax.swing.Timer;
 import java.awt.Event.*;
+import java.io.File;
 import java.util.TimerTask;
 import java.util.Timer;
 
 import cc.scada.*;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -42,16 +45,15 @@ public class ControlInterface extends javax.swing.JFrame implements ActionListen
         private long initTime =0;
         
         private int hours, minutes, seconds;
-	private static Timer time = null;
+        private static Timer time = null;
         
         private boolean hasStarted = false;
         
+        private JFileChooser fc;
+        
     /** Creates new form ControlInterface */
     public ControlInterface() {
-        // ^ Just notify no observer
-        
-    	
-    	
+
         _scada = new SCADA(this);
             	    	
         initComponents();
@@ -1034,10 +1036,44 @@ private void EmergencyButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
 }//GEN-LAST:event_EmergencyButtonActionPerformed
 
 private void GeneratePDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GeneratePDFActionPerformed
-	GeneratePDF pdf = new GeneratePDF(this.okblisters.getText(), this.koblisters.getText(),
-						this.okcake.getText(), this.kocake.getText(), this.starts.getText(), 
-						this.stops.getText(),this.emerstops.getText());
-	pdf.generate();
+	
+	//Set up the file chooser.
+	if (fc == null) {
+		fc = new JFileChooser();
+
+		fc.addChoosableFileFilter(new FileNameExtensionFilter("pdf", "PDF", "PDF file"));
+		fc.setAcceptAllFileFilterUsed(false);
+	}
+
+	//Show it.
+	int returnVal = fc.showDialog(this, "Save File");
+
+	//Process the results.
+	if (returnVal == JFileChooser.APPROVE_OPTION) {
+
+		File file = fc.getSelectedFile();
+			
+		GeneratePDF pdf = new GeneratePDF(file.getPath(),this.okblisters.getText(), this.koblisters.getText(),
+				this.okcake.getText(), this.kocake.getText(), this.starts.getText(), 
+				this.stops.getText(),this.emerstops.getText());
+        
+		if (pdf.generate()){
+			this.setEnabled(false);
+			new PDFCreated(this).setVisible(true);
+		}else{
+			this.setEnabled(false);
+			new PDFFail(this).setVisible(true);
+		}
+
+        
+    } else {
+    	this.setEnabled(false);
+		new PDFFail(this).setVisible(true);
+    }
+    //Reset the file chooser for the next time it's shown.
+    fc.setSelectedFile(null);
+
+
 }//GEN-LAST:event_GeneratePDFActionPerformed
 
 private void spinnerCaramelStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinnerCaramelStateChanged
