@@ -348,7 +348,7 @@ public class Robot1 extends Node implements Observer {
 					if (aux instanceof Blister) {
 						if (pickUpBlister(time,aux)){
 							_state.setCurrentState(PICKUPBLISTER);
-							System.out.println("PICKUPBLISTER");
+//							System.out.println("PICKUPBLISTER");
 							break;
 						}
 					}

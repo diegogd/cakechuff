@@ -12,9 +12,9 @@ public class Robot1State extends Observable {
 
 	private static Robot1State _instance = null;
 
-//	private HashMap<Float, Boolean> position_angles;
+	// private HashMap<Float, Boolean> position_angles;
 
-//	private float current_angle;
+	// private float current_angle;
 
 	private float robot_velocity = 0;
 
@@ -26,17 +26,17 @@ public class Robot1State extends Observable {
 	final int PICKUPCAKE = 5;
 	final int DROPINTABLE = 6;
 	final int PICKUPBLISTER = 7;
-	//final int DROPBLISTER = 8;
+	// final int DROPBLISTER = 8;
 	final int PICKUPPACKET = 9;
 	final int DROPINSUB3 = 10;
 
 	int current_state, goToState;
-	boolean changed_CS=false, changed_GTS=false;
-	boolean _moving;
+	boolean changed_CS = false, changed_GTS = false;
+	boolean _moving;// _finished = true;
 
 	public Robot1State() {
-//		position_angles = new HashMap<Float, Boolean>();
-//		current_angle = 0;
+		// position_angles = new HashMap<Float, Boolean>();
+		// current_angle = 0;
 		current_state = 0;
 		_moving = false;
 	}
@@ -53,22 +53,26 @@ public class Robot1State extends Observable {
 	}
 
 	public void setRobot_velocity(float robot_velocity) {
-		this.robot_velocity = robot_velocity;
-		setChanged();
-		notifyObservers();
+		if (!getIfMoving()) {
+			this.robot_velocity = robot_velocity;
+			setChanged();
+			notifyObservers();
+		}
 	}
 
-//	public void addPosition(float angle) {
-//		position_angles.put((Float) angle, false);
-//	}
+	// public void addPosition(float angle) {
+	// position_angles.put((Float) angle, false);
+	// }
 
-	
-	//LLamada para cambiar los estados!!
+	// LLamada para cambiar los estados!!
 	public void setGoToState(int goToState) {
-		if(this.goToState != goToState){
-			this.goToState = goToState;
-			this.changed_GTS = true;
-			this.setMoving(true);
+		if (!getIfMoving()) {
+			if (this.goToState != goToState) {
+				this.goToState = goToState;
+				this.changed_GTS = true;
+				this.setMoving(true);
+				// this.setFinished(false);
+			}
 		}
 	}
 
@@ -76,13 +80,13 @@ public class Robot1State extends Observable {
 		return goToState;
 	}
 
-	
 	public void setCurrentState(int currentState) {
-		if( this.current_state != currentState ){
+		if (this.current_state != currentState) {
 			System.out.println("Changing State...");
 			this.current_state = currentState;
 			this.changed_CS = true;
 			this.setMoving(false);
+			// this.setFinished(true);
 			setChanged();
 			notifyObservers();
 		}
@@ -92,13 +96,13 @@ public class Robot1State extends Observable {
 		return current_state;
 	}
 
-	public boolean getIfMoving() {				
+	public boolean getIfMoving() {
 		return _moving;
 	}
-	
-	public void setMoving(boolean moving){
-		if( _moving != moving ){
-			_moving = moving;		
+
+	public void setMoving(boolean moving) {
+		if (_moving != moving) {
+			_moving = moving;
 		}
 	}
 
@@ -114,20 +118,12 @@ public class Robot1State extends Observable {
 		return value;
 	}
 
-//	public void checkPositionChanges() {
-//
-//		Set<Float> angles = position_angles.keySet();
-//		Iterator<Float> iterator = angles.iterator();
-//		while (iterator.hasNext()) {
-//			float angle = iterator.next();
-//			if ((position_angles.get(angle) == true)
-//					&& (this.current_angle == angle)) {
-//				setChanged();
-//				notifyObservers(position_angles.get(angle));
-//			}
-//		}
-//	}
-
-	
+	// public boolean getFinished() {
+	// return _finished;
+	// }
+	//
+	// public void setFinished(boolean finished) {
+	// _finished = finished;
+	// }
 
 }
