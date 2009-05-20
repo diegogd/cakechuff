@@ -221,9 +221,8 @@ public class MasterAutomaton extends Automaton {
 			} else {
 				// state change
 				mboxScada.send(msg);
-				System.out.println("Cake awaiting");
 				if (content[1].equalsIgnoreCase("BLISTER_READY")) {
-					if (state == EMPTY && stop == false) {
+					if (state == EMPTY && stop == false &&!robot.getIfMoving()) {
 						run_robot_blister();
 					} else
 						blister_waiting = true;
