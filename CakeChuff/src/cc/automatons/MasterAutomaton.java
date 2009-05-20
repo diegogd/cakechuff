@@ -88,13 +88,14 @@ public class MasterAutomaton extends Automaton {
 		qc_free = true;
 		cake_waiting = false;
 		blister_waiting = false;
-		f_chance=0;
+		//f_chance=50;
 	}
 
-	private void run_robot_start(float movecaket, float moveblistert) {
+	private void run_robot_start(float movecaket, float moveblistert, int f_rate) {
 		this.movecaket = 3/movecaket;
 		this.moveblistert = 13/moveblistert;
 		robot.setRobot_velocity(moveblistert);
+		f_chance=f_rate;
 	}
 
 	private void run_robot_blister() {
@@ -156,13 +157,13 @@ public class MasterAutomaton extends Automaton {
 
 	@Override
 	public synchronized void newMsg(String msg) {
-		while (treatingupdate) {
+		/*while (treatingupdate) {
 			try {
 				Thread.sleep(500);
 			} catch (InterruptedException e) {
 
 			}
-		}
+		}*/
 		System.out.println("Master->Received: " + msg);
 		String[] content = msg.split(":");
 		if (content[0].equalsIgnoreCase("A1")) {
@@ -262,7 +263,8 @@ public class MasterAutomaton extends Automaton {
 			mboxQC.send("INIT:" + pars[2]);
 			String[] parsrob = pars[3].split("\\#");
 			run_robot_start(Integer.parseInt(parsrob[0]), Integer
-					.parseInt(parsrob[1]));
+					.parseInt(parsrob[1]), Integer.parseInt(pars[2].split("\\#")[2]));
+			
 		} else if (content[0].equalsIgnoreCase("RESTART")) {
 			String[] pars = content[1].split("\\$");
 			if (pars[0].equalsIgnoreCase("A1")) {

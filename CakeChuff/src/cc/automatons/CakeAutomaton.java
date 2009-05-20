@@ -201,13 +201,13 @@ public class CakeAutomaton extends Automaton {
 	@Override
 	public synchronized void newMsg(String msg) {
 		System.out.println("My Cakemessage-Sense is tickling... " + msg);
-		while (treatingupdate){
+		/*while (treatingupdate){
 			try {
 				Thread.sleep(500);
 			} catch (InterruptedException e) {
 
 			}
-		}
+		}*/
 		String[] content = msg.split(":");
 		// Emergencies work for any state
 		if (content[0].equals("EMERGENCY"))
