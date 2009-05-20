@@ -45,10 +45,7 @@ public class MasterMailbox implements Runnable{
 		}
 		while (msgs.size()>0){
 			try{
-				//dout.writeChars(msgs.firstElement());
 				dout.println(msgs.remove(0));
-				//msgs.firstElement()
-				//msgs.removeElementAt(0);
 			}catch(Exception e){
 				System.out.println("Error:");
 				e.printStackTrace();
@@ -69,7 +66,6 @@ public class MasterMailbox implements Runnable{
 				sout=new Socket(destination,portout);
 				success=true;
 				dout=  new PrintWriter(sout.getOutputStream(), true);
-				//dout=new DataOutputStream(sout.getOutputStream());
 			}catch(IOException ioe){
 				
 			}
