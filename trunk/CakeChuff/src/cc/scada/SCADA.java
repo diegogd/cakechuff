@@ -1,3 +1,4 @@
+//TODO: NullPointer in newMsg??
 package cc.scada;
 
 import cc.simulation.state.ControlInterface;

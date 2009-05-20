@@ -39,7 +39,7 @@ public class Mailbox implements Runnable {
 	public void run() {
 		//Accept connections
 		try{
-			System.out.println("Mailbox: Connecting...");
+			System.out.println("[Mailbox]: Connecting...");
 			this.connect();
 			while(!failure){
 				receiveMsgs();
@@ -53,18 +53,13 @@ public class Mailbox implements Runnable {
 	private void connect() throws IOException {
 		so = ss.accept();
 		din= new BufferedReader(new InputStreamReader( so.getInputStream()));
-		//din = new DataInputStream(so.getInputStream());
-		//dout = new DataOutputStream(so.getOutputStream());
 	}
 
 	private void receiveMsgs() {
 		String msg;
 		while (true) {
 			try {
-			//System.out.println("Receiving message...");
-				//msg = din.readUTF();
 				msg=din.readLine();
-				//System.out.println("Received:"+msg);
 				owner.newMsg(msg);				
 			} catch (IOException ioe) {
 				// connection failure

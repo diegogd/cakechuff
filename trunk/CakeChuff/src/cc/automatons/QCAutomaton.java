@@ -52,7 +52,6 @@ public class QCAutomaton extends Automaton {
 					
 				}
 			}
-			//dout = new DataOutputStream(sout.getOutputStream());
 			dout = new PrintWriter(sout.getOutputStream(),true);
 			//subscribe
 			qcsystem = QualitySubsystemState.getInstance();
@@ -75,15 +74,11 @@ public class QCAutomaton extends Automaton {
 		this.f_chance=f_rate;
 		state=START;
 		qcsystem.setRobot_velocity(this.t_rob);
-
-		//send("A3:START");
-		//now wait for a cake pack
 		run_init();
 		
 	}
 	private void run_init(){
 		if(!stop){
-			System.out.println("Starting A2...");
 			qcsystem.setConveyor_velocity(speed);
 			state=INIT;
 			send("A3:init");
@@ -111,16 +106,6 @@ public class QCAutomaton extends Automaton {
 			passed=false;
 			run_ko_mov();
 		}
-		/* Simulated quality check
-		  qcsystem.setQualityCheck(false);
-		 if(Math.random()*100<f_chance){
-			passed=false;
-			run_ko_mov();
-		}else{
-			passed=true;
-			run_qc_stamp();
-		}*/
-		
 	}
 	private void run_qc_stamp(){
 		qcsystem.setConveyor_velocity(speed);
@@ -134,7 +119,6 @@ public class QCAutomaton extends Automaton {
 		try{
 			Thread.sleep(t_stamp*1000);
 		}catch(InterruptedException ie){
-			//System.out.println("Interrupted");
 			ie.printStackTrace();
 		}
 		run_stamp_wait();
@@ -155,7 +139,6 @@ public class QCAutomaton extends Automaton {
 		state=OK_WAIT;
 		send("A3:ok_wait");
 		//pick and box
-		
 		qcsystem.setRobotGoToState(qcsystem.PICKUPPACKET);
 	}
 	private void run_ko_wait(){
@@ -167,7 +150,6 @@ public class QCAutomaton extends Automaton {
 	}
 	private void run_failure(String data){
 		String pars[]=data.split("#");
-		//(int speed,int belt_lg,int f_rate,int t_stamp,int t_rob){
 		stop=false;
 		this.belt_lg = Integer.parseInt(pars[2]);
 		this.speed = Float.parseFloat(pars[1])/(belt_lg*3);
@@ -205,7 +187,6 @@ public class QCAutomaton extends Automaton {
 	}
 	@Override
 	public synchronized void newMsg(String msg) {
-		//System.out.println("QCAutomaton receives:"+msg);
 		String[] content= msg.split(":");
 		//Emergencies work for any state
 		if(content[0].equals("EMERGENCY")) run_stop();

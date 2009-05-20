@@ -35,10 +35,7 @@ public abstract class Automaton implements Observer, Runnable{
 	 * @param msg Message to be sent.
 	 */
 	protected void send(String msg){
-		System.out.println("Sending: "+msg);
-		
 			try{
-				//dout.writeChars(msg);
 				dout.println(msg);
 			}catch(Exception e){
 				//restart the receiving connection
@@ -48,8 +45,6 @@ public abstract class Automaton implements Observer, Runnable{
 				while(!success){
 					try{
 					sout= new Socket(master, portout);
-					//dout = new DataOutputStream(sout.getOutputStream());
-					
 					dout = new PrintWriter(sout.getOutputStream(),true); 
 					}catch(IOException ioe2){
 						//keep trying

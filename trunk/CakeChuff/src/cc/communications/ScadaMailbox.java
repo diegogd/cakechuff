@@ -15,9 +15,7 @@ public class ScadaMailbox implements Runnable {
 
 	private ServerSocket ss;
 	private Socket so;
-	//private DataInputStream din;
 	private BufferedReader din;
-	//private DataOutputStream dout;
 	private ArrayList<String> msg_list;
 	private SCADA owner;
 	private boolean failure;
@@ -52,8 +50,6 @@ public class ScadaMailbox implements Runnable {
 	private void connect() throws IOException {
 		so = ss.accept();
 		din= new BufferedReader(new InputStreamReader( so.getInputStream()));
-		//din = new DataInputStream(so.getInputStream());
-		//dout = new DataOutputStream(so.getOutputStream());
 	}
 
 	private void receiveMsgs() {

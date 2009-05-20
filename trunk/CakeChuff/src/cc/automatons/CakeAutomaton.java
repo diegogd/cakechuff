@@ -1,3 +1,9 @@
+//TODO: Cinta que no arranca (waitingcake bloqueando?) +++
+//TODO: Parada sin lanzar más tartas de la cuenta --
+//TODO: Estados dobles (esperando y chocolate, etc) -> booleanos para retrasar acciones, 
+// no permitiendo más de una a la vez(lento) +
+
+
 package cc.automatons;
 
 import java.io.DataOutputStream;
@@ -78,7 +84,6 @@ public class CakeAutomaton extends Automaton {
 		state=START;
 		sys.setDropCake();
 		ncakes--;
-		System.out.println("The Cake producing process will start now");
 		run_init();
 	}
 	private void run_init(){
@@ -98,7 +103,6 @@ public class CakeAutomaton extends Automaton {
 		state=CHOC;
 		send("A1:choc");
 		//change to choc_car here??
-		//while(cakesystem.getValve1_open_secs()>0);
 		
 		try{
 			Thread.sleep(vt1*1000);
@@ -106,23 +110,24 @@ public class CakeAutomaton extends Automaton {
 			//System.out.println("Interrupted");
 			ie.printStackTrace();
 		}
-		cakesystem.setValve1_open_secs(0);
 		//close chocolate valve ¿?
+		cakesystem.setValve1_open_secs(0);
 		//run conveyor
 		if(!waitingcake)cakesystem.setConveyor_velocity(speed);
 		
 	}
 	private void run_choc_car(){
 		state=CHOC_CAR;
-		if(ncakes>0 && (!stop||(cake_cap-ncakes)%4!=0)){
-			sys.setDropCake();
-			ncakes--;
-		}
 		/*There are cakes left
 		 * &
 		 * if the automaton is going to stop, the number of cakes dropped is nx4
 		 * (to complete n blisters)
 		 */		
+
+		if(ncakes>0 && (!stop||(cake_cap-ncakes)%4!=0)){
+			sys.setDropCake();
+			ncakes--;
+		}
 		
 		send("A1:choc_car");
 	}
@@ -135,7 +140,6 @@ public class CakeAutomaton extends Automaton {
 		
 		send("A1:car");
 		
-		//change to car_wait here??
 		try{
 			Thread.sleep(vt2*1000);
 		}catch(InterruptedException ie){}
@@ -161,8 +165,6 @@ public class CakeAutomaton extends Automaton {
 	 */
 	private void run_failure(String data){
 		String pars[]=data.split("#");
-		//INIT,CHOC,CHOC_CAR,CAR,CAR_WAIT,WAIT
-		//int cake_cap, int speed, int belt_lg, int vt1, int vt2
 		
 		//Reload parameters
 		this.cake_cap = Integer.parseInt(pars[1]);
@@ -200,8 +202,7 @@ public class CakeAutomaton extends Automaton {
 	}
 	@Override
 	public synchronized void newMsg(String msg) {
-		System.out.println("My Cakemessage-Sense is tickling... " + msg);
-		/*while (treatingupdate){
+	/*while (treatingupdate){
 			try {
 				Thread.sleep(500);
 			} catch (InterruptedException e) {
@@ -221,7 +222,6 @@ public class CakeAutomaton extends Automaton {
 			switch (state) {
 			case START:
 				if (content[0].equalsIgnoreCase("INIT")) {
-					System.out.println("CakeAutomaton: Received init signal");
 					String[] pars = content[1].split("\\#");
 					run_start(Integer.parseInt(pars[0]), Integer
 							.parseInt(pars[1]), Integer.parseInt(pars[2]),
@@ -242,7 +242,7 @@ public class CakeAutomaton extends Automaton {
 				break;
 			case WAIT:
 				if (content[0].equalsIgnoreCase("R1")){
-						System.out.println("Cake taken. Or not...");
+						System.out.println("[CakeAutomaton]: Cake taken.");
 					run_init();
 				}
 				break;
@@ -303,13 +303,11 @@ public class CakeAutomaton extends Automaton {
 	}
 	public static void main(String args[]){
 		CakeAutomaton aut=new CakeAutomaton(Integer.parseInt(args[0]),Integer.parseInt(args[1]),args[2]);
-		//CakeAutomaton aut=new CakeAutomaton(9001,9000,"localhost");
 		
 		while(true){
 			try {
 				Thread.sleep(10000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

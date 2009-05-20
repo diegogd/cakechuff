@@ -1,3 +1,9 @@
+//TODO: recuperación de caídas +
+//TODO: Errores simulados -> mover la tarta pero saltarse un estado
+//(Random en el cambio de estado tras el update del robot)
+//TODO: Ajustar velocidades al entorno de ejecución -
+
+
 package cc.automatons;
 
 import java.io.DataOutputStream;
@@ -99,15 +105,10 @@ public class MasterAutomaton extends Automaton {
 	}
 
 	private void run_robot_blister() {
-		System.out.println("Robot1: Picking blister");
+		System.out.println("[Master]: Robot1: Picking blister");
 		// move robot arm to the conveyor
 		robot.setRobot_velocity(moveblistert);
 		robot.setGoToState(PICKUPBLISTER);
-		// pick blister
-
-		// move blister to the packing table
-
-		// tell the blister automaton
 	}
 
 	private void run_robot_cake1() {
@@ -120,7 +121,7 @@ public class MasterAutomaton extends Automaton {
 			robot.setGoToState(SUBSYSTEM1);
 			mistake=false;
 		}
-		System.out.println("Picking cake 1");
+		System.out.println("[Master]:Picking cake 1");
 		// put cake in the blister
 		// tell the cake automaton
 	}
@@ -129,7 +130,7 @@ public class MasterAutomaton extends Automaton {
 		state = CAKE2;
 		robot.setRobot_velocity(movecaket);
 		robot.setGoToState(PICKUPCAKE);
-		System.out.println("Picking cake 2");
+		System.out.println("[Master]:Picking cake 2");
 		// put cake in the blister
 		// tell the cake automaton
 	}
@@ -138,21 +139,14 @@ public class MasterAutomaton extends Automaton {
 		state = CAKE3;
 		robot.setRobot_velocity(movecaket);
 		robot.setGoToState(PICKUPCAKE);
-		System.out.println("Picking cake 3");
-		// put cake in the blister
-		// tell the cake automaton
+		System.out.println("[Master]:Picking cake 3");
 	}
 
 	private void run_robot_full() {
 		state = FULL;
 		robot.setRobot_velocity(movecaket);
 		robot.setGoToState(PICKUPCAKE);
-		System.out.println("Picking last cake");
-		// put cake in the blister
-		// tell the cake automaton
-		// move full blister to the qc conveyor
-		// tell the qc automaton
-		// blisters waiting?
+		System.out.println("[Master]:Picking last cake");
 	}
 
 	@Override
@@ -164,7 +158,6 @@ public class MasterAutomaton extends Automaton {
 
 			}
 		}*/
-		System.out.println("Master->Received: " + msg);
 		String[] content = msg.split(":");
 		if (content[0].equalsIgnoreCase("A1")) {
 			if (content[1].equalsIgnoreCase("ON")) {
@@ -196,22 +189,9 @@ public class MasterAutomaton extends Automaton {
 						// the cake must wait for a blister
 						cake_waiting = true;
 					}
-					/*
-					 * }else {
-					 * 
-					 * mboxCake.send("R1:cake"); if (state == BLISTER) {
-					 * state=CAKE1; } else if (state == CAKE1) { state=CAKE2; }
-					 * else if (state == CAKE2) { state=CAKE3; } else if (state
-					 * == CAKE3) { state=FULL;
-					 * robot.setRobot_velocity(moveblistert);
-					 * robot.setGoToState(PICKUPPACKET); }
-					 */
 				}
-
 			}
-
 		} else if (content[0].equalsIgnoreCase("A2")) {
-			System.out.println("Msg from AUT2");
 			if (content[1].equalsIgnoreCase("ON")) {
 				if (blister_on == false)
 					blister_on = true;
@@ -248,7 +228,7 @@ public class MasterAutomaton extends Automaton {
 				// state change
 				mboxScada.send(msg);
 				if (qc_free && packet_waiting) {
-					System.out.println("Waiting packet -> QC");
+					System.out.println("[Master to Robot1]: Waiting packet -> QC");
 					robot.setRobot_velocity(moveblistert);
 					robot.setGoToState(PICKUPPACKET);
 				}
@@ -263,7 +243,6 @@ public class MasterAutomaton extends Automaton {
 			String[] parsrob = pars[3].split("\\#");
 			run_robot_start(Integer.parseInt(parsrob[0]), Integer
 					.parseInt(parsrob[1]), Integer.parseInt(pars[2].split("\\#")[2]));
-			
 		} else if (content[0].equalsIgnoreCase("RESTART")) {
 			String[] pars = content[1].split("\\$");
 			if (pars[0].equalsIgnoreCase("A1")) {
@@ -286,32 +265,24 @@ public class MasterAutomaton extends Automaton {
 			robot.deleteObserver(this);
 			robot.setMoving(false);
 		}
-
 	}
 
 	@Override
 	public void update(Observable o, Object arg) {
-		Date time=new Date();
-		long now=time.getTime();
-		//TODO: Eliminar si definitivamente no cambia nada,
-		if(now-lastupdate<1000){
-			System.out.println("Too fast.");
-			return;
-		}
 		treatingupdate=true;
 		if (o instanceof Robot1State && ! robot.getIfMoving() && ((Robot1State) o).isChanged_CS()) {
 			// robot.deleteObserver(this);
-			System.out.println(time.toString()+":Robot state changed");
+			System.out.println("[Master to Robot1]:Robot state changed");
 			System.out.println("New Robot1 state:"+robot.getCurrentState());
 			switch (robot.getCurrentState()) {
 			case (SUBSYSTEM1):
 				//Simulated error
-				System.out.println("R1: CAKE -> TABLE... ups!!");
+				System.out.println("[Master to Robot1]: CAKE -> TABLE... ups!!");
 				cake_waiting = false;
 				mboxCake.send("R1:cake");
 				break;
 			case (PICKUPCAKE):
-				System.out.println("R1: CAKE -> TABLE");
+				System.out.println("[Master to Robot1]: CAKE -> TABLE");
 				cake_waiting = false;
 				robot.setRobot_velocity(movecaket);
 				robot.setGoToState(DROPINTABLE);
@@ -321,48 +292,48 @@ public class MasterAutomaton extends Automaton {
 				if (state == EMPTY) {	
 					state = BLISTER;
 					if (cake_waiting) {
-						System.out.println("R1: EMPTY->BLISTER");
+						System.out.println("[Master to Robot1]: EMPTY->BLISTER");
 						robot.setRobot_velocity(movecaket);
 						robot.setGoToState(PICKUPCAKE);
 						state = CAKE1;
 					}
 				} else if (state == BLISTER) {
 					if (cake_waiting) {
-						System.out.println("R1: BLISTER->CAKE1");
+						System.out.println("[Master to Robot1]: BLISTER->CAKE1");
 						robot.setRobot_velocity(movecaket);
 						robot.setGoToState(PICKUPCAKE);
 						state = CAKE1;
-					} //else	robot.setGoToState(TABLE);
+					} 
 				} else if (state == CAKE1) {
 					if (cake_waiting) {
-						System.out.println("R1: CAKE1->CAKE2");
+						System.out.println("[Master to Robot1]: CAKE1->CAKE2");
 						robot.setRobot_velocity(movecaket);
 						robot.setGoToState(PICKUPCAKE);
 						state = CAKE2;
-					} //else	robot.setGoToState(TABLE);
+					} 
 				} else if (state == CAKE2) {
 					if (cake_waiting) {
 						System.out.println("R1: CAKE2->CAKE3");
 						robot.setRobot_velocity(movecaket);
 						robot.setGoToState(PICKUPCAKE);
 						state = CAKE3;
-					} //else	robot.setGoToState(TABLE);
+					} 
 				} else if (state == CAKE3) {
 					if (cake_waiting) {
-						System.out.println("R1: CAKE3->FULL");
+						System.out.println("[Master to Robot1]: CAKE3->FULL");
 						robot.setRobot_velocity(movecaket);
 						robot.setGoToState(PICKUPCAKE);
 						state = FULL;
-					} //else	robot.setGoToState(TABLE);
+					} 
 				} else if (state == FULL ) {
 					if(qc_free)
-					System.out.println("R1: PICK PACKET");
+					System.out.println("[Master to Robot1]: PICK PACKET");
 					robot.setRobot_velocity(moveblistert);
 					robot.setGoToState(PICKUPPACKET);
 				}else packet_waiting=true;
 				break;
 			case (PICKUPBLISTER):
-				System.out.println("R1: BLISTER -> TABLE");
+				System.out.println("[Master to Robot1]: BLISTER -> TABLE");
 				state=BLISTER;
 				robot.setRobot_velocity(moveblistert);
 				robot.setGoToState(DROPINTABLE);
@@ -370,27 +341,26 @@ public class MasterAutomaton extends Automaton {
 				break;
 			case (PICKUPPACKET):
 				packet_waiting=false;
-				System.out.println("R1: BLISTER -> QC");
+				System.out.println("[Master to Robot1]: BLISTER -> QC");
 				robot.setRobot_velocity(moveblistert);
 				robot.setGoToState(DROPINSUB3);
 				break;
 			case (DROPINSUB3):
-				System.out.println("R1: PACK LEFT");
+				System.out.println("[Master to Robot1]: PACK LEFT");
 				mboxQC.send("R1:empty");
 				state = EMPTY;
-				System.out.println("\n\n\n\n");
+				System.out.println("\n\n------------[Robot1]:Pack Done-----------------\n\n");
 				if (blister_waiting && !stop) {
-					System.out.println("R1: PICK AWAITING BLISTER");
+					System.out.println("[Master to Robot1]: PICK AWAITING BLISTER");
 					state=BLISTER;
 					robot.setRobot_velocity(moveblistert);
 					robot.setGoToState(PICKUPBLISTER);
-				} //else		robot.setGoToState(TABLE);
+				} 
 				break;
 			}
 
 		}
 		treatingupdate=false;
-		// robot.addObserver(this);
 	}
 
 	public void run() {
@@ -409,9 +379,6 @@ public class MasterAutomaton extends Automaton {
 					args[6], Integer.parseInt(args[7]), Integer
 							.parseInt(args[8]), args[9], Integer
 							.parseInt(args[10]), Integer.parseInt(args[11]));
-			// MasterAutomaton aut=new MasterAutomaton(
-			// "localhost",9000,9009,"localhost",9000,9001,"localhost",9000,9002,"localhost",9000,9003);
-
 			while (true) {
 				try {
 					Thread.sleep(10000);
