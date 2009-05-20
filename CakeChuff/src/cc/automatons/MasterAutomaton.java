@@ -14,7 +14,7 @@ import cc.simulation.state.Robot1State;
 public class MasterAutomaton extends Automaton {
 	/* state for robot (inherited) */
 	private Robot1State robot;
-	private int staterobot;
+	private boolean movingrobot;
 	private final int SUBSYSTEM1 = 1;
 	private final int SUBSYSTEM2 = 2;
 	private final int SUBSYSTEM3 = 3;
@@ -182,7 +182,8 @@ public class MasterAutomaton extends Automaton {
 						System.out.println("Simulated error");
 						mistake = true;
 					}
-					if (state == BLISTER) {
+					if(robot.getIfMoving())cake_waiting = true;
+					else if (state == BLISTER) {
 						run_robot_cake1();
 					} else if (state == CAKE1) {
 						run_robot_cake2();
