@@ -13,6 +13,7 @@ import cc.simulation.elements.Sensor;
 import cc.simulation.elements.TouchSensor;
 import cc.simulation.state.CakeSubsystemState;
 import cc.simulation.state.QualitySubsystemState;
+import cc.simulation.state.Robot1State;
 import cc.simulation.state.SystemState;
 
 public class QCAutomaton extends Automaton {
@@ -70,9 +71,10 @@ public class QCAutomaton extends Automaton {
 		this.speed = (float)speed/(belt_lg*3);
 		this.belt_lg=belt_lg;
 		this.t_stamp=t_stamp;
-		this.t_rob=13/t_rob;
+		this.t_rob=7/t_rob;
 		this.f_chance=f_rate;
 		state=START;
+		qcsystem.setRobot_velocity(this.t_rob);
 
 		//send("A3:START");
 		//now wait for a cake pack
@@ -153,7 +155,7 @@ public class QCAutomaton extends Automaton {
 		state=OK_WAIT;
 		send("A3:ok_wait");
 		//pick and box
-		qcsystem.setRobot_velocity(t_rob);
+		
 		qcsystem.setRobotGoToState(qcsystem.PICKUPPACKET);
 	}
 	private void run_ko_wait(){
@@ -282,7 +284,7 @@ public class QCAutomaton extends Automaton {
 					(new Thread(this)).start();
 
 				}
-		} else if (o instanceof QualitySubsystemState) {
+		} else if (o instanceof QualitySubsystemState && ((QualitySubsystemState) o).isChanged_CS()) {
 			qcsystem.deleteObserver(this);
 			if (!qcsystem.getRobotIfMoving()) {
 				if (qcsystem.getRobotCurrentState() == qcsystem.PICKUPPACKET) {

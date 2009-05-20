@@ -35,6 +35,8 @@ public class Robot extends Node {
 
 	private Cylinder lowerHeadLeft, lowerHeadRight;
 	private Cylinder upperHeadLeft, upperHeadRight;
+	
+	private int precision = 2;
 
 	private float angleBody;
 	private float angleFloor;
@@ -259,8 +261,8 @@ public class Robot extends Node {
 		int direction = (int) Math.ceil(angleClaws * 180 / FastMath.PI)
 				- (int) Math.ceil(angle * 180 / FastMath.PI);
 
-		// System.out.println("Direction:"+direction);
-		if (direction < 0) {
+//		 System.out.println("OPENHAND: Direction:"+direction);
+		if (direction < -precision) {
 			if (time < 1) {
 				angleClaws += time * speed;
 			}
@@ -273,7 +275,7 @@ public class Robot extends Node {
 			// + " radianes:" + angleBody);
 			return false;
 		} else {
-			if (direction > 0) {
+			if (direction > precision) {
 				if (time < 1) {
 					angleClaws -= time * speed;
 				}
@@ -288,8 +290,12 @@ public class Robot extends Node {
 				// + " radianes:" + angleBody);
 				return false;
 			} else {
-				// System.out.println("Terminado Bend");
+				 System.out.println("Finished OPENHAND");
 				angleClaws = angle;
+				rotClawLeft.fromAngleAxis(angleClaws, new Vector3f(0, 0, 1));
+				pivotHeadLeft.setLocalRotation(rotClawLeft);
+				rotClawRight.fromAngleAxis(angleClaws * -1, new Vector3f(0, 0, 1));
+				pivotHeadRight.setLocalRotation(rotClawRight);
 				return true;
 			}
 		}
@@ -300,9 +306,9 @@ public class Robot extends Node {
 		int direction = (int) Math.ceil(angleClaws * 180 / FastMath.PI)
 				- (int) Math.ceil(angle * 180 / FastMath.PI);
 
-		// System.out.println("Direction:"+direction);
+		 System.out.println("OPENHANDOBJECT Direction:"+direction);
 		if (!has_object) {
-			if (direction < 0) {
+			if (direction < -precision) {
 				if (
 				// !lowerHeadLeft.hasCollision(element, false)
 				// && !upperHeadLeft.hasCollision(element, false)
@@ -326,7 +332,7 @@ public class Robot extends Node {
 					// + " radianes:" + angleBody);
 					return false;
 				} else {
-					// System.out.println("Colisionado 1!!!");
+					System.out.println("Colisionado Robot1!!!");
 					object = element;
 					has_object = true;
 					Father = element.getParent();
@@ -359,18 +365,12 @@ public class Robot extends Node {
 						pivotElement.setLocalScale(0.1f);
 						element.setLocalTranslation(0f, 5.5f, 0f);
 
-					} else {
-						element.setLocalRotation(Rotations.rotateX(0f));
-						element.setLocalTranslation(0, -0.65f, 0);
-						element.setLocalTranslation(0, -0.0f, 0);
-						element.setLocalScale(0.25f);
-						element.updateRenderState();
 					}
 
 					return true;
-				}
+				} 
 			} else {
-				if (direction > 0) {
+				if (direction > precision) {
 					if (!pivotHeadLeft.hasCollision(element, false)
 							&& !pivotHeadRight.hasCollision(element, false)) {
 						if (time < 1) {
@@ -386,25 +386,52 @@ public class Robot extends Node {
 						// System.out.println("Colisionado!!!");
 						return false;
 					} else {
-						System.out.println("Colisionado 2!!!");
+						System.out.println("Colisionado 2 Robot1!!!");
 						object = element;
 						has_object = true;
-						element.getParent();
-						this.getParent().detachChild(element);
-						pivotHead.attachChild(element);
+						Father = element.getParent();
+						Father.detachChild(element);
+						pivotElement.attachChild(element);
 
-						element.setLocalRotation(Rotations.rotateX(0f));
-						element.setLocalTranslation(0, -0.65f, 0);
-						element.setLocalTranslation(0, -0.0f, 0);
+						if (element instanceof Blister) {
+							if (element.getLocalRotation().y < 0) {
+								// Blister de la mesa
+								element.setLocalRotation(Rotations.rotateY(0f));
+								// element.setLocalTranslation(-6f, 1f, -3f);
+								element.setLocalTranslation(0, -0.0f, -0.0f);
+								pivotElement.setLocalScale(0.1f);
+								element.setLocalTranslation(6f, 0.0f, 8.5f);
 
-						element.setLocalScale(0.25f);
-						element.updateRenderState();
+								element.updateRenderState();
+							} else {
+								// Blister del sub2
+								element.setLocalTranslation(0, -0.0f, -0.0f);
+								pivotElement.setLocalScale(0.1f);
+								element.setLocalTranslation(6f, 0.0f, 8.5f);
+
+								element.updateRenderState();
+							}
+
+						} else if (element instanceof Cake) {
+							((Cake) element).inSub = false;
+							element.setLocalTranslation(0, -0.0f, -0.0f);
+							// element.setLocalRotation(Rotations.rotateX(-0.5f));
+							pivotElement.setLocalScale(0.1f);
+							element.setLocalTranslation(0f, 5.5f, 0f);
+
+						} 
 
 						return true;
 					}
 				} else {
-					// System.out.println("Terminado Bend");
+					 System.out.println("Sin Colision Robot1");
 					angleClaws = angle;
+					rotClawLeft
+					.fromAngleAxis(angleClaws, new Vector3f(0, 0, 1));
+			pivotHeadLeft.setLocalRotation(rotClawLeft);
+			rotClawRight.fromAngleAxis(angleClaws * -1, new Vector3f(0,
+					0, 1));
+			pivotHeadRight.setLocalRotation(rotClawRight);
 					return true;
 				}
 			}
@@ -494,8 +521,8 @@ public class Robot extends Node {
 		int direction = (int) Math.ceil(angleBody * 180 / FastMath.PI)
 				- (int) Math.ceil(angle * 180 / FastMath.PI);
 
-		// System.out.println("Direction:"+direction);
-		if (direction < 0) {
+//		 System.out.println("BENDBODY Direction:"+direction);
+		if (direction < -precision) {
 			if (time < 1) {
 				angleBody += time * speed;
 			}
@@ -504,7 +531,7 @@ public class Robot extends Node {
 
 			return false;
 		} else {
-			if (direction > 0) {
+			if (direction > precision) {
 				if (time < 1) {
 					angleBody -= time * speed;
 				}
@@ -513,8 +540,10 @@ public class Robot extends Node {
 
 				return false;
 			} else {
-				// System.out.println("Terminado Bend");
+				 System.out.println("Finished BENDBODY");
 				angleBody = angle;
+				rotBody.fromAngleAxis(angleBody, new Vector3f(1, 0, 0));
+				pivotBody.setLocalRotation(rotBody);
 				return true;
 			}
 		}
@@ -526,8 +555,8 @@ public class Robot extends Node {
 		int direction = (int) Math.ceil(angleFloor * 180 / FastMath.PI)
 				- (int) Math.ceil(angle * 180 / FastMath.PI);
 
-		// System.out.println("Direction:"+direction);
-		if (direction < 0) {
+//		 System.out.println("MOVETO Direction:"+direction);
+		if (direction < -precision) {
 			if (time < 1) {
 				angleFloor += time * speed;
 			}
@@ -536,7 +565,7 @@ public class Robot extends Node {
 
 			return false;
 		} else {
-			if (direction > 0) {
+			if (direction > precision) {
 				if (time < 1) {
 					angleFloor -= time * speed;
 				}
@@ -545,8 +574,10 @@ public class Robot extends Node {
 
 				return false;
 			} else {
-				// System.out.println("Terminado Bend");
+				 System.out.println("Finished MOVETO");
 				angleFloor = angle;
+				rotFloor.fromAngleAxis(angleFloor, new Vector3f(0, 1, 0));
+				this.setLocalRotation(rotFloor);
 				return true;
 			}
 		}

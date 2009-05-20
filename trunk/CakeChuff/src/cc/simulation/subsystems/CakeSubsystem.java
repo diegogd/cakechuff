@@ -10,7 +10,10 @@ import cc.simulation.elements.LightSensor;
 import cc.simulation.elements.TouchSensor;
 import cc.simulation.elements.Valve;
 import cc.simulation.state.CakeSubsystemState;
+import cc.simulation.utils.Rotations;
 
+import com.jme.bounding.BoundingBox;
+import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
@@ -58,11 +61,13 @@ public class CakeSubsystem extends Node implements Observer {
 		this.attachChild(s3);
 		_state.addSensor(s3);
 
-		chocolate = new Valve("chocolate", new ColorRGBA(0.31f,0.192f,0.0705f,1f));
+		chocolate = new Valve("chocolate", new ColorRGBA(0.31f, 0.192f,
+				0.0705f, 1f));
 		chocolate.setLocalTranslation(-2, 8, 0);
 		this.attachChild(chocolate);
 
-		caramel = new Valve("caramel", new ColorRGBA(0.6941f, 0.6196f, 0.02745f, 0.5f));
+		caramel = new Valve("caramel", new ColorRGBA(0.6941f, 0.6196f,
+				0.02745f, 0.5f));
 		caramel.setLocalTranslation(3, 8, 0);
 		this.attachChild(caramel);
 	}
@@ -72,7 +77,7 @@ public class CakeSubsystem extends Node implements Observer {
 
 		// For implementing deceleration
 		conv.updateParameters(timePerFrame);
-		
+
 		for (int i = 0; i < elements.size(); i++) {
 			Spatial element = elements.get(i);
 			if (((Cake) element).inSub) {
@@ -81,20 +86,20 @@ public class CakeSubsystem extends Node implements Observer {
 					element.getLocalTranslation().y = 4.3f;
 					element.getLocalTranslation().x += conv.getVelocity()
 							* timePerFrame;
-					
+
 					// System.out.println(element.getLocalTranslation().x);
 					// }
 
 				} else if ((element.getLocalTranslation().y > 0)
 						&& (element.getLocalTranslation().x == -18f)) {
 					element.getLocalTranslation().y -= 3 * timePerFrame;
-				
-				}else{
-					if(element.getLocalTranslation().y > 0){
+
+				} else {
+					if (element.getLocalTranslation().y > 0) {
 						element.getLocalTranslation().y -= 3 * timePerFrame;
 					}
 				}
-			}else{
+			} else {
 				elements.removeElementAt(i);
 			}
 
@@ -109,22 +114,44 @@ public class CakeSubsystem extends Node implements Observer {
 
 			if (!sen3 && s3.hasCollision(element, false)) {
 				sen3 = true;
-			}
+
+				//opcion1
+				//Codigo para cambiar el bounding box
+//				System.out.println(" x: " + element.getLocalTranslation().x
+//						+ " y: " + element.getLocalTranslation().y + " z: "
+//						+ element.getLocalTranslation().z);
+//				BoundingBox bound = new BoundingBox(element.getLocalTranslation(),-1f,-1f,-1f);
+//				
+				//
+//				element.setModelBound(bound);
+				
+				//opcion2
+//				bound.transform(element.getLocalRotation(), 
+//						element.getWorldBound().getCenter(), new Vector3f(2f, 1f,
+//						2f), bound);
+//				
+//				bound.transform(element.getLocalRotation(), new Vector3f(
+//						0,0,0), new Vector3f(2f, 1f,
+//						2f), bound);
 			
+//				element.setModelBound(bound);
+
+			}
+
 			// Check Valves
-			if( element instanceof Cake ){
-				if( !((Cake)element).isWithChocolate() ){
-					if( chocolate.checkCollision(element) ){
-						((Cake)element).changeTextureToChocolate();
-					} else if( !((Cake)element).isWithCaramel() && 
-							   caramel.checkCollision(element) ){
-						((Cake)element).changeTextureToCaramel();
+			if (element instanceof Cake) {
+				if (!((Cake) element).isWithChocolate()) {
+					if (chocolate.checkCollision(element)) {
+						((Cake) element).changeTextureToChocolate();
+					} else if (!((Cake) element).isWithCaramel()
+							&& caramel.checkCollision(element)) {
+						((Cake) element).changeTextureToCaramel();
 					}
-				} else if( !((Cake)element).isWithCaramel() && 
-						   caramel.checkCollision(element) ){
-					((Cake)element).changeTextureToCaramelAndChocolate();
+				} else if (!((Cake) element).isWithCaramel()
+						&& caramel.checkCollision(element)) {
+					((Cake) element).changeTextureToCaramelAndChocolate();
 				}
-			} 
+			}
 		}
 
 		if (!sen1)

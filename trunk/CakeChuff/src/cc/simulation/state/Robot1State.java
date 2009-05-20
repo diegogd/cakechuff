@@ -67,12 +67,12 @@ public class Robot1State extends Observable {
 	// LLamada para cambiar los estados!!
 	public void setGoToState(int goToState) {
 		if (!getIfMoving()) {
-			if (this.goToState != goToState) {
+			//if (this.goToState != goToState) {
 				this.goToState = goToState;
 				this.changed_GTS = true;
 				this.setMoving(true);
 				// this.setFinished(false);
-			}
+			//}
 		}
 	}
 
@@ -81,7 +81,7 @@ public class Robot1State extends Observable {
 	}
 
 	public void setCurrentState(int currentState) {
-		if (this.current_state != currentState) {
+		//if (this.current_state != currentState) {
 			System.out.println("Changing State...");
 			this.current_state = currentState;
 			this.changed_CS = true;
@@ -89,7 +89,7 @@ public class Robot1State extends Observable {
 			// this.setFinished(true);
 			setChanged();
 			notifyObservers();
-		}
+		//}
 	}
 
 	public int getCurrentState() {

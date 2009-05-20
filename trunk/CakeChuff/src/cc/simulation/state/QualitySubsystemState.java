@@ -16,6 +16,7 @@ public class QualitySubsystemState extends Observable {
 	private float wrapper_secs = 0;
 	private boolean wrapup = false;
 	private int numcakes_passed = 0;
+	private boolean emptyBox = false;
 
 	public final int INIT = 0;
 	public final int SUBSYSTEM = 1;
@@ -145,7 +146,7 @@ public class QualitySubsystemState extends Observable {
 
 	public void setRobotCurrentState(int currentState) {
 		if (this.robot_current_state != currentState) {
-			// System.out.println("Changing State...");
+			System.out.println("Changing State Robot2..." + currentState);
 			this.robot_current_state = currentState;
 			this.robot_changed_CS = true;
 			this.setRobotMoving(false);
@@ -193,4 +194,18 @@ public class QualitySubsystemState extends Observable {
 			}
 		}
 	}
+	
+	
+//	public boolean getEmptyBox() {
+//		return emptyBox;
+//	}
+//
+//	public void setEmptyBox(boolean empty) {
+//		if(emptyBox!=empty){
+//			this.emptyBox = empty;
+////		setChanged();
+////		notifyObservers();
+//		}
+//	}
+	
 }
