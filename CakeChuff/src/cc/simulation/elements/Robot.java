@@ -1,6 +1,8 @@
 package cc.simulation.elements;
 
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import cc.simulation.subsystems.QualitySubsystem;
 import cc.simulation.utils.ModelLoader;
@@ -18,6 +20,12 @@ import com.jme.scene.shape.Cylinder;
 
 public class Robot extends Node {
 
+	private static Logger logger = Logger.getLogger(Robot.class.getName());
+	
+	/**
+	 * Distance used to check if an object is close enough.
+	 */
+	private final float OBJECTS_MINDISTANCE = 2f;
 	/**
 	 * 
 	 */
@@ -290,7 +298,7 @@ public class Robot extends Node {
 				// + " radianes:" + angleBody);
 				return false;
 			} else {
-				 System.out.println("Finished OPENHAND");
+				logger.finest("Finished OPENHAND");
 				angleClaws = angle;
 				rotClawLeft.fromAngleAxis(angleClaws, new Vector3f(0, 0, 1));
 				pivotHeadLeft.setLocalRotation(rotClawLeft);
@@ -306,7 +314,7 @@ public class Robot extends Node {
 		int direction = (int) Math.ceil(angleClaws * 180 / FastMath.PI)
 				- (int) Math.ceil(angle * 180 / FastMath.PI);
 
-		 System.out.println("OPENHANDOBJECT Direction:"+direction);
+		logger.log(Level.FINEST, "OPENHANDOBJECT Direction: {0}", new String[]{""+direction});
 		if (!has_object) {
 			if (direction < -precision) {
 				if (
@@ -314,6 +322,11 @@ public class Robot extends Node {
 				// && !upperHeadLeft.hasCollision(element, false)
 				!pivotHeadLeft.hasCollision(element, false)
 						&& !pivotHeadRight.hasCollision(element, false)
+				// Check Distance
+				&& pivotHeadLeft.getWorldTranslation()
+				   .distanceSquared(element.getWorldTranslation()) > OBJECTS_MINDISTANCE
+				&& pivotHeadRight.getWorldTranslation()
+				   .distanceSquared(element.getWorldTranslation()) > OBJECTS_MINDISTANCE
 				// && !lowerHeadRight.hasCollision(element, false)
 				// && !upperHeadRight.hasCollision(element, false)
 				) {
@@ -332,7 +345,15 @@ public class Robot extends Node {
 					// + " radianes:" + angleBody);
 					return false;
 				} else {
-					System.out.println("Colisionado Robot1!!!");
+					logger.finer("Colisionado Robot1!!!");
+					logger.log(Level.WARNING, "Pinza1: {0} Pinza2 {1}",
+					new String[]{
+						""+	pivotHeadLeft.getWorldTranslation()
+							   .distance(element.getWorldTranslation()),
+						""+	pivotHeadRight.getWorldTranslation()
+							   .distance(element.getWorldTranslation())
+					}
+					);
 					object = element;
 					has_object = true;
 					Father = element.getParent();
@@ -372,7 +393,12 @@ public class Robot extends Node {
 			} else {
 				if (direction > precision) {
 					if (!pivotHeadLeft.hasCollision(element, false)
-							&& !pivotHeadRight.hasCollision(element, false)) {
+							&& !pivotHeadRight.hasCollision(element, false)
+						&& pivotHeadLeft.getWorldTranslation()
+						   .distanceSquared(element.getWorldTranslation()) > OBJECTS_MINDISTANCE
+						&& pivotHeadRight.getWorldTranslation()
+						   .distanceSquared(element.getWorldTranslation()) > OBJECTS_MINDISTANCE
+						) {
 						if (time < 1) {
 							angleClaws -= time * speed;
 						}
@@ -386,7 +412,7 @@ public class Robot extends Node {
 						// System.out.println("Colisionado!!!");
 						return false;
 					} else {
-						System.out.println("Colisionado 2 Robot1!!!");
+						logger.finer("Colisionado 2 Robot1!!!");
 						object = element;
 						has_object = true;
 						Father = element.getParent();
@@ -424,7 +450,7 @@ public class Robot extends Node {
 						return true;
 					}
 				} else {
-					 System.out.println("Sin Colision Robot1");
+					logger.finer("Sin Colision Robot1");
 					angleClaws = angle;
 					rotClawLeft
 					.fromAngleAxis(angleClaws, new Vector3f(0, 0, 1));
@@ -540,7 +566,7 @@ public class Robot extends Node {
 
 				return false;
 			} else {
-				 System.out.println("Finished BENDBODY");
+				logger.finest("Finished BENDBODY");
 				angleBody = angle;
 				rotBody.fromAngleAxis(angleBody, new Vector3f(1, 0, 0));
 				pivotBody.setLocalRotation(rotBody);
@@ -574,7 +600,7 @@ public class Robot extends Node {
 
 				return false;
 			} else {
-				 System.out.println("Finished MOVETO");
+				logger.finest("Finished MOVETO");
 				angleFloor = angle;
 				rotFloor.fromAngleAxis(angleFloor, new Vector3f(0, 1, 0));
 				this.setLocalRotation(rotFloor);
