@@ -59,7 +59,7 @@ public class Engraver extends Node{
 					direction = true;
 					
 					//Cargar Blister?
-					
+					//return new Blister()
 					
 				}
 				else {

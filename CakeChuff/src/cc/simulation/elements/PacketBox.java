@@ -15,7 +15,7 @@ import com.jme.scene.shape.Box;
 
 public class PacketBox extends Node{
 	
-	private Node pivot;
+	private Node pivot,packetsNode;
 	
 	private Vector<Spatial> packets; 	
 	
@@ -23,17 +23,12 @@ public class PacketBox extends Node{
 		
 		pivot = new Node();
 		this.attachChild(pivot);
-		
+		packetsNode = new Node();
+		this.attachChild(packetsNode);
 		packets = new Vector<Spatial>();
 		//loadBox();
 		loadModel();
 		this.setName(name);
-//		this.blister = blister;
-//		this.cakes = cakes;
-//		pivot = new Node();
-//		pivot.attachChild(this.blister);
-//		for(int i = 0; i<cakes.length;i++)
-//			pivot.attachChild(this.cakes[i]);
 	}
 	
 	private void loadBox(){
@@ -61,7 +56,7 @@ public class PacketBox extends Node{
 	public void addInBox(Spatial element){
 		packets.add(element);
 		element.removeFromParent();
-		pivot.attachChild(element);
+		packetsNode.attachChild(element);
 		
 		if(this.getLocalRotation().y > 0)	{
 			//System.out.println("GoodBox: "+this.getLocalRotation().y);
@@ -71,6 +66,12 @@ public class PacketBox extends Node{
 			element.setLocalTranslation(14f, -5f+((float)numOfPackets()-1),16f);
 		}
 			
+	}
+	
+	public void emptyBox(){
+		packets.clear();
+		packetsNode.detachAllChildren();
+//		this.setLocalTranslation(f, 0f, 0f);
 	}
 	
 	public int numOfPackets(){

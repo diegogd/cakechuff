@@ -11,11 +11,14 @@ import cc.simulation.utils.Rotations;
 
 import com.jme.app.SimpleGame;
 import com.jme.bounding.BoundingBox;
+import com.jme.bounding.BoundingVolume;
 import com.jme.image.Texture;
 import com.jme.image.Texture.MagnificationFilter;
 import com.jme.image.Texture.MinificationFilter;
+import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
+import com.jme.scene.Spatial;
 import com.jme.scene.shape.Cylinder;
 import com.jme.scene.state.TextureState;
 import com.jme.system.DisplaySystem;
@@ -89,11 +92,14 @@ public class Cake extends Node{
 	
 	private void loadModel(){
 		URL model=getClass().getClassLoader().getResource("model/cake.obj");
-		this.attachChild(ModelLoader.loadOBJ(model));
+		Spatial cake = ModelLoader.loadOBJ(model);
+		this.attachChild(cake);
 		TextureState ts = mainDisplay.getRenderer().createTextureState();
 		ts.setTexture(TextureManager.loadTexture(this.getClass().getResource("/model/texture/cake/normal.jpg"),
 				MinificationFilter.BilinearNearestMipMap, MagnificationFilter.Bilinear));
 		this.setRenderState(ts);
+		
+		
 	}
 
 	public boolean isWithChocolate() {

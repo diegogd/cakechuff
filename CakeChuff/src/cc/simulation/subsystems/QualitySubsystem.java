@@ -186,6 +186,8 @@ public class QualitySubsystem extends Node implements Observer {
 		qualityCheck(elements, timePerFrame);
 
 		robotUpdate(elements, timePerFrame);
+		
+		//emptyBoxUpdate();
 
 		_state.checkSensorsChanges();
 	}
@@ -362,6 +364,24 @@ public class QualitySubsystem extends Node implements Observer {
 		return false;
 	}
 
+	private void emptyBoxUpdate(){
+		if(goodBox.numOfPackets()>4){
+			
+			goodBox.emptyBox();
+//			goodBox = new PacketBox("GoodBox");
+//			goodBox.setLocalRotation(Rotations.rotateY(0.25f));
+//			goodBox.setLocalTranslation(20f, 0f, 5.5f);
+//			this.attachChild(goodBox);
+		}
+		if(badBox.numOfPackets()>4){
+			badBox.emptyBox();
+//			badBox = new PacketBox("BadBox");
+//			badBox.setLocalTranslation(20f, 0f, -5.5f);
+//			badBox.setLocalRotation(Rotations.rotateY(-0.25f));
+//			this.attachChild(badBox);
+		}
+	}
+	
 	private boolean pickUpPacket(float time, Spatial element) {
 
 		switch (this.phase) {
@@ -388,7 +408,7 @@ public class QualitySubsystem extends Node implements Observer {
 			break;
 		case 5:
 			// System.out.println("Im in 1!");
-			if (robot2.bendBody(0.5f, time)) {
+			if (robot2.bendBody(1.5f, time)) {
 				// System.out.println("Im in 2!");
 				this.phase++;
 			}

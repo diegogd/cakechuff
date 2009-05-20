@@ -101,7 +101,9 @@ public class BlisterSubsystem extends Node implements Observer {
 		
 		sensor2.setActived(sen2);
 //
-		engraver.update(timePerFrame);
+//		Spatial aux = engraver.update(timePerFrame);
+//		if(aux!=null)elements.add(aux);
+		 engraver.update(timePerFrame);
 		cutter.update(timePerFrame);
 
 		_state.checkSensorsChanges();

@@ -277,6 +277,7 @@ public class Factory extends SimpleGame implements Observer {
 	public void dropCake() {
 		Cake cake = new Cake(cakes.size(), display);
 		cake.setLocalTranslation(-18, 10f, -7.5f);
+		
 		rootNode.attachChild(cake);
 		rootNode.updateWorldBound();
 		rootNode.updateRenderState();
