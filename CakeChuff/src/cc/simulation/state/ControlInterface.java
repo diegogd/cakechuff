@@ -260,7 +260,7 @@ public class ControlInterface extends javax.swing.JFrame implements ActionListen
                     .addComponent(jLabel11)
                     .addComponent(jLabel12))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(BlisterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(BlisterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(spinnerBeltLenght2, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
                     .addComponent(spinnerBeltSpeed2))
                 .addContainerGap())
@@ -364,7 +364,7 @@ public class ControlInterface extends javax.swing.JFrame implements ActionListen
 
         QualityPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Quality Subsystem", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 13))); // NOI18N
 
-        jLabel15.setText("Conveyor Belt  Speed:");
+        jLabel15.setText("Conveyor Belt Speed:");
 
         spinnerBeltSpeed3.setModel(new javax.swing.SpinnerNumberModel(0, 0, 40, 1));
         spinnerBeltSpeed3.setName("beltspeed3"); // NOI18N
@@ -378,7 +378,7 @@ public class ControlInterface extends javax.swing.JFrame implements ActionListen
 
         jLabel18.setText("Robot: Pick Blister (secs):");
 
-        spinnerRobot2Pick.setModel(new javax.swing.SpinnerNumberModel(0, 0, 20, 1));
+        spinnerRobot2Pick.setModel(new javax.swing.SpinnerNumberModel(5, 5, 20, 1));
         spinnerRobot2Pick.setName("robot2time"); // NOI18N
         spinnerRobot2Pick.addChangeListener(this);
 
@@ -472,13 +472,13 @@ public class ControlInterface extends javax.swing.JFrame implements ActionListen
 
         jLabel24.setText("Pick Cake (secs):");
 
-        spinnerRobot1PickCake.setModel(new javax.swing.SpinnerNumberModel(0, 0, 20, 1));
+        spinnerRobot1PickCake.setModel(new javax.swing.SpinnerNumberModel(5, 5, 20, 1));
         spinnerRobot1PickCake.setName("robotpickcake"); // NOI18N
         spinnerRobot1PickCake.addChangeListener(this);
 
         jLabel25.setText("Move Blister (secs):");
 
-        spinnerRobot1MoveBlister.setModel(new javax.swing.SpinnerNumberModel(0, 0, 20, 1));
+        spinnerRobot1MoveBlister.setModel(new javax.swing.SpinnerNumberModel(5, 5, 20, 1));
         spinnerRobot1MoveBlister.setName("robotmove"); // NOI18N
         spinnerRobot1MoveBlister.addChangeListener(this);
 
@@ -513,8 +513,7 @@ public class ControlInterface extends javax.swing.JFrame implements ActionListen
 
         ResetButton.setFont(new java.awt.Font("Tahoma", 2, 13));
         ResetButton.setBorder(null);
-        ResetButton.setLabel("Reset Default Values");
-        ResetButton.setName("reset"); // NOI18N
+        ResetButton.setText("Reset Default Values"); // NOI18N
         ResetButton.addActionListener(this);
 
         javax.swing.GroupLayout ControlTabLayout = new javax.swing.GroupLayout(ControlTab);
