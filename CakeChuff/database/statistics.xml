@@ -2,12 +2,12 @@
 <!DOCTYPE statistics SYSTEM "dtd/statistics.dtd">
 
 <statistics>
-	<procesedPackages>0</procesedPackages>
-	<faultyPackages>0</faultyPackages>
-	<total_ko_cakes>0</total_ko_cakes>
-	<total_ok_cakes>0</total_ok_cakes>
-	<start>0</start>
-	<emergency_stops>0</emergency_stops>
-	<stops>0</stops>
+  <procesedPackages>0</procesedPackages>
+  <faultyPackages>0</faultyPackages>
+  <total_ko_cakes>1232231025</total_ko_cakes>
+  <total_ok_cakes>348</total_ok_cakes>
+  <start>110</start>
+  <emergency_stops>4</emergency_stops>
+  <stops>7</stops>
 </statistics>
 

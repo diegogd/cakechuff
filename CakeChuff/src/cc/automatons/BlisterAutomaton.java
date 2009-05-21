@@ -39,7 +39,8 @@ public class BlisterAutomaton extends Automaton {
 		stop = false;
 		try {
 			mbox = new Mailbox(this, portin);
-			(new Thread(mbox)).start();
+			mbox_thread = (new Thread(mbox));
+			mbox_thread.start();
 			boolean connected = false;
 			while (!connected) {
 				try {
