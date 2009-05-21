@@ -35,6 +35,9 @@ public class QualitySubsystem extends Node implements Observer {
 	public final int PICKUPPACKET = 4;
 	public final int DROPGOODBOX = 5;
 	public final int DROPBADBOX = 6;
+	
+	// Generated Blisters
+	public Vector<Spatial> takenBlisters;
 
 	float angleSubsystem = (FastMath.PI / 2) + FastMath.PI,
 			angleGoodBox = (FastMath.PI / 4) + (FastMath.PI / 2),
@@ -66,6 +69,7 @@ public class QualitySubsystem extends Node implements Observer {
 		_state.addObserver(this);
 		initElements();
 		phase = 0;
+		takenBlisters = new Vector<Spatial>();
 	}
 
 	private void initElements() {
@@ -137,11 +141,11 @@ public class QualitySubsystem extends Node implements Observer {
 		this.attachChild(badBox);
 	}
 
-	public void update(Vector<Spatial> elements, float timePerFrame) {
+	public void update(float timePerFrame) {
 		boolean sen1 = false, sen2 = false, sen3 = false;
 
-		for (int i = 0; i < elements.size(); i++) {
-			Spatial element = elements.get(elements.size() - i - 1);
+		for (int i = 0; i < takenBlisters.size(); i++) {
+			Spatial element = takenBlisters.get(takenBlisters.size() - i - 1);
 
 			if ((conv.hasCollision(element, false))
 					&& (element instanceof Blister)) {
@@ -183,9 +187,9 @@ public class QualitySubsystem extends Node implements Observer {
 
 		sensor3.setActived(sen3);
 
-		qualityCheck(elements, timePerFrame);
+		qualityCheck(takenBlisters, timePerFrame);
 
-		robotUpdate(elements, timePerFrame);
+		robotUpdate(takenBlisters, timePerFrame);
 		
 		//emptyBoxUpdate();
 
@@ -313,16 +317,10 @@ public class QualitySubsystem extends Node implements Observer {
 				break;
 
 			case PICKUPPACKET:
-				elem = element.iterator();
-				while (elem.hasNext()) {
-					Spatial aux = elem.next();
-					if ((aux instanceof Blister)) {
-						// && (conv.hasCollision(aux, false))) {
-						if (pickUpPacket(time, aux)) {
-							_state.setRobotCurrentState(PICKUPPACKET);
-						}
-					}
-				}
+
+				if (pickUpPacket(time, element)) {
+					_state.setRobotCurrentState(PICKUPPACKET);
+				}				
 				break;
 			case DROPGOODBOX:
 				// elem = element.iterator();
@@ -382,7 +380,7 @@ public class QualitySubsystem extends Node implements Observer {
 		}
 	}
 	
-	private boolean pickUpPacket(float time, Spatial element) {
+	private boolean pickUpPacket(float time, List<Spatial> elements) {
 
 		switch (this.phase) {
 		case 0:
@@ -402,7 +400,7 @@ public class QualitySubsystem extends Node implements Observer {
 				this.phase++;
 			break;
 		case 4:
-			if (robot2.openHandObject(0f, time, element)) {
+			if (robot2.takeObject(elements)) {
 				this.phase++;
 			}
 			break;

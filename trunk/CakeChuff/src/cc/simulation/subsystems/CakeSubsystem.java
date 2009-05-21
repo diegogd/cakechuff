@@ -1,5 +1,6 @@
 package cc.simulation.subsystems;
 
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
@@ -34,11 +35,15 @@ public class CakeSubsystem extends Node implements Observer {
 
 	// State interface
 	CakeSubsystemState _state;
+	
+	// Produced cakes
+	public List<Spatial> cakes;
 
 	public CakeSubsystem() {
 		_state = CakeSubsystemState.getInstance();
 		_state.addObserver(this);
 		initElements();
+		cakes = new Vector<Spatial>();
 	}
 
 	private void initElements() {
@@ -72,35 +77,32 @@ public class CakeSubsystem extends Node implements Observer {
 		this.attachChild(caramel);
 	}
 
-	public void update(Vector<Spatial> elements, float timePerFrame) {
+	public void update(float timePerFrame) {
 		boolean sen1 = false, sen2 = false, sen3 = false;
 
 		// For implementing deceleration
 		conv.updateParameters(timePerFrame);
 
-		for (int i = 0; i < elements.size(); i++) {
-			Spatial element = elements.get(i);
-			if (((Cake) element).inSub) {
-				if (conv.hasCollision(element, false)) {
-					// if (element.getLocalTranslation().x < -1.8f) {
-					element.getLocalTranslation().y = 4.3f;
-					element.getLocalTranslation().x += conv.getVelocity()
-							* timePerFrame;
+		for (int i = 0; i < cakes.size(); i++) {
+			Spatial element = cakes.get(i);
 
-					// System.out.println(element.getLocalTranslation().x);
-					// }
+			if (conv.hasCollision(element, false)) {
+				// if (element.getLocalTranslation().x < -1.8f) {
+				element.getLocalTranslation().y = 4.3f;
+				element.getLocalTranslation().x += conv.getVelocity()
+						* timePerFrame;
 
-				} else if ((element.getLocalTranslation().y > 0)
-						&& (element.getLocalTranslation().x == -18f)) {
-					element.getLocalTranslation().y -= 3 * timePerFrame;
+				// System.out.println(element.getLocalTranslation().x);
+				// }
 
-				} else {
-					if (element.getLocalTranslation().y > 0) {
-						element.getLocalTranslation().y -= 3 * timePerFrame;
-					}
-				}
+			} else if ((element.getLocalTranslation().y > 0)
+					&& (element.getLocalTranslation().x == -18f)) {
+				element.getLocalTranslation().y -= 3 * timePerFrame;
+
 			} else {
-				elements.removeElementAt(i);
+				if (element.getLocalTranslation().y > 0) {
+					element.getLocalTranslation().y -= 3 * timePerFrame;
+				}
 			}
 
 			// Sensors detection

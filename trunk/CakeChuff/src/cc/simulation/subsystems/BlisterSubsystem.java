@@ -37,11 +37,15 @@ public class BlisterSubsystem extends Node implements Observer {
 	// Sensors
 	LightSensor sensor1;
 	TouchSensor sensor2;
+	
+	// Generated Blisters
+	public List<Spatial> blisters;
 
 	public BlisterSubsystem() {
 		_state = BlisterSubsystemState.getInstance();
 		_state.addObserver(this);
 		initElements();
+		blisters = new Vector<Spatial>();
 	}
 
 	private void initElements() {
@@ -70,15 +74,15 @@ public class BlisterSubsystem extends Node implements Observer {
 		_state.addSensor(sensor2);
 	}
 
-	public void update(Vector<Spatial> elements,float timePerFrame) {
+	public void update(float timePerFrame) {
 		
 		supplier.grow(timePerFrame * conv.getVelocity());
 
 		boolean sen1 = false, sen2 = false;
 
 		
-		for (int i = 0; i < elements.size(); i++) {
-			Spatial element = elements.get(i);
+		for (int i = 0; i < blisters.size(); i++) {
+			Spatial element = blisters.get(i);
 			
 			if(conv.hasCollision(element, false)){ 
 				element.getLocalTranslation().x += conv.getVelocity()*timePerFrame;			
