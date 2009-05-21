@@ -19,6 +19,7 @@ import cc.simulation.state.SystemState;
 import cc.simulation.elements.Sensor;
 public class CakeAutomaton extends Automaton {
 	
+	Thread changingstate;
 	//states
 	private static final int START=0;
 	private static final int INIT=1;
@@ -34,11 +35,12 @@ public class CakeAutomaton extends Automaton {
 	private float speed;
 	private int ncakes;
 	private boolean waitingcake;
-		
+	int blistercakes;
 	//simulation
 	private CakeSubsystemState cakesystem;
 	private SystemState sys;
 	public CakeAutomaton(int portin, int portout, String master){
+		System.out.println("[CakeAutomaton]:Creating...");
 		state=START;
 		stop=false;
 		try{
@@ -51,7 +53,7 @@ public class CakeAutomaton extends Automaton {
 					sout= new Socket(master, portout);
 					connected=true;
 				}catch(Exception e){
-					
+					e.printStackTrace();
 				}
 			}
 			dout = new PrintWriter(sout.getOutputStream(),true);
@@ -62,6 +64,8 @@ public class CakeAutomaton extends Automaton {
 			ncakes=cake_cap;
 			//tell the master the automaton is on
 			send("A1:ON");
+			waitingcake=false;
+			System.out.println("[CakeAutomaton]:Active");
 		}catch(UnknownHostException uhe){
 			
 		}catch(IOException ioe){
@@ -69,6 +73,7 @@ public class CakeAutomaton extends Automaton {
 		}catch(SecurityException se){
 			
 		}
+		System.out.println("[CakeAutomaton]:Creation finished");
 		
 	}
 	private void run_start(int cake_cap, int speed, int belt_lg, int vt1, int vt2){
@@ -81,87 +86,89 @@ public class CakeAutomaton extends Automaton {
 		this.vt2 = vt2;
 		state=START;
 		sys.setDropCake();
+		blistercakes=1;
 		ncakes--;
-		run_init();
+		if(!waitingcake)
+			run_init();
+		else run_wait();
+		
 	}
 	private void run_init(){
 		
-		//drop cake
-		waitingcake=false;
 		//start conveyor
 		cakesystem.setConveyor_velocity(speed);
 		state= INIT;
 		send("A1:init");
 	}
 	private void run_choc(){
+		state=CHOC;
+		send("A1:choc");
 		//stop conveyor
 		cakesystem.setConveyor_velocity(0);
 		//open chocolate valve
 		cakesystem.setValve1_open_secs(vt1);
-		state=CHOC;
-		send("A1:choc");
-		//change to choc_car here??
 		
 		try{
 			Thread.sleep(vt1*1000);
 		}catch(InterruptedException ie){
-			//System.out.println("Interrupted");
-			ie.printStackTrace();
+			//Interrupted
 		}
 		//close chocolate valve ¿?
 		cakesystem.setValve1_open_secs(0);
 		//run conveyor
-		if(!waitingcake)cakesystem.setConveyor_velocity(speed);
+		run_choc_car();
 		
 	}
 	private void run_choc_car(){
 		state=CHOC_CAR;
+		send("A1:choc_car");
+		if(!waitingcake)cakesystem.setConveyor_velocity(speed);
 		/*There are cakes left
 		 * &
-		 * if the automaton is going to stop, the number of cakes dropped is nx4
-		 * (to complete n blisters)
+		 * if the automaton is going to stop, the number of cakes dropped for this blister mist be 4
+		 * to fill it.
 		 */		
-
-		if(ncakes>0 && (!stop||(cake_cap-ncakes)%4!=0)){
+		if(ncakes>0 && (!stop||blistercakes<4)){
 			sys.setDropCake();
 			ncakes--;
+			blistercakes++;
 		}
 		
-		send("A1:choc_car");
+		
 	}
 	private void run_car(){
+		state=CHOC;
+		send("A1:car");
 		//stop conveyor
 		cakesystem.setConveyor_velocity(0);
 		//open caramel valve
-		cakesystem.setValve2_open_secs(vt2);
-		state=CHOC;
-		
-		send("A1:car");
-		
+		cakesystem.setValve2_open_secs(vt2);		
 		try{
 			Thread.sleep(vt2*1000);
 		}catch(InterruptedException ie){}
 		//close caramel valve
 		cakesystem.setValve2_open_secs(0);
 		//run conveyor
-		if(!waitingcake)cakesystem.setConveyor_velocity(speed);
+		run_car_wait();
+		
 	}
 	private void run_car_wait(){
 		state=CAR_WAIT;
 		send("A1:car_wait");
+		if(!waitingcake)cakesystem.setConveyor_velocity(speed);
+		
 	}
 	private void run_wait(){
-		cakesystem.setConveyor_velocity(0);
-
-		//stop conveyor
 		state=WAIT;
 		send("A1:wait");
+		cakesystem.setConveyor_velocity(0);
 		waitingcake=true;
 	}
 	/*
 	 * Recover form a failure
 	 */
 	private void run_failure(String data){
+		System.out.println("[CakeAutomaton]:Restoring");
 		String pars[]=data.split("#");
 		
 		//Reload parameters
@@ -178,13 +185,16 @@ public class CakeAutomaton extends Automaton {
 			run_init();
 		}else if(pars[0].equalsIgnoreCase("CHOC")){
 			state=CHOC;
-			(new Thread(this)).start();
+			changingstate=new Thread(this);
+			changingstate.start();
 		}else if(pars[0].equalsIgnoreCase("CHOC_CAR")){
 			state=CHOC_CAR;
-			(new Thread(this)).start();
+			changingstate=new Thread(this);
+			changingstate.start();
 		}else if(pars[0].equalsIgnoreCase("CAR")){
 			state=CAR;
-			(new Thread(this)).start();
+			changingstate=new Thread(this);
+			changingstate.start();
 		}else if(pars[0].equalsIgnoreCase("CAR_WAIT")){
 			run_car_wait();
 		}else if(pars[0].equalsIgnoreCase("WAIT")){
@@ -216,8 +226,24 @@ public class CakeAutomaton extends Automaton {
 		else if (content[0].equalsIgnoreCase("RESTART")) {
 			String pars[] = content[1].split("\\$");
 			run_failure(pars[1]);
-		} else
-			switch (state) {
+		} else if (content[0].equalsIgnoreCase("INIT")) {
+			String[] pars = content[1].split("\\#");
+			run_start(Integer.parseInt(pars[0]), Integer
+					.parseInt(pars[1]), Integer.parseInt(pars[2]),
+					Integer.parseInt(pars[3]), Integer
+							.parseInt(pars[4]));
+
+		} else if (content[0].equalsIgnoreCase("R1")){
+			waitingcake=false;
+			if (content[1].equalsIgnoreCase("cake")){
+				System.out.println("[CakeAutomaton]: Cake taken.");
+				run_init();
+			}
+			else if (content[1].equalsIgnoreCase("blister"))
+				blistercakes=0;
+			
+		}
+			/*switch (state) {
 			case START:
 				if (content[0].equalsIgnoreCase("INIT")) {
 					String[] pars = content[1].split("\\#");
@@ -225,7 +251,6 @@ public class CakeAutomaton extends Automaton {
 							.parseInt(pars[1]), Integer.parseInt(pars[2]),
 							Integer.parseInt(pars[3]), Integer
 									.parseInt(pars[4]));
-
 				}
 				break;
 			case INIT:
@@ -246,8 +271,7 @@ public class CakeAutomaton extends Automaton {
 				break;
 			case FAILURE:
 				break;
-
-			}
+			}*/
 	}
 
 	@Override
@@ -258,25 +282,28 @@ public class CakeAutomaton extends Automaton {
 			if (((Sensor) arg1).getName().equalsIgnoreCase("sensor1")) {
 				if (((Sensor) arg1).isActived()){
 					state=CHOC;
-					(new Thread(this)).start();
+					changingstate=new Thread(this);
+					changingstate.start();
 				}
-				else{
+				/*else{
 					state = CHOC_CAR;
 					(new Thread(this)).start();
-				}
+				}*/
 					
 			} else if (((Sensor) arg1).getName().equalsIgnoreCase("sensor2")) {
 				if (((Sensor) arg1).isActived()){
 					state=CAR;
-					(new Thread(this)).start();
+					changingstate=new Thread(this);
+					changingstate.start();
 				}
-				else
-					run_car_wait();
+				/*else
+					run_car_wait();*/
 			} else if (((Sensor) arg1).getName().equalsIgnoreCase("sensor3")) {
 				
 				if (((Sensor) arg1).isActived() && state!=WAIT){
 					state=WAIT;
-					(new Thread(this)).start();
+					changingstate=new Thread(this);
+					changingstate.start();
 				}
 				// else -> no action, cake's pickup is received as a message
 			}
@@ -309,5 +336,24 @@ public class CakeAutomaton extends Automaton {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	//stop() because we want an "unclean", sudden stop
+	@SuppressWarnings("deprecation")
+	public void destroyAutomaton(){
+		changingstate.stop();
+		mbox_thread.stop();
+		mbox.end();
+		try {
+			sout.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		cakesystem.setValve1_open_secs(0);
+		cakesystem.setConveyor_velocity(0);
+		cakesystem.setValve2_open_secs(0);
+		cakesystem.deleteObserver(this);
+		
 	}
 }

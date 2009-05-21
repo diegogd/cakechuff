@@ -1,3 +1,4 @@
+
 package cc.communications;
 
 import java.io.BufferedReader;
@@ -41,11 +42,10 @@ public class Mailbox implements Runnable {
 		try{
 			System.out.println("[Mailbox]: Connecting...");
 			this.connect();
-			while(!failure){
-				receiveMsgs();
-			}
+			receiveMsgs();
 		}catch(IOException ioe){
 			//cannot connect
+			ioe.printStackTrace();
 		}
 		
 	}
@@ -57,13 +57,30 @@ public class Mailbox implements Runnable {
 
 	private void receiveMsgs() {
 		String msg;
-		while (true) {
+		while (!failure) {
 			try {
 				msg=din.readLine();
 				owner.newMsg(msg);				
-			} catch (IOException ioe) {
+			} catch (Exception e) {
 				// connection failure
+				try{
+					System.out.println("[Mailbox]: Connecting...");
+					this.connect();
+					receiveMsgs();
+				}catch(IOException ioe){
+					//cannot connect
+					ioe.printStackTrace();
+				}
 			}
+		}
+	}
+	public void end(){
+		try {
+			so.close();
+			ss.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }

@@ -1,6 +1,5 @@
 package cc.automatons;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -11,10 +10,8 @@ import cc.communications.Mailbox;
 import cc.simulation.elements.LightSensor;
 import cc.simulation.elements.Sensor;
 import cc.simulation.elements.TouchSensor;
-import cc.simulation.state.CakeSubsystemState;
 import cc.simulation.state.QualitySubsystemState;
-import cc.simulation.state.Robot1State;
-import cc.simulation.state.SystemState;
+
 
 public class QCAutomaton extends Automaton {
 	
@@ -286,6 +283,14 @@ public class QCAutomaton extends Automaton {
 			qcsystem.addObserver(this);
 		}
 
+	}
+	//stop because we want an "unclean", sudden stop
+	@SuppressWarnings("deprecation")
+	public void destroyAutomaton(){
+		qcsystem.setConveyor_velocity(0);
+		qcsystem.setRobotMoving(false);
+		qcsystem.setQualityCheck(false);
+		mbox_thread.stop();
 	}
 	public static void main(String args[]){
 		QCAutomaton aut=new QCAutomaton(Integer.parseInt(args[0]),Integer.parseInt(args[1]),args[2]);
