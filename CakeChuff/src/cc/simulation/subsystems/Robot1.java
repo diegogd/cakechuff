@@ -103,7 +103,7 @@ public class Robot1 extends Node implements Observer {
 				this.phase++;
 			break;
 		case 2:
-			if (robot.openHand(-0.6f, time))
+			if (robot.openHand(-0.3f, time))
 				this.phase++;
 			break;
 		case 3:
@@ -111,7 +111,7 @@ public class Robot1 extends Node implements Observer {
 				this.phase++;
 			break;
 		case 4:
-			if (robot.openHand(-0.2f, time))
+			if (robot.openHand(-0.15f, time))
 				this.phase++;
 			break;
 		case 5:
@@ -167,7 +167,7 @@ public class Robot1 extends Node implements Observer {
 		return false;
 	}
 
-	public boolean pickUpBlister(float time, Spatial element) {
+	public boolean pickUpBlister(float time, List<Spatial> elements) {
 
 		if (robot.getHasObject()) {
 			if (robot.bendBody(1.5f, time)) {
@@ -194,7 +194,7 @@ public class Robot1 extends Node implements Observer {
 				this.phase++;
 			break;
 		case 4:
-			if (robot.openHandObject(0f, time, element))
+			if (robot.takeObject(elements))
 				this.phase++;
 			break;
 		case 5:
@@ -208,7 +208,7 @@ public class Robot1 extends Node implements Observer {
 		return false;
 	}
 
-	public boolean dropBlister(float time, Spatial element) {
+	public boolean dropBlister(float time, Spatial target) {
 		
 		if (!robot.getHasObject()) {
 			if (robot.bendBody(1.5f, time)) {
@@ -231,7 +231,7 @@ public class Robot1 extends Node implements Observer {
 				this.phase++;
 			break;
 		case 3:
-			if (robot.leaveHandObject(-0.785f, time, element))
+			if (robot.leaveHandObject(-0.785f, time, target))
 				this.phase++;
 			break;
 		case 4:
@@ -245,7 +245,7 @@ public class Robot1 extends Node implements Observer {
 		return false;
 	}
 
-	public boolean pickUpPacket(float time, Spatial element) {
+	public boolean pickUpPacket(float time, List<Spatial> elements) {
 		
 		if (robot.getHasObject()) {
 			if (robot.bendBody(1.5f, time)) {
@@ -272,7 +272,7 @@ public class Robot1 extends Node implements Observer {
 				this.phase++;
 			break;
 		case 4:
-			if (robot.openHandObject(0f, time, element))
+			if (robot.takeObject(elements))
 				this.phase++;
 			break;
 		case 5:
@@ -286,7 +286,7 @@ public class Robot1 extends Node implements Observer {
 		return false;
 	}
 
-	public boolean dropPacket(float time, Spatial element) {
+	public boolean dropPacket(float time, Spatial target) {
 		
 		if (!robot.getHasObject()) {
 			if (robot.bendBody(1.5f, time)) {
@@ -309,7 +309,7 @@ public class Robot1 extends Node implements Observer {
 				this.phase++;
 			break;
 		case 3:
-			if (robot.leaveHandObject(-0.785f, time, element))
+			if (robot.leaveHandObject(-0.785f, time, target))
 				this.phase++;
 			break;
 		case 4:
@@ -333,7 +333,7 @@ public class Robot1 extends Node implements Observer {
 	/**
 	 * Gestionar los estados y las llamadas a las funciones en el update
 	 */
-	public void update(float time, List<Spatial> element) {
+	public void update(float time, Factory factory) {
 		Iterator<Spatial> elem;
 		if (_state.getIfMoving()) {
 			switch (_state.getGoToState()) {
@@ -363,36 +363,22 @@ public class Robot1 extends Node implements Observer {
 				}
 				break;
 			case PICKUPCAKE:
-				if (pickUpCake(time, element) && robot.getHasObject()) {
+				if (pickUpCake(time, factory.cakeSub.cakes) && robot.getHasObject()) {
 					_state.setCurrentState(PICKUPCAKE);
 				}
 				break;
 			case DROPINTABLE:
-				elem = element.iterator();
-				while (elem.hasNext()) {
-					Spatial aux = elem.next();
-					if (aux instanceof Table) {
-						if (dropCake(time, aux)) {
-							_state.setCurrentState(DROPINTABLE);
-							break;
-						}
-					}
+
+				if (dropCake(time, factory.table)) {
+					_state.setCurrentState(DROPINTABLE);
+
 				}
 
 				break;
 
 			case PICKUPBLISTER:
-				// 
-				elem = element.iterator();
-				while (elem.hasNext()) {
-					Spatial aux = elem.next();
-					if (aux instanceof Blister) {
-						if (pickUpBlister(time, aux)) {
-							_state.setCurrentState(PICKUPBLISTER);
-							// System.out.println("PICKUPBLISTER");
-							break;
-						}
-					}
+				if (pickUpBlister(time, factory.blisterSub.blisters)) {
+					_state.setCurrentState(PICKUPBLISTER);
 				}
 				break;
 
@@ -409,30 +395,18 @@ public class Robot1 extends Node implements Observer {
 			// break;
 
 			case PICKUPPACKET:
-				elem = element.iterator();
-				while (elem.hasNext()) {
-					Spatial aux = elem.next();
-					if (aux instanceof Blister) {
-						if (pickUpPacket(time, aux)) {
-							_state.setCurrentState(PICKUPPACKET);
-							break;
-						}
-					}
+				if (pickUpPacket(time, factory.table.getObjects())) {
+					_state.setCurrentState(PICKUPPACKET);					
 				}
 				break;
 			case DROPINSUB3:
-				elem = element.iterator();
-				while (elem.hasNext()) {
-					Spatial aux = elem.next();
-					if (aux instanceof QualitySubsystem) {
-						if (dropPacket(time, aux)) {
-							_state.setCurrentState(DROPINSUB3);
-							break;
-						}
-					}
+
+				if (dropPacket(time, factory.qualitySub)) {
+					_state.setCurrentState(DROPINSUB3);
+					break;
 				}
 				break;
-
+				
 			default:
 				if (moveToInit(time))
 					_state.setCurrentState(INIT);

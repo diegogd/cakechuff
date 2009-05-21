@@ -30,7 +30,6 @@ import com.jmex.model.converters.ObjToJme;
 public class Cake extends Node{
 	
 	public boolean falling=true;
-	public boolean inSub=true;
 	public DisplaySystem mainDisplay = null;
 	public boolean withChocolate = false;
 	public boolean withCaramel = false;

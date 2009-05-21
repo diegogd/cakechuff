@@ -1,6 +1,7 @@
 package cc.simulation.elements;
 
 import java.net.URL;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,7 +34,7 @@ public class Robot extends Node {
 	private static final long serialVersionUID = 2973029142743347671L;
 	// State to know if it has taken an object
 	public boolean has_object;
-	private Spatial object, blister;
+	private Spatial takenObject, lastBlister;
 
 	private float speed; // modificar la velocidad
 
@@ -62,7 +63,7 @@ public class Robot extends Node {
 
 	public Robot(Vector3f positionRobot) {
 		has_object = false;
-		object = null;
+		takenObject = null;
 		this.positionRobot = new Vector3f(positionRobot);
 		this.angleBody = 0;
 		this.angleFloor = 0;
@@ -310,198 +311,239 @@ public class Robot extends Node {
 		}
 	}
 	
-	public boolean takeObject(List<Spatial> elements){
+	public boolean takeObject(List<Spatial> elements) {
 		boolean taken = false;
-		
-		return taken;
-	}
 
-	public boolean openHandObject(float angle, float time, Spatial element) {
-		// Calculate direction of movement
-		int direction = (int) Math.ceil(angleClaws * 180 / FastMath.PI)
-				- (int) Math.ceil(angle * 180 / FastMath.PI);
-
-		logger.log(Level.FINEST, "OPENHANDOBJECT Direction: {0}", new String[]{""+direction});
 		if (!has_object) {
-			if (direction < -precision) {
-				if (
-				// !lowerHeadLeft.hasCollision(element, false)
-				// && !upperHeadLeft.hasCollision(element, false)
-				!pivotHeadLeft.hasCollision(element, false)
-						&& !pivotHeadRight.hasCollision(element, false)
-				// Check Distance
-				&& pivotHeadLeft.getWorldTranslation()
-				   .distanceSquared(element.getWorldTranslation()) > OBJECTS_MINDISTANCE
-				&& pivotHeadRight.getWorldTranslation()
-				   .distanceSquared(element.getWorldTranslation()) > OBJECTS_MINDISTANCE
-				// && !lowerHeadRight.hasCollision(element, false)
-				// && !upperHeadRight.hasCollision(element, false)
-				) {
-					if (time < 1) {
-						angleClaws += time * speed;
-					}
-					rotClawLeft
-							.fromAngleAxis(angleClaws, new Vector3f(0, 0, 1));
-					pivotHeadLeft.setLocalRotation(rotClawLeft);
-					rotClawRight.fromAngleAxis(angleClaws * -1, new Vector3f(0,
-							0, 1));
-					pivotHeadRight.setLocalRotation(rotClawRight);
+			Spatial element = getNearestObject(elements);
+			
+			takenObject = element;
+			has_object = true;
+			Father = element.getParent();
+			Father.detachChild(element);
+			pivotElement.attachChild(element);
+			elements.remove(element);
+			taken = true;
 
-					// System.out.println("Angulo: " + angleBody * 180 /
-					// FastMath.PI
-					// + " radianes:" + angleBody);
-					return false;
+			if (element instanceof Blister) {
+				if (element.getLocalRotation().y < 0) {
+					// Blister de la mesa
+					element.setLocalRotation(Rotations.rotateY(0f));
+					// element.setLocalTranslation(-6f, 1f, -3f);
+					element.setLocalTranslation(0, -0.0f, -0.0f);
+					pivotElement.setLocalScale(0.1f);
+					element.setLocalTranslation(6f, 0.0f, 8.5f);
+
+					element.updateRenderState();
 				} else {
-					logger.finer("Colisionado Robot1!!!");
-					logger.log(Level.WARNING, "Pinza1: {0} Pinza2 {1}",
-					new String[]{
-						""+	pivotHeadLeft.getWorldTranslation()
-							   .distance(element.getWorldTranslation()),
-						""+	pivotHeadRight.getWorldTranslation()
-							   .distance(element.getWorldTranslation())
-					}
-					);
-					object = element;
-					has_object = true;
-					Father = element.getParent();
-					Father.detachChild(element);
-					pivotElement.attachChild(element);
+					// Blister del sub2
+					element.setLocalTranslation(0, -0.0f, -0.0f);
+					pivotElement.setLocalScale(0.1f);
+					element.setLocalTranslation(6f, 0.0f, 8.5f);
 
-					if (element instanceof Blister) {
-						if (element.getLocalRotation().y < 0) {
-							// Blister de la mesa
-							element.setLocalRotation(Rotations.rotateY(0f));
-							// element.setLocalTranslation(-6f, 1f, -3f);
-							element.setLocalTranslation(0, -0.0f, -0.0f);
-							pivotElement.setLocalScale(0.1f);
-							element.setLocalTranslation(6f, 0.0f, 8.5f);
-
-							element.updateRenderState();
-						} else {
-							// Blister del sub2
-							element.setLocalTranslation(0, -0.0f, -0.0f);
-							pivotElement.setLocalScale(0.1f);
-							element.setLocalTranslation(6f, 0.0f, 8.5f);
-
-							element.updateRenderState();
-						}
-
-					} else if (element instanceof Cake) {
-						((Cake) element).inSub = false;
-						element.setLocalTranslation(0, -0.0f, -0.0f);
-						// element.setLocalRotation(Rotations.rotateX(-0.5f));
-						pivotElement.setLocalScale(0.1f);
-						element.setLocalTranslation(0f, 5.5f, 0f);
-
-					}
-
-					return true;
-				} 
-			} else {
-				if (direction > precision) {
-					if (!pivotHeadLeft.hasCollision(element, false)
-							&& !pivotHeadRight.hasCollision(element, false)
-						&& pivotHeadLeft.getWorldTranslation()
-						   .distanceSquared(element.getWorldTranslation()) > OBJECTS_MINDISTANCE
-						&& pivotHeadRight.getWorldTranslation()
-						   .distanceSquared(element.getWorldTranslation()) > OBJECTS_MINDISTANCE
-						) {
-						if (time < 1) {
-							angleClaws -= time * speed;
-						}
-						rotClawLeft.fromAngleAxis(angleClaws, new Vector3f(0,
-								0, 1));
-						pivotHeadLeft.setLocalRotation(rotClawLeft);
-						rotClawRight.fromAngleAxis(angleClaws * -1,
-								new Vector3f(0, 0, 1));
-						pivotHeadRight.setLocalRotation(rotClawRight);
-
-						// System.out.println("Colisionado!!!");
-						return false;
-					} else {
-						logger.finer("Colisionado 2 Robot1!!!");
-						object = element;
-						has_object = true;
-						Father = element.getParent();
-						Father.detachChild(element);
-						pivotElement.attachChild(element);
-
-						if (element instanceof Blister) {
-							if (element.getLocalRotation().y < 0) {
-								// Blister de la mesa
-								element.setLocalRotation(Rotations.rotateY(0f));
-								// element.setLocalTranslation(-6f, 1f, -3f);
-								element.setLocalTranslation(0, -0.0f, -0.0f);
-								pivotElement.setLocalScale(0.1f);
-								element.setLocalTranslation(6f, 0.0f, 8.5f);
-
-								element.updateRenderState();
-							} else {
-								// Blister del sub2
-								element.setLocalTranslation(0, -0.0f, -0.0f);
-								pivotElement.setLocalScale(0.1f);
-								element.setLocalTranslation(6f, 0.0f, 8.5f);
-
-								element.updateRenderState();
-							}
-
-						} else if (element instanceof Cake) {
-							((Cake) element).inSub = false;
-							element.setLocalTranslation(0, -0.0f, -0.0f);
-							// element.setLocalRotation(Rotations.rotateX(-0.5f));
-							pivotElement.setLocalScale(0.1f);
-							element.setLocalTranslation(0f, 5.5f, 0f);
-
-						} 
-
-						return true;
-					}
-				} else {
-					logger.finer("Sin Colision Robot1");
-					angleClaws = angle;
-					rotClawLeft
-					.fromAngleAxis(angleClaws, new Vector3f(0, 0, 1));
-			pivotHeadLeft.setLocalRotation(rotClawLeft);
-			rotClawRight.fromAngleAxis(angleClaws * -1, new Vector3f(0,
-					0, 1));
-			pivotHeadRight.setLocalRotation(rotClawRight);
-					return true;
+					element.updateRenderState();
 				}
+
+			} else if (element instanceof Cake) {				
+				element.setLocalTranslation(0, -0.0f, -0.0f);
+				// element.setLocalRotation(Rotations.rotateX(-0.5f));
+				pivotElement.setLocalScale(0.1f);
+				element.setLocalTranslation(0f, 5.5f, 0f);
 			}
-		}else return true;
+		}
+
+		return taken;
+
 	}
+
+//	public boolean openHandObject(float angle, float time, Spatial element) {
+//		// Calculate direction of movement
+//		int direction = (int) Math.ceil(angleClaws * 180 / FastMath.PI)
+//				- (int) Math.ceil(angle * 180 / FastMath.PI);
+//
+//		logger.log(Level.FINEST, "OPENHANDOBJECT Direction: {0}", new String[]{""+direction});
+//		if (!has_object) {
+//			if (direction < -precision) {
+//				if (
+//				// !lowerHeadLeft.hasCollision(element, false)
+//				// && !upperHeadLeft.hasCollision(element, false)
+//				!pivotHeadLeft.hasCollision(element, false)
+//						&& !pivotHeadRight.hasCollision(element, false)
+//				// Check Distance
+//				&& pivotHeadLeft.getWorldTranslation()
+//				   .distanceSquared(element.getWorldTranslation()) > OBJECTS_MINDISTANCE
+//				&& pivotHeadRight.getWorldTranslation()
+//				   .distanceSquared(element.getWorldTranslation()) > OBJECTS_MINDISTANCE
+//				// && !lowerHeadRight.hasCollision(element, false)
+//				// && !upperHeadRight.hasCollision(element, false)
+//				) {
+//					if (time < 1) {
+//						angleClaws += time * speed;
+//					}
+//					rotClawLeft
+//							.fromAngleAxis(angleClaws, new Vector3f(0, 0, 1));
+//					pivotHeadLeft.setLocalRotation(rotClawLeft);
+//					rotClawRight.fromAngleAxis(angleClaws * -1, new Vector3f(0,
+//							0, 1));
+//					pivotHeadRight.setLocalRotation(rotClawRight);
+//
+//					// System.out.println("Angulo: " + angleBody * 180 /
+//					// FastMath.PI
+//					// + " radianes:" + angleBody);
+//					return false;
+//				} else {
+//					logger.finer("Colisionado Robot1!!!");
+//					logger.log(Level.WARNING, "Pinza1: {0} Pinza2 {1}",
+//					new String[]{
+//						""+	pivotHeadLeft.getWorldTranslation()
+//							   .distance(element.getWorldTranslation()),
+//						""+	pivotHeadRight.getWorldTranslation()
+//							   .distance(element.getWorldTranslation())
+//					}
+//					);
+//					takenObject = element;
+//					has_object = true;
+//					Father = element.getParent();
+//					Father.detachChild(element);
+//					pivotElement.attachChild(element);
+//
+//					if (element instanceof Blister) {
+//						if (element.getLocalRotation().y < 0) {
+//							// Blister de la mesa
+//							element.setLocalRotation(Rotations.rotateY(0f));
+//							// element.setLocalTranslation(-6f, 1f, -3f);
+//							element.setLocalTranslation(0, -0.0f, -0.0f);
+//							pivotElement.setLocalScale(0.1f);
+//							element.setLocalTranslation(6f, 0.0f, 8.5f);
+//
+//							element.updateRenderState();
+//						} else {
+//							// Blister del sub2
+//							element.setLocalTranslation(0, -0.0f, -0.0f);
+//							pivotElement.setLocalScale(0.1f);
+//							element.setLocalTranslation(6f, 0.0f, 8.5f);
+//
+//							element.updateRenderState();
+//						}
+//
+//					} else if (element instanceof Cake) {
+//						((Cake) element).inSub = false;
+//						element.setLocalTranslation(0, -0.0f, -0.0f);
+//						// element.setLocalRotation(Rotations.rotateX(-0.5f));
+//						pivotElement.setLocalScale(0.1f);
+//						element.setLocalTranslation(0f, 5.5f, 0f);
+//
+//					}
+//
+//					return true;
+//				} 
+//			} else {
+//				if (direction > precision) {
+//					if (!pivotHeadLeft.hasCollision(element, false)
+//							&& !pivotHeadRight.hasCollision(element, false)
+//						&& pivotHeadLeft.getWorldTranslation()
+//						   .distanceSquared(element.getWorldTranslation()) > OBJECTS_MINDISTANCE
+//						&& pivotHeadRight.getWorldTranslation()
+//						   .distanceSquared(element.getWorldTranslation()) > OBJECTS_MINDISTANCE
+//						) {
+//						if (time < 1) {
+//							angleClaws -= time * speed;
+//						}
+//						rotClawLeft.fromAngleAxis(angleClaws, new Vector3f(0,
+//								0, 1));
+//						pivotHeadLeft.setLocalRotation(rotClawLeft);
+//						rotClawRight.fromAngleAxis(angleClaws * -1,
+//								new Vector3f(0, 0, 1));
+//						pivotHeadRight.setLocalRotation(rotClawRight);
+//
+//						// System.out.println("Colisionado!!!");
+//						return false;
+//					} else {
+//						logger.finer("Colisionado 2 Robot1!!!");
+//						takenObject = element;
+//						has_object = true;
+//						Father = element.getParent();
+//						Father.detachChild(element);
+//						pivotElement.attachChild(element);
+//
+//						if (element instanceof Blister) {
+//							if (element.getLocalRotation().y < 0) {
+//								// Blister de la mesa
+//								element.setLocalRotation(Rotations.rotateY(0f));
+//								// element.setLocalTranslation(-6f, 1f, -3f);
+//								element.setLocalTranslation(0, -0.0f, -0.0f);
+//								pivotElement.setLocalScale(0.1f);
+//								element.setLocalTranslation(6f, 0.0f, 8.5f);
+//
+//								element.updateRenderState();
+//							} else {
+//								// Blister del sub2
+//								element.setLocalTranslation(0, -0.0f, -0.0f);
+//								pivotElement.setLocalScale(0.1f);
+//								element.setLocalTranslation(6f, 0.0f, 8.5f);
+//
+//								element.updateRenderState();
+//							}
+//
+//						} else if (element instanceof Cake) {
+//							((Cake) element).inSub = false;
+//							element.setLocalTranslation(0, -0.0f, -0.0f);
+//							// element.setLocalRotation(Rotations.rotateX(-0.5f));
+//							pivotElement.setLocalScale(0.1f);
+//							element.setLocalTranslation(0f, 5.5f, 0f);
+//
+//						} 
+//
+//						return true;
+//					}
+//				} else {
+//					logger.finer("Sin Colision Robot1");
+//					angleClaws = angle;
+//					rotClawLeft
+//					.fromAngleAxis(angleClaws, new Vector3f(0, 0, 1));
+//			pivotHeadLeft.setLocalRotation(rotClawLeft);
+//			rotClawRight.fromAngleAxis(angleClaws * -1, new Vector3f(0,
+//					0, 1));
+//			pivotHeadRight.setLocalRotation(rotClawRight);
+//					return true;
+//				}
+//			}
+//		}else return true;
+//	}	
 
 	public boolean leaveHandObject(float angle, float time, Spatial element) {
 		// Calculate direction of movement
 		int direction = (int) Math.ceil(angleClaws * 180 / FastMath.PI)
 				- (int) Math.ceil(angle * 180 / FastMath.PI);
 
-		if (this.has_object) {
+		if (this.has_object) {			
+			
 			if (element instanceof Table) {
-				if (this.object instanceof Blister) {
+				if (this.takenObject instanceof Blister) {
 					this.has_object = false;
 					// pivotElement.detachChild(object);
-					object.removeFromParent();
-					Father.attachChild(object);
+					takenObject.removeFromParent();
+					Father.attachChild(takenObject);
 					System.out.println(Father.toString());
 
-					object.setLocalRotation(Rotations.rotateY(-0.15f));
-					object.setLocalTranslation(6f, -1f, 3f);
-					object.updateRenderState();
+					takenObject.setLocalRotation(Rotations.rotateY(-0.15f));
+					takenObject.setLocalTranslation(6f, -1f, 3f);
+					takenObject.updateRenderState();
 					Father.updateRenderState();
-					blister = object;
-					object = null;
+					lastBlister = takenObject;					
+					((Table)element).addBlister(this.takenObject);
+					takenObject = null;
 
 					return true;
-				} else if (this.object instanceof Cake) {
-					if (blister != null) {
+				} else if (this.takenObject instanceof Cake) {
+					if (lastBlister != null) {
 						this.has_object = false;
-						object.setLocalTranslation(0, 0, 0);
+						takenObject.setLocalTranslation(0, 0, 0);
 						System.out.println(Father.toString());
 						// element.setLocalRotation(Rotations.rotateX(0.5f));
-						((Blister) blister).placeCake(object);
+						((Blister) lastBlister).placeCake(takenObject);
 
-						object = null;
+						takenObject = null;
 
 					}
 					// } else {
@@ -517,27 +559,28 @@ public class Robot extends Node {
 					return true;
 				}
 			} else if (element instanceof QualitySubsystem) {
-				if (this.object instanceof Blister) {
+				if (this.takenObject instanceof Blister) {
 					this.has_object = false;
 					// pivotElement.detachChild(object);
 
-					object.removeFromParent();
-					Father.attachChild(object);
+					((QualitySubsystem)element).takenBlisters.add(takenObject);
+					takenObject.removeFromParent();
+					Father.attachChild(takenObject);
 					System.out.println(Father.toString());
-					object.setLocalTranslation(16f, -1f, 8.5f);
-					object.updateRenderState();
+					takenObject.setLocalTranslation(16f, -1f, 8.5f);
+					takenObject.updateRenderState();
 					Father.updateRenderState();
-					blister = null;
-					object = null;
+					lastBlister = null;
+					takenObject = null;
 
 					return true;
 				}
 			} else if (element instanceof PacketBox) {
-				if (this.object instanceof Blister) {
+				if (this.takenObject instanceof Blister) {
 					this.has_object = false;
 					// pivotElement.detachChild(object);
-					((PacketBox) element).addInBox(this.object);
-					object = null;
+					((PacketBox) element).addInBox(this.takenObject);
+					takenObject = null;
 
 					return true;
 				}
@@ -545,6 +588,36 @@ public class Robot extends Node {
 			// }
 		}
 		return true;
+	}
+	
+	private Spatial getNearestObject(List<Spatial> elements){
+		float distance=0, tempDistance;
+		Spatial nearest = null, current;
+		
+		if( elements.size() > 0 ){
+			Iterator<Spatial> elem = elements.iterator();
+			current = elem.next();
+			nearest = current;
+			distance = distance(current);						
+			if(elem.hasNext()){
+				current = elem.next();
+				tempDistance = distance(current);
+				if(tempDistance < distance){
+					nearest = current;
+					distance = distance(current);
+				}
+			}
+		}
+		
+		return nearest;
+	}
+	
+	private float distance(Spatial otherObject){
+		float distance=0;		
+		distance = Math.min(
+				pivotHeadLeft.getWorldScale().distance(otherObject.getWorldScale()),
+				pivotHeadRight.getWorldScale().distance(otherObject.getWorldScale()));		
+		return distance;
 	}
 
 	// Bend body having known angleBody

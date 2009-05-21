@@ -46,14 +46,13 @@ public class Factory extends SimpleGame implements Observer {
 	// Factory Elements
 
 	// Conveyer Belts
-	CakeSubsystem cakeSub;
-	BlisterSubsystem blisterSub;
-	QualitySubsystem qualitySub;
+	public CakeSubsystem cakeSub;
+	public BlisterSubsystem blisterSub;
+	public QualitySubsystem qualitySub;
 	SystemState _state;
 	Conveyor cb2, cb3;
-	Vector<Spatial> cakes, blisters, combination;
 
-	Table table;
+	public Table table;
 	Spatial test;
 	Robot1 robot1;
 
@@ -65,9 +64,6 @@ public class Factory extends SimpleGame implements Observer {
 	public Factory() {
 		_state = SystemState.getInstance();
 		_state.addObserver(this);
-		cakes = new Vector<Spatial>();
-		blisters = new Vector<Spatial>();
-		combination = new Vector<Spatial>();
 	}
 
 	@Override
@@ -93,14 +89,14 @@ public class Factory extends SimpleGame implements Observer {
 
 		float time = timer.getTimePerFrame();
 
-		cakeSub.update(cakes, time);
-		blisterSub.update(blisters, time);
-		qualitySub.update(blisters, time);
+		cakeSub.update(time);
+		blisterSub.update(time);
+		qualitySub.update(time);
 
 		// robot1.moveToSub1(time);
 
 		// Lo correcto seria:robot1.update(time,rootNode.getChildren());
-		robot1.update(time, combination);
+		robot1.update(time, this);
 
 		// axis.setLocalRotation( new Quaternion().fromAngleAxis(
 		// display.getRenderer().getCamera().getDirection().angleBetween(axis.getLocalRotation().getRotationColumn(0)),
@@ -242,9 +238,6 @@ public class Factory extends SimpleGame implements Observer {
 		ms.setColorMaterial(ColorMaterial.AmbientAndDiffuse);
 		rootNode.setRenderState(ms);
 
-		combination.add(table);
-		combination.add(qualitySub);
-
 		loadCamera(CAMERA_WHOLE);
 	}
 
@@ -275,25 +268,25 @@ public class Factory extends SimpleGame implements Observer {
 	}
 
 	public void dropCake() {
-		Cake cake = new Cake(cakes.size(), display);
+		Cake cake = new Cake(cakeSub.cakes.size(), display);
 		cake.setLocalTranslation(-18, 10f, -7.5f);
 		
 		rootNode.attachChild(cake);
 		rootNode.updateWorldBound();
 		rootNode.updateRenderState();
-		cakes.add(cake);
-		combination.add(cake);
+		cakeSub.cakes.add(cake);
+		//combination.add(cake);
 	}
 
 	private void Engrave() {
-		Blister blister = new Blister(blisters.size());
+		Blister blister = new Blister(blisterSub.blisters.size());
 		blister.setLocalTranslation(-11f, -1f, 16.8f);
 		blister.setLocalScale(1.1f);
 		rootNode.attachChild(blister);
 		rootNode.updateWorldBound();
 		rootNode.updateRenderState();
-		blisters.add(blister);
-		combination.add(blister);
+		blisterSub.blisters.add(blister);
+		//combination.add(blister);
 	}
 
 	// private void Wrap() {
