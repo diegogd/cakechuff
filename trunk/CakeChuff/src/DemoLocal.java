@@ -45,13 +45,12 @@ public class DemoLocal {
 		try {
 			factory.setConfigShowMode(ConfigShowMode.AlwaysShow,new File("").toURI().toURL());
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		a1=new CakeAutomaton(9001,9000,"localhost");
+		a1 = new CakeAutomaton(9001,9000,"localhost");
 		a2 = new BlisterAutomaton(9002,9003,"localhost");
-		a3=new QCAutomaton(9004,9005,"localhost");
+		a3 = new QCAutomaton(9004,9005,"localhost");
 
 		factory.start();
 	}
