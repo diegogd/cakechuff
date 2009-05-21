@@ -316,39 +316,40 @@ public class Robot extends Node {
 
 		if (!has_object) {
 			Spatial element = getNearestObject(elements);
-			
-			takenObject = element;
-			has_object = true;
-			Father = element.getParent();
-			Father.detachChild(element);
-			pivotElement.attachChild(element);
-			elements.remove(element);
-			taken = true;
-
-			if (element instanceof Blister) {
-				if (element.getLocalRotation().y < 0) {
-					// Blister de la mesa
-					element.setLocalRotation(Rotations.rotateY(0f));
-					// element.setLocalTranslation(-6f, 1f, -3f);
+			if( element != null ){			
+				takenObject = element;
+				has_object = true;
+				Father = element.getParent();
+				Father.detachChild(element);
+				pivotElement.attachChild(element);
+				elements.remove(element);
+				taken = true;
+	
+				if (element instanceof Blister) {
+					if (element.getLocalRotation().y < 0) {
+						// Blister de la mesa
+						element.setLocalRotation(Rotations.rotateY(0f));
+						// element.setLocalTranslation(-6f, 1f, -3f);
+						element.setLocalTranslation(0, -0.0f, -0.0f);
+						pivotElement.setLocalScale(0.1f);
+						element.setLocalTranslation(6f, 0.0f, 8.5f);
+	
+						element.updateRenderState();
+					} else {
+						// Blister del sub2
+						element.setLocalTranslation(0, -0.0f, -0.0f);
+						pivotElement.setLocalScale(0.1f);
+						element.setLocalTranslation(6f, 0.0f, 8.5f);
+	
+						element.updateRenderState();
+					}
+	
+				} else if (element instanceof Cake) {				
 					element.setLocalTranslation(0, -0.0f, -0.0f);
+					// element.setLocalRotation(Rotations.rotateX(-0.5f));
 					pivotElement.setLocalScale(0.1f);
-					element.setLocalTranslation(6f, 0.0f, 8.5f);
-
-					element.updateRenderState();
-				} else {
-					// Blister del sub2
-					element.setLocalTranslation(0, -0.0f, -0.0f);
-					pivotElement.setLocalScale(0.1f);
-					element.setLocalTranslation(6f, 0.0f, 8.5f);
-
-					element.updateRenderState();
+					element.setLocalTranslation(0f, 5.5f, 0f);
 				}
-
-			} else if (element instanceof Cake) {				
-				element.setLocalTranslation(0, -0.0f, -0.0f);
-				// element.setLocalRotation(Rotations.rotateX(-0.5f));
-				pivotElement.setLocalScale(0.1f);
-				element.setLocalTranslation(0f, 5.5f, 0f);
 			}
 		}
 
