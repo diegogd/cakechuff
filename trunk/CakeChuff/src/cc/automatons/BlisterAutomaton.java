@@ -235,6 +235,13 @@ public class BlisterAutomaton extends Automaton {
 			}
 		}
 	}
+	//stop is not wrong because we want an "unclean", sudden stop
+	@SuppressWarnings("deprecation")
+	public void destroyAutomaton(){
+		blistersystem.setConveyor_velocity(0);		
+		mbox_thread.stop();
+		stamper.stop();
+	}
 
 	private class Stamper implements Runnable {
 		private boolean working;

@@ -319,7 +319,7 @@ public class SCADA {
 			String [] array = msg.split(":");
 			//The only thing that Scada receives from the master 
 			// is a change in the state, or a petition to restart.
-			if (array[0].compareTo("RESTART") ==0){
+			if (array[0].compareTo("RECOVER") ==0){
                this.sendtoMaster(sendRestartInfo(array[1]));
             }else{
             	if (!this.stateChanged(msg)){

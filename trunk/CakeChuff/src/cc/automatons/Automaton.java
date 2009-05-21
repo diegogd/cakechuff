@@ -1,13 +1,11 @@
 package cc.automatons;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Observer;
 
 import cc.communications.Mailbox;
-import cc.sensors.Sensor;
 
 public abstract class Automaton implements Observer, Runnable{
 	protected int state;
@@ -39,6 +37,7 @@ public abstract class Automaton implements Observer, Runnable{
 			try{
 				dout.println(msg);
 			}catch(Exception e){
+				e.printStackTrace();
 				//restart the receiving connection
 				if(!mbox.isFailure())mbox.setFailure(true);
 				//connection failure
@@ -55,6 +54,8 @@ public abstract class Automaton implements Observer, Runnable{
 			
 	}
 	
+	//stop is not wrong because we want an "unclean", sudden stop
+	@SuppressWarnings("deprecation")
 	public void destroyAutomaton(){
 		mbox_thread.stop();
 	}

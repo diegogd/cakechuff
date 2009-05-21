@@ -1,24 +1,20 @@
 //TODO: recuperación de caídas +
-//TODO: Errores simulados -> mover la tarta pero saltarse un estado
-//(Random en el cambio de estado tras el update del robot)
+//TODO: Localizar estados y enviárselos al SCADA para permitir la recuperación del master
+//TODO: Errores simulados -> ajustar %, nº de tartas en el blister??
 //TODO: Ajustar velocidades al entorno de ejecución -
+//TODO: Recuperación desde parada de emergencia??
+
 
 
 package cc.automatons;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.Date;
 import java.util.Observable;
 
 import cc.communications.MasterMailbox;
-import cc.simulation.state.CakeSubsystemState;
 import cc.simulation.state.Robot1State;
 
 public class MasterAutomaton extends Automaton {
-	/* state for robot (inherited) */
+	//Robot states
 	private Robot1State robot;
 	private boolean movingrobot;
 	private final int SUBSYSTEM1 = 1;
@@ -40,6 +36,7 @@ public class MasterAutomaton extends Automaton {
 	private static final int CAKE3 = 5;
 	private static final int FULL = 6;
 	private static final int FAILURE = 7;
+	
 	// parameters for the robot
 	private float moveblistert, movecaket;
 	private int f_chance;
@@ -56,12 +53,11 @@ public class MasterAutomaton extends Automaton {
 	private boolean cake_waiting;
 	// blister waiting for an empty table
 	private boolean blister_waiting;
+	// packet waiting for an empty quality control conveyor
 	private boolean packet_waiting;
 	// qc is available
 	private boolean qc_free;
-	
-	private long lastupdate;
-	
+	//Simulated error
 	private boolean mistake;
 
 	public MasterAutomaton(String scada, int scada_in, int scada_out,
@@ -113,14 +109,8 @@ public class MasterAutomaton extends Automaton {
 
 	private void run_robot_cake1() {
 		state = CAKE1;
-		if(!mistake){
-			robot.setRobot_velocity(movecaket);
-			robot.setGoToState(PICKUPCAKE);
-		}else{
-			robot.setRobot_velocity(movecaket);
-			robot.setGoToState(SUBSYSTEM1);
-			mistake=false;
-		}
+		robot.setRobot_velocity(movecaket);
+		robot.setGoToState(PICKUPCAKE);
 		System.out.println("[Master]:Picking cake 1");
 		// put cake in the blister
 		// tell the cake automaton
@@ -158,6 +148,7 @@ public class MasterAutomaton extends Automaton {
 
 			}
 		}*/
+		System.out.println("[Master]: Received msg: "+msg);
 		String[] content = msg.split(":");
 		if (content[0].equalsIgnoreCase("A1")) {
 			if (content[1].equalsIgnoreCase("ON")) {
@@ -244,7 +235,9 @@ public class MasterAutomaton extends Automaton {
 			run_robot_start(Integer.parseInt(parsrob[0]), Integer
 					.parseInt(parsrob[1]), Integer.parseInt(pars[2].split("\\#")[2]));
 		} else if (content[0].equalsIgnoreCase("RESTART")) {
+			
 			String[] pars = content[1].split("\\$");
+			System.out.println("Received recover information for " + pars[0]);
 			if (pars[0].equalsIgnoreCase("A1")) {
 				mboxCake.send("RESTART:" + pars[1]);
 			} else if (pars[0].equalsIgnoreCase("A2")) {
@@ -295,42 +288,52 @@ public class MasterAutomaton extends Automaton {
 						System.out.println("[Master to Robot1]: EMPTY->BLISTER");
 						robot.setRobot_velocity(movecaket);
 						robot.setGoToState(PICKUPCAKE);
-						state = CAKE1;
-					}
+						if(mistake) state = CAKE2;
+						else state = CAKE1;
+					}else if(mistake) state = CAKE1;
 				} else if (state == BLISTER) {
 					if (cake_waiting) {
 						System.out.println("[Master to Robot1]: BLISTER->CAKE1");
 						robot.setRobot_velocity(movecaket);
 						robot.setGoToState(PICKUPCAKE);
-						state = CAKE1;
-					} 
+						if(mistake) state = CAKE2;
+						else state = CAKE1;
+					}else if(mistake) state = CAKE1;
 				} else if (state == CAKE1) {
 					if (cake_waiting) {
 						System.out.println("[Master to Robot1]: CAKE1->CAKE2");
 						robot.setRobot_velocity(movecaket);
 						robot.setGoToState(PICKUPCAKE);
-						state = CAKE2;
-					} 
+						if(mistake) state = CAKE3;
+						else state = CAKE2;
+					}else if(mistake) state = CAKE2;
 				} else if (state == CAKE2) {
 					if (cake_waiting) {
 						System.out.println("R1: CAKE2->CAKE3");
 						robot.setRobot_velocity(movecaket);
 						robot.setGoToState(PICKUPCAKE);
-						state = CAKE3;
-					} 
+						if(mistake) state = FULL;
+						else state = CAKE3;
+					}else if(mistake) state = CAKE3;
 				} else if (state == CAKE3) {
 					if (cake_waiting) {
 						System.out.println("[Master to Robot1]: CAKE3->FULL");
 						robot.setRobot_velocity(movecaket);
 						robot.setGoToState(PICKUPCAKE);
 						state = FULL;
-					} 
+					}else if(mistake){
+						state = FULL;
+						System.out.println("[Master to Robot1]: PICK PACKET");
+						robot.setRobot_velocity(moveblistert);
+						robot.setGoToState(PICKUPPACKET);
+					}
 				} else if (state == FULL ) {
 					if(qc_free)
 					System.out.println("[Master to Robot1]: PICK PACKET");
 					robot.setRobot_velocity(moveblistert);
 					robot.setGoToState(PICKUPPACKET);
 				}else packet_waiting=true;
+				mistake=false;
 				break;
 			case (PICKUPBLISTER):
 				System.out.println("[Master to Robot1]: BLISTER -> TABLE");
@@ -344,6 +347,7 @@ public class MasterAutomaton extends Automaton {
 				System.out.println("[Master to Robot1]: BLISTER -> QC");
 				robot.setRobot_velocity(moveblistert);
 				robot.setGoToState(DROPINSUB3);
+				mboxCake.send("R1:packet");
 				break;
 			case (DROPINSUB3):
 				System.out.println("[Master to Robot1]: PACK LEFT");
@@ -366,8 +370,11 @@ public class MasterAutomaton extends Automaton {
 	public void run() {
 	};
 	
+	//stop because we want an "unclean", sudden stop
+	@SuppressWarnings("deprecation")
 	@Override
 	public void destroyAutomaton(){
+		robot.deleteObserver(this);
 		mboxBlister.mbox_thread.stop();
 		mboxQC.mbox_thread.stop();
 		mboxCake.mbox_thread.stop();
