@@ -11,16 +11,14 @@ import cc.simulation.elements.LightSensor;
 import cc.simulation.elements.TouchSensor;
 import cc.simulation.elements.Valve;
 import cc.simulation.state.CakeSubsystemState;
-import cc.simulation.utils.Rotations;
-
-import com.jme.bounding.BoundingBox;
-import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 
 public class CakeSubsystem extends Node implements Observer {
-
+	
+	private static final long serialVersionUID = -4388993500227829190L;
+	
 	// Sensors
 	LightSensor s1, s2;
 	TouchSensor s3;

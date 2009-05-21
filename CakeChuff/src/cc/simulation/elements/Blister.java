@@ -3,7 +3,6 @@ package cc.simulation.elements;
 import java.net.URL;
 
 import cc.simulation.utils.ModelLoader;
-import cc.simulation.utils.Rotations;
 
 import com.jme.bounding.BoundingBox;
 import com.jme.math.Vector3f;
@@ -11,7 +10,6 @@ import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.scene.shape.Box;
-import com.jme.scene.shape.Cylinder;
 
 public class Blister extends Node {
 
