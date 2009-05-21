@@ -32,7 +32,7 @@ public class Table extends Node{
 
 	private void loadModel(){
 		URL model=getClass().getClassLoader().getResource("model/table.obj");
-		this.attachChild(ModelLoader.loadOBJ(model));
+		this.attachChild(ModelLoader.loadOBJ(model, false));
 	}
 	
 }

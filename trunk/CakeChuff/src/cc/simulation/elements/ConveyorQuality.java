@@ -17,7 +17,7 @@ public class ConveyorQuality extends Conveyor {
 	public void loadModel(){
 		URL model = getClass().getClassLoader().getResource("model/blisterconveyor.obj");						
 		
-		this.attachChild(ModelLoader.loadOBJ(model));
+		this.attachChild(ModelLoader.loadOBJ(model, true));
 		
 //		model = getClass().getClassLoader().getResource("model/plc.obj");								
 //		Spatial plc = ModelLoader.loadOBJ(model);

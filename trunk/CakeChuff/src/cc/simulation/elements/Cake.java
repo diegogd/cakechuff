@@ -92,7 +92,7 @@ public class Cake extends Node{
 	
 	private void loadModel(){
 		URL model=getClass().getClassLoader().getResource("model/cake.obj");
-		Spatial cake = ModelLoader.loadOBJ(model);
+		Spatial cake = ModelLoader.loadOBJ(model, true);
 		this.attachChild(cake);
 		TextureState ts = mainDisplay.getRenderer().createTextureState();
 		ts.setTexture(TextureManager.loadTexture(this.getClass().getResource("/model/texture/cake/normal.jpg"),

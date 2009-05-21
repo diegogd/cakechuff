@@ -36,8 +36,4 @@ public class ModelLoader {
 		}
 	}
 	
-	public static Spatial loadOBJ(URL pathmodel)
-	{
-		return ModelLoader.loadOBJ(pathmodel, true);
-	}
 }

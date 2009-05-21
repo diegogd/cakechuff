@@ -52,11 +52,6 @@ public class Cutter extends Node {
 		pivot.attachChild(cutter);
 	}
 	
-	private void loadModel(){
-		URL model=getClass().getClassLoader().getResource("model/cake.obj");
-		this.attachChild(ModelLoader.loadOBJ(model));
-	}
-	
 	public void update(float timeperframes)
 	{
 //		System.out.println(pivot.getLocalTranslation().y);
