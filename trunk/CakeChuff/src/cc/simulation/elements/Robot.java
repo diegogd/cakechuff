@@ -1,6 +1,7 @@
 package cc.simulation.elements;
 
 import java.net.URL;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -307,6 +308,12 @@ public class Robot extends Node {
 				return true;
 			}
 		}
+	}
+	
+	public boolean takeObject(List<Spatial> elements){
+		boolean taken = false;
+		
+		return taken;
 	}
 
 	public boolean openHandObject(float angle, float time, Spatial element) {
