@@ -200,20 +200,20 @@ public class Robot extends Node {
 
 	public void loadModel() {
 
-		loadObject("robotBase.obj", this);
+		loadObject("robotBase.obj", this, false);
 
 		pivotBase = new Node();
 		pivotBase.setLocalRotation(Rotations.rotateX(-0.1f));
 		pivotBase.setLocalTranslation(0f, 0.13f, 0f);
 
-		loadObject("robotLower.obj", pivotBase);
+		loadObject("robotLower.obj", pivotBase, false);
 		this.attachChild(pivotBase);
 
 		pivotBody = new Node();
 
 		pivotBody.setLocalTranslation(0, 0.52f, 0);
 
-		loadObject("robotUpper.obj", pivotBody);
+		loadObject("robotUpper.obj", pivotBody, false);
 
 		pivotBase.attachChild(pivotBody);
 
@@ -224,14 +224,14 @@ public class Robot extends Node {
 
 		pivotHeadLeft = new Node();
 
-		loadObject("robotRightClaw.obj", pivotHeadLeft);
+		loadObject("robotRightClaw.obj", pivotHeadLeft, true);
 
 		pivotHeadLeft.setLocalTranslation(0.22f, 0f, 0f);
 
 		pivotHead.attachChild(pivotHeadLeft);
 
 		pivotHeadRight = new Node();
-		loadObject("robotLeftClaw.obj", pivotHeadRight);
+		loadObject("robotLeftClaw.obj", pivotHeadRight, true);
 
 		pivotHeadRight.setLocalTranslation(-0.22f, 0f, 0f);
 
@@ -244,10 +244,10 @@ public class Robot extends Node {
 		this.setLocalScale(10);
 	}
 
-	private void loadObject(String objectName, Node parent) {
+	private void loadObject(String objectName, Node parent, boolean bounding) {
 		URL model = getClass().getClassLoader().getResource(
 				"model/" + objectName);
-		Spatial object = ModelLoader.loadOBJ(model);
+		Spatial object = ModelLoader.loadOBJ(model, bounding);
 		object.setLocalScale(0.1f);
 		parent.attachChild(object);
 	}

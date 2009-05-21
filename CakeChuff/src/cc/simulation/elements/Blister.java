@@ -109,7 +109,7 @@ public class Blister extends Node {
 	private void loadModel() {
 		URL model = getClass().getClassLoader()
 				.getResource("model/blister.obj");
-		pivot.attachChild(ModelLoader.loadOBJ(model));
+		pivot.attachChild(ModelLoader.loadOBJ(model, true));
 	}
 	
 	public Spatial getHole1() {

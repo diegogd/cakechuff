@@ -33,7 +33,7 @@ public class Engraver extends Node{
 	
 	public void loadShape(){
 		pivot.attachChild(
-		ModelLoader.loadOBJ(getClass().getClassLoader().getResource("model/engraver.obj"))
+		ModelLoader.loadOBJ(getClass().getClassLoader().getResource("model/engraver.obj"), true)
 		);
 	}
 	

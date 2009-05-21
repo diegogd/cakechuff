@@ -34,7 +34,7 @@ public class Wrapper extends Node {
 
 	public void loadShape() {
 		pivot.attachChild(ModelLoader.loadOBJ(getClass().getClassLoader()
-				.getResource("model/engraver.obj")));
+				.getResource("model/engraver.obj"), true));
 	}
 
 	public void update(float timeperframes, Spatial element) {

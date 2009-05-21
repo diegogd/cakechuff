@@ -80,7 +80,7 @@ public class Valve extends Node{
 		
 		URL path = getClass().getClassLoader().getResource("model/valve.obj");
 		
-		this.attachChild(ModelLoader.loadOBJ(path));
+		this.attachChild(ModelLoader.loadOBJ(path, false));
 	}
 	
 	public void update(float timeperframes)
