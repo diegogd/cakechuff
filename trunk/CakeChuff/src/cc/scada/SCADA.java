@@ -234,16 +234,15 @@ public class SCADA {
         	String s = "RESTART" + ":" + subsystem_name + "$";
 
         	if (subsystem_name.compareTo("A1") ==0){
-        		s.concat(this.getValue("state", "ss1Info") + "#" + this.sendAutomatonInfo1());
+        		s = s +this.getValue("state", "ss1Info") + "#" + this.sendAutomatonInfo1();
         	}else if(subsystem_name.compareTo("A2") ==0){
-        		s.concat(this.getValue("state", "ss2Info") + "#" + this.sendAutomatonInfo2());
+        		s = s + this.getValue("state", "ss2Info") + "#" + this.sendAutomatonInfo2();
         	}else if (subsystem_name.compareTo("A3") ==0){
-        		s.concat(this.getValue("state", "ss3Info") + "#" +  
-        				this.getValue("robot_state", "ss3Info") + "#"+ this.sendAutomatonInfo3());
+        		s = s + this.getValue("state", "ss3Info") + "#" +  
+        				this.getValue("robot_state", "ss3Info") + "#"+ this.sendAutomatonInfo3();
         	}else if(subsystem_name.compareTo("R1") ==0){
-        		s.concat(this.getValue("state", "robot") + "#" + this.sendRobotInfo());
+        		s = s +this.getValue("state", "robot") + "#" + this.sendRobotInfo() ;
         	}
-
         	return s;
         }
         
