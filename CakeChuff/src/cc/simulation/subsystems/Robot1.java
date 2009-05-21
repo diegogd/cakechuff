@@ -103,7 +103,7 @@ public class Robot1 extends Node implements Observer {
 				this.phase++;
 			break;
 		case 2:
-			if (robot.openHand(-0.2f, time))
+			if (robot.openHand(-0.6f, time))
 				this.phase++;
 			break;
 		case 3:
@@ -111,7 +111,7 @@ public class Robot1 extends Node implements Observer {
 				this.phase++;
 			break;
 		case 4:
-			if (robot.openHandObject(0f, time, element))
+			if (robot.openHandObject(0f, time, element) && robot.has_object)
 				this.phase++;
 			break;
 		case 5:

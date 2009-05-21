@@ -21,17 +21,17 @@ import com.jme.scene.shape.Cylinder;
 public class Robot extends Node {
 
 	private static Logger logger = Logger.getLogger(Robot.class.getName());
-	
+		
 	/**
 	 * Distance used to check if an object is close enough.
 	 */
-	private final float OBJECTS_MINDISTANCE = 2f;
+	private final float OBJECTS_MINDISTANCE = 6f;
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2973029142743347671L;
 	// State to know if it has taken an object
-	private boolean has_object;
+	public boolean has_object;
 	private Spatial object, blister;
 
 	private float speed; // modificar la velocidad
