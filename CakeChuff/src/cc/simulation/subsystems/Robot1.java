@@ -84,7 +84,7 @@ public class Robot1 extends Node implements Observer {
 		return false;
 	}
 
-	public boolean pickUpCake(float time, Spatial element) {
+	public boolean pickUpCake(float time, List<Spatial> elements) {
 		
 		if (robot.getHasObject()) {
 			if (robot.bendBody(1.5f, time)) {
@@ -111,14 +111,18 @@ public class Robot1 extends Node implements Observer {
 				this.phase++;
 			break;
 		case 4:
-			if (robot.openHandObject(0f, time, element) && robot.has_object)
+			if (robot.openHand(-0.2f, time))
 				this.phase++;
 			break;
 		case 5:
-			if (robot.bendBody(1.5f, time))
+			if (robot.takeObject(elements))
 				this.phase++;
 			break;
 		case 6:
+			if (robot.bendBody(1.5f, time))
+				this.phase++;
+			break;
+		case 7:
 			phase = 0;
 			return true;
 		}
@@ -359,16 +363,8 @@ public class Robot1 extends Node implements Observer {
 				}
 				break;
 			case PICKUPCAKE:
-				elem = element.iterator();
-				while (elem.hasNext()) {
-					Spatial aux = elem.next();
-					if (aux instanceof Cake) {
-						if (pickUpCake(time, aux)) {
-							_state.setCurrentState(PICKUPCAKE);
-							break;
-							// element.remove(aux);
-						}
-					}
+				if (pickUpCake(time, element) && robot.getHasObject()) {
+					_state.setCurrentState(PICKUPCAKE);
 				}
 				break;
 			case DROPINTABLE:
