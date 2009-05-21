@@ -102,6 +102,10 @@ public class CakeSubsystem extends Node implements Observer {
 			} else {
 				if (element.getLocalTranslation().y > 0) {
 					element.getLocalTranslation().y -= 3 * timePerFrame;
+				}else{
+					element.getLocalTranslation().y=0;
+					cakes.remove(element);
+					i--;
 				}
 			}
 
