@@ -22,6 +22,11 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import com.jme.app.AbstractGame.ConfigShowMode;
 
+import cc.automatons.Automaton;
+import cc.automatons.BlisterAutomaton;
+import cc.automatons.CakeAutomaton;
+import cc.automatons.MasterAutomaton;
+import cc.automatons.QCAutomaton;
 import cc.simulation.state.ControlInterface;
 import cc.simulation.subsystems.Factory;
 
@@ -40,11 +45,10 @@ public class CakeChuff extends javax.swing.JFrame {
     private final int QUALITY=5;
 
     // Threads of every subsystem
-    private Thread ScadaThread=null;
-    private Thread MasterThread=null;
-    private Thread CakesThread=null;
-    private Thread BlisterThread=null;
-    private Thread QualityThread=null;
+    private Automaton masterAutomaton = null;
+    private Automaton cakesAutomaton = null;
+    private Automaton blisterAutomaton = null;
+    private Automaton qualityAutomaton = null;
     /** Creates new form CakeChuff */
     public CakeChuff() {
         initComponents();
@@ -265,14 +269,38 @@ public class CakeChuff extends javax.swing.JFrame {
     private void startSubsystem(int id){
         switch(id){
             case MASTER:
+            	
+            	masterAutomaton = new MasterAutomaton("localhost",9009,9008,
+            								 "localhost",9000,9001,
+            								 "localhost",9003,9002,
+            								 "localhost",9005,9004);
                 break;
             case SCADA:
+            	java.awt.EventQueue.invokeLater(new Runnable() {
+                    public void run() {
+                        try {
+                            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+                        } catch (ClassNotFoundException ex) {
+                            Logger.getLogger(ControlInterface.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (InstantiationException ex) {
+                            Logger.getLogger(ControlInterface.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IllegalAccessException ex) {
+                            Logger.getLogger(ControlInterface.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (UnsupportedLookAndFeelException ex) {
+                            Logger.getLogger(ControlInterface.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        new ControlInterface().setVisible(true);
+                    }
+                });
                 break;
-            case CAKES:
+            case CAKES:            	
+            	cakesAutomaton = new CakeAutomaton(9001,9000,"localhost");            	
                 break;
             case BLISTERS:
+            	blisterAutomaton = new BlisterAutomaton(9002,9003,"localhost");        		
                 break;
             case QUALITY:
+            	qualityAutomaton = new QCAutomaton(9004,9005,"localhost");
                 break;
         }
     }
@@ -280,14 +308,18 @@ public class CakeChuff extends javax.swing.JFrame {
     private void stopSubsystem(int id){
         switch(id){
             case MASTER:
+            	masterAutomaton.destroyAutomaton();
                 break;
             case SCADA:
                 break;
             case CAKES:
+            	cakesAutomaton.destroyAutomaton();
                 break;
             case BLISTERS:
+            	blisterAutomaton.destroyAutomaton();
                 break;
             case QUALITY:
+            	qualityAutomaton.destroyAutomaton();
                 break;
         }
     }
@@ -308,6 +340,12 @@ public class CakeChuff extends javax.swing.JFrame {
         	logger.log(Level.SEVERE, null, ex);
         }
         
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new CakeChuff().setVisible(true);
+            }
+        });
+        
         Factory factory = new Factory();
 		try {
 			factory.setConfigShowMode(ConfigShowMode.AlwaysShow, new File("")
@@ -318,11 +356,7 @@ public class CakeChuff extends javax.swing.JFrame {
 
 		factory.start();        	
         
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new CakeChuff().setVisible(true);
-            }
-        });
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

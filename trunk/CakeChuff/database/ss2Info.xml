@@ -2,10 +2,10 @@
 <!DOCTYPE ss2Info SYSTEM "dtd/ss2Info.dtd">
 
 <ss2Info>
-	<defaultSpeed>10</defaultSpeed>
-	<conveyorSpeed>10</conveyorSpeed>
-	<conveyorLenght>20</conveyorLenght>
-	<defaultLenght>20</defaultLenght>
-	<state>init</state>
+  <defaultSpeed>10</defaultSpeed>
+  <conveyorSpeed>30</conveyorSpeed>
+  <conveyorLenght>5</conveyorLenght>
+  <defaultLenght>20</defaultLenght>
+  <state>press</state>
 </ss2Info>
 

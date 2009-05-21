@@ -365,6 +365,14 @@ public class MasterAutomaton extends Automaton {
 
 	public void run() {
 	};
+	
+	@Override
+	public void destroyAutomaton(){
+		mboxBlister.mbox_thread.stop();
+		mboxQC.mbox_thread.stop();
+		mboxCake.mbox_thread.stop();
+		mboxScada.mbox_thread.stop();
+	}
 
 	public static void main(String args[]) {
 		/*

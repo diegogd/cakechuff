@@ -6,7 +6,6 @@
 
 package cc.automatons;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -18,8 +17,6 @@ import cc.simulation.state.CakeSubsystemState;
 import cc.simulation.state.SystemState;
 
 import cc.simulation.elements.Sensor;
-import cc.simulation.elements.LightSensor;
-import cc.simulation.elements.TouchSensor;
 public class CakeAutomaton extends Automaton {
 	
 	//states
@@ -46,7 +43,8 @@ public class CakeAutomaton extends Automaton {
 		stop=false;
 		try{
 			mbox= new Mailbox(this, portin);
-			(new Thread(mbox)).start();
+			mbox_thread = (new Thread(mbox));
+			mbox_thread.start();
 			boolean connected=false;
 			while(!connected){
 				try{

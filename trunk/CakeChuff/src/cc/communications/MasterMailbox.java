@@ -20,6 +20,7 @@ public class MasterMailbox implements Runnable{
 	private PrintWriter dout;
 	private int portin, portout;
 	private String destination;
+	public Thread mbox_thread;
 	Vector<String> msgs;
 	public MasterMailbox(MasterAutomaton owner, int portin, int portout, String address){
 		this.portin=portin;
@@ -28,7 +29,8 @@ public class MasterMailbox implements Runnable{
 		msgs=new Vector<String>();
 		try{
 			mbox= new Mailbox(owner, portin);
-			(new Thread(mbox)).start();
+			mbox_thread = (new Thread(mbox));
+			mbox_thread.start();
 			//outgoing connection will be opened when the first message is sent
 		}catch(UnknownHostException uhe){
 			

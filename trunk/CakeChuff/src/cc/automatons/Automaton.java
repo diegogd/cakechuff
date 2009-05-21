@@ -18,6 +18,7 @@ public abstract class Automaton implements Observer, Runnable{
 	//protected DataOutputStream dout;
 	PrintWriter dout;
 	protected Mailbox mbox;
+	public Thread mbox_thread;
 	protected String master;
 	protected int portout;
 	public Automaton() {
@@ -52,6 +53,10 @@ public abstract class Automaton implements Observer, Runnable{
 				}
 			}
 			
+	}
+	
+	public void destroyAutomaton(){
+		mbox_thread.stop();
 	}
 
 }
