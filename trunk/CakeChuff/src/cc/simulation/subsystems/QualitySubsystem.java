@@ -5,15 +5,13 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import cc.simulation.elements.Blister;
-import cc.simulation.elements.Cake;
 import cc.simulation.elements.ConveyorQuality;
 import cc.simulation.elements.LightSensor;
-import cc.simulation.elements.Packet;
 import cc.simulation.elements.PacketBox;
 import cc.simulation.elements.Robot;
-import cc.simulation.elements.Table;
 import cc.simulation.elements.TouchSensor;
 import cc.simulation.elements.Wrapper;
 import cc.simulation.state.QualitySubsystemState;
@@ -27,6 +25,10 @@ import com.jme.scene.Spatial;
 import com.jme.scene.shape.Box;
 
 public class QualitySubsystem extends Node implements Observer {
+	
+	private static final long serialVersionUID = 483908354130145983L;
+
+	Logger logger = Logger.getLogger(QualitySubsystem.class.getName());
 
 	public final int INIT = 0;
 	public final int SUBSYSTEM = 1;
@@ -149,7 +151,6 @@ public class QualitySubsystem extends Node implements Observer {
 
 			if ((conv.hasCollision(element, false))
 					&& (element instanceof Blister)) {
-				if (element.getParent() == this.parent) {
 					element.getLocalTranslation().x += conv.getVelocity()
 							* timePerFrame;
 					if (_state.getWrappedUp()) {
@@ -159,7 +160,6 @@ public class QualitySubsystem extends Node implements Observer {
 						else
 							_state.setWrappedUp(false);
 					}
-				}
 			}
 
 			// Sensors detection
@@ -292,7 +292,6 @@ public class QualitySubsystem extends Node implements Observer {
 	}
 
 	private void robotUpdate(List<Spatial> element, float time) {
-		Iterator<Spatial> elem;
 		if (_state.getRobotIfMoving()) {
 			switch (_state.getRobotGoToState()) {
 

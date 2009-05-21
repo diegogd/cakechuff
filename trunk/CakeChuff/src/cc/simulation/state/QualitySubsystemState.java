@@ -16,7 +16,6 @@ public class QualitySubsystemState extends Observable {
 	private float wrapper_secs = 0;
 	private boolean wrapup = false;
 	private int numcakes_passed = 0;
-	private boolean emptyBox = false;
 
 	public final int INIT = 0;
 	public final int SUBSYSTEM = 1;

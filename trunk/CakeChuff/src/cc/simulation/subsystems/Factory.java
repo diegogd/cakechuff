@@ -1,35 +1,22 @@
 package cc.simulation.subsystems;
 
-import java.io.File;
-import java.net.MalformedURLException;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Vector;
 
 import cc.simulation.elements.Blister;
 import cc.simulation.elements.Cake;
 import cc.simulation.elements.Conveyor;
-import cc.simulation.elements.ConveyorBlister;
-import cc.simulation.elements.ConveyorCake;
-import cc.simulation.elements.ConveyorQuality;
-import cc.simulation.elements.LightSensor;
-import cc.simulation.elements.Packet;
 import cc.simulation.elements.Table;
 import cc.simulation.state.SystemState;
 import cc.simulation.utils.Rotations;
 
 import com.jme.app.SimpleGame;
-import com.jme.bounding.BoundingBox;
 import com.jme.image.Texture;
 import com.jme.image.Texture.MagnificationFilter;
 import com.jme.image.Texture.MinificationFilter;
-import com.jme.math.FastMath;
-import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
-import com.jme.scene.Node;
 import com.jme.scene.Spatial;
-import com.jme.scene.shape.AxisRods;
 import com.jme.scene.shape.Box;
 import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.TextureState;
@@ -57,7 +44,7 @@ public class Factory extends SimpleGame implements Observer {
 	Robot1 robot1;
 
 	private int numcakes = 0;
-	private int numBlisters = 0, numPackets = 0;
+	private int numBlisters = 0;
 
 	private Box floor;
 

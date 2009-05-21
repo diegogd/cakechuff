@@ -1,24 +1,20 @@
 package cc.simulation.subsystems;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-import cc.simulation.elements.Blister;
-import cc.simulation.elements.Cake;
-import cc.simulation.elements.PacketBox;
 import cc.simulation.elements.Robot;
-import cc.simulation.elements.Table;
 import cc.simulation.state.Robot1State;
 
 import com.jme.math.FastMath;
 import com.jme.math.Vector3f;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
-import com.jme.scene.shape.Box;
 
 public class Robot1 extends Node implements Observer {
+	
+	private static final long serialVersionUID = 6232189439190248042L;
 
 	private Robot robot;
 
@@ -334,7 +330,6 @@ public class Robot1 extends Node implements Observer {
 	 * Gestionar los estados y las llamadas a las funciones en el update
 	 */
 	public void update(float time, Factory factory) {
-		Iterator<Spatial> elem;
 		if (_state.getIfMoving()) {
 			switch (_state.getGoToState()) {
 

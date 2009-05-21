@@ -19,6 +19,8 @@ import com.jme.scene.Spatial;
 
 public class BlisterSubsystem extends Node implements Observer {
 
+	private static final long serialVersionUID = 1459747352145984978L;
+
 	// Conveyor
 	ConveyorBlister conv;
 
