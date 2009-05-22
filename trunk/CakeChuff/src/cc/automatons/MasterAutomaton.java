@@ -97,7 +97,7 @@ public class MasterAutomaton extends Automaton {
 		this.movecaket = 3/movecaket;
 		this.moveblistert = 13/moveblistert;
 		robot.setRobot_velocity(moveblistert);
-		f_chance=f_rate;
+		f_chance=f_rate/4;
 	}
 
 	private void run_robot_blister() {
