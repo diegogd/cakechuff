@@ -210,13 +210,14 @@ public class CakeAutomaton extends Automaton {
 	}
 	@Override
 	public synchronized void newMsg(String msg) {
-	/*while (treatingupdate){
+		/*while (treatingupdate){
 			try {
 				Thread.sleep(500);
 			} catch (InterruptedException e) {
 
 			}
 		}*/
+		System.out.println("[CakeAutomaton]: Received msg: "+msg);
 		String[] content = msg.split(":");
 		// Emergencies work for any state
 		if (content[0].equals("EMERGENCY"))
@@ -346,6 +347,7 @@ public class CakeAutomaton extends Automaton {
 		mbox.end();
 		try {
 			sout.close();
+			dout.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

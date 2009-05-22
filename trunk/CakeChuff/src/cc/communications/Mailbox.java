@@ -1,4 +1,4 @@
-
+//TODO:Recepción después del reinicio
 package cc.communications;
 
 import java.io.BufferedReader;
@@ -16,9 +16,7 @@ public class Mailbox implements Runnable {
 
 	private ServerSocket ss;
 	private Socket so;
-	//private DataInputStream din;
 	private BufferedReader din;
-	//private DataOutputStream dout;
 	private ArrayList<String> msg_list;
 	private Automaton owner;
 	private boolean failure;
@@ -39,13 +37,16 @@ public class Mailbox implements Runnable {
 	@Override
 	public void run() {
 		//Accept connections
-		try{
-			System.out.println("[Mailbox]: Connecting...");
-			this.connect();
-			receiveMsgs();
-		}catch(IOException ioe){
-			//cannot connect
-			ioe.printStackTrace();
+		while (!failure) {
+			try {
+				System.out.print("[Mailbox]: Connecting...");
+				this.connect();
+				System.out.println("ok");
+				receiveMsgs();
+			} catch (IOException ioe) {
+				// cannot connect
+				ioe.printStackTrace();
+			}
 		}
 		
 	}
@@ -64,9 +65,9 @@ public class Mailbox implements Runnable {
 			} catch (Exception e) {
 				// connection failure
 				try{
-					System.out.println("[Mailbox]: Connecting...");
+					System.out.print("[Mailbox]:Error, Re-connecting...");
 					this.connect();
-					receiveMsgs();
+					System.out.println("ok");
 				}catch(IOException ioe){
 					//cannot connect
 					ioe.printStackTrace();
@@ -78,6 +79,7 @@ public class Mailbox implements Runnable {
 		try {
 			so.close();
 			ss.close();
+			din.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

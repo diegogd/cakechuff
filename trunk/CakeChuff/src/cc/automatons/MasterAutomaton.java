@@ -161,10 +161,10 @@ public class MasterAutomaton extends Automaton {
 				// state change
 				mboxScada.send(msg);
 				if (content[1].equalsIgnoreCase("WAIT")) {
-					System.out.println("Cake awaiting");
+					System.out.println("[Master]: Cake awaiting");
 					// Error chance
 					if ((Math.random() * 100) < f_chance) {
-						System.out.println("Simulated error");
+						System.out.println("[Master]: Simulated error");
 						mistake = true;
 					}
 					if(robot.getIfMoving())cake_waiting = true;
@@ -226,7 +226,6 @@ public class MasterAutomaton extends Automaton {
 			}
 		} else if (content[0].equalsIgnoreCase("INIT")) {
 			stop = false;
-			System.out.println("Par2:" + content[1]);
 			String[] pars = content[1].split("\\$");
 			mboxCake.send("INIT:" + pars[0]);
 			mboxBlister.send("INIT:" + pars[1]);
@@ -242,8 +241,7 @@ public class MasterAutomaton extends Automaton {
 				mboxCake.send("RESTART:" + pars[1]);
 			} else if (pars[0].equalsIgnoreCase("A2")) {
 				mboxBlister.send("RESTART:" + pars[1]);
-			}
-			if (pars[0].equalsIgnoreCase("A3")) {
+			}else if (pars[0].equalsIgnoreCase("A3")) {
 				mboxQC.send("RESTART:" + pars[1]);
 			}
 		} else if (content[0].equalsIgnoreCase("STOP")) {
@@ -264,7 +262,6 @@ public class MasterAutomaton extends Automaton {
 	public void update(Observable o, Object arg) {
 		treatingupdate=true;
 		if (o instanceof Robot1State && ! robot.getIfMoving() && ((Robot1State) o).isChanged_CS()) {
-			// robot.deleteObserver(this);
 			System.out.println("[Master to Robot1]:Robot state changed");
 			System.out.println("New Robot1 state:"+robot.getCurrentState());
 			switch (robot.getCurrentState()) {

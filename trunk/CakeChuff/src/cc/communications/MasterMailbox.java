@@ -46,14 +46,22 @@ public class MasterMailbox implements Runnable{
 			connect();
 		}
 		while (msgs.size()>0){
-			try{
-				dout.println(msgs.remove(0));
-			}catch(Exception e){
-				System.out.println("Error:");
-				e.printStackTrace();
-				//restart the receiving connection
-				if(!mbox.isFailure())mbox.setFailure(true);
-				connect();
+			String msg=msgs.remove(0);
+			boolean success=false;
+			while (!success) {
+				System.out.println();
+				try {
+					dout.println(msg);
+					success = true;
+					System.out.println("[Master]: Sent: "+msg);
+				} catch (Exception e) {
+					System.out.println("Error:");
+					e.printStackTrace();
+					// restart the receiving connection
+					if (!mbox.isFailure())
+						mbox.setFailure(true);
+					connect();
+				}
 			}
 		}
 	}

@@ -344,9 +344,8 @@ public class SCADA {
 				boolean success=false;
 				while(!success){
 					try{
-					sout= new Socket("master", portout);
-					//dout = new DataOutputStream(sout.getOutputStream());
-					dout = new PrintWriter(sout.getOutputStream(),true);
+						sout= new Socket("master", portout);
+						dout = new PrintWriter(sout.getOutputStream(),true);
 					}catch(IOException ioe2){
 						//keep trying
 					}
