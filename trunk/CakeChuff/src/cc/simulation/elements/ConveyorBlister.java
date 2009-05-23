@@ -9,6 +9,7 @@ import com.jme.math.Vector3f;
  * Implementation and definition of the conveyor blister, one of
  * the simulation elements that compose CakeChuff system.
  * Extends its functionality from the "normal" conveyor.
+ * It specifies the conveyor of the blister making of the system
  * @version 1.0, 29/05/09
  * @author CaKeChuff team
  */

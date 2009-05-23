@@ -21,6 +21,7 @@ import com.jmex.model.converters.ObjToJme;
  * Implementation and definition of the conveyor cake, one of
  * the simulation elements that compose CakeChuff system.
  * Extends its functionality from the "normal" conveyor.
+ * It specifies the conveyor of the cake making of the system
  * @version 1.0, 29/05/09
  * @author CaKeChuff team
  */
