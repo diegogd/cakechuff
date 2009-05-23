@@ -31,8 +31,8 @@ import cc.simulation.state.ControlInterface;
 import cc.simulation.subsystems.Factory;
 
 /**
- * CakeChuff class is the one in charge of executing the rest of the aplication
- * and in charge of starting and finishing every thread.
+ * Executing the rest of the application
+ * Start and finish every thread
  */
 public class CakeChuff extends javax.swing.JFrame {
 
@@ -324,7 +324,7 @@ public class CakeChuff extends javax.swing.JFrame {
         }
     }
     /**
-    * @param args the command line arguments
+    * @param args The command line arguments
     */
     public static void main(String args[]) {
     	

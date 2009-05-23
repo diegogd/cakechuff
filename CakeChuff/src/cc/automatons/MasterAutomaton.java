@@ -12,7 +12,7 @@ import cc.communications.MasterMailbox;
 import cc.simulation.state.Robot1State;
 
 /**
- * Automaton which defines the internal logic of the master system
+ * Define the internal logic of the MasterAutomaton
  * @version 1.0, 29/05/09
  * @author CaKeChuff team
  */
@@ -63,6 +63,24 @@ public class MasterAutomaton extends Automaton {
 	//Simulated error
 	private boolean mistake;
 
+	/**
+	 * Constructor
+	 * Initialize the communication channels (mailboxes) from the MasterAutomaton 
+	 * side with SCADA and the rest subsystems
+	 * Initialize the control parameters
+	 * @param scada Destination address for the SCADA MasterMailbox
+	 * @param scada_in Input port for the SCADA MasterMailbox
+	 * @param scada_out Output port the SCADA MasterMailbox
+	 * @param cake Destination address for the Cake Subsystem MasterMailbox
+	 * @param cake_in Input port for the Cake Subsystem MasterMailbox
+	 * @param cake_out Output port for the Cake Subsystem MasterMailbox
+	 * @param blister Destination address for the Blister Subsystem MasterMailbox
+	 * @param blister_in Input port for the Blister Subsystem MasterMailbox
+	 * @param blister_out Output port for the Blister Subsystem MasterMailbox
+	 * @param qc Destination address for the Quality&Control Subsystem MasterMailbox
+	 * @param qc_in Input port for the Quality&Control Subsystem MasterMailbox
+	 * @param qc_out Output port for the Quality&Control Subsystem MasterMailbox
+	 */
 	public MasterAutomaton(String scada, int scada_in, int scada_out,
 			String cake, int cake_in, int cake_out, String blister,
 			int blister_in, int blister_out, String qc, int qc_in, int qc_out) {
@@ -96,6 +114,12 @@ public class MasterAutomaton extends Automaton {
 		//f_chance=50;
 	}
 
+	/**
+	 * Set robot start parameters
+	 * @param movecaket Time needed to transport a cake by the robot
+	 * @param moveblistert Time needed to transport a blister by the robot
+	 * @param f_rate Failure rate in the cake's manufacture
+	 */
 	private void run_robot_start(float movecaket, float moveblistert, int f_rate) {
 		this.movecaket = 3/movecaket;
 		this.moveblistert = 13/moveblistert;
@@ -103,6 +127,11 @@ public class MasterAutomaton extends Automaton {
 		f_chance=f_rate/4;
 	}
 
+	/**
+	 * The robot has to take a blister
+	 * Robot transition state to PICKUPBLISTER
+	 * Set the robot speed to take a blister
+	 */
 	private void run_robot_blister() {
 		System.out.println("[Master]: Robot1: Picking blister");
 		// move robot arm to the conveyor
@@ -110,6 +139,12 @@ public class MasterAutomaton extends Automaton {
 		robot.setGoToState(PICKUPBLISTER);
 	}
 
+	/**
+	 * The robot has to take the 1st cake
+	 * Master Automaton state: CAKE1
+	 * Robot transition state to PICKUPCAKE
+	 * Set the robot speed to take a cake
+	 */
 	private void run_robot_cake1() {
 		state = CAKE1;
 		robot.setRobot_velocity(movecaket);
@@ -119,6 +154,12 @@ public class MasterAutomaton extends Automaton {
 		// tell the cake automaton
 	}
 
+	/**
+	 * The robot has to take the 2nd cake
+	 * Master Automaton state: CAKE2
+	 * Robot transition state to PICKUPCAKE
+	 * Set the robot speed to take a cake
+	 */
 	private void run_robot_cake2() {
 		state = CAKE2;
 		robot.setRobot_velocity(movecaket);
@@ -128,6 +169,12 @@ public class MasterAutomaton extends Automaton {
 		// tell the cake automaton
 	}
 
+	/**
+	 * The robot has to take the 3rd cake
+	 * Master Automaton state: CAKE3
+	 * Robot transition state to PICKUPCAKE
+	 * Set the robot speed to take a cake
+	 */
 	private void run_robot_cake3() {
 		state = CAKE3;
 		robot.setRobot_velocity(movecaket);
@@ -135,13 +182,55 @@ public class MasterAutomaton extends Automaton {
 		System.out.println("[Master]:Picking cake 3");
 	}
 
+	/**
+	 * The robot has to take the 4th (last) cake
+	 * Master Automaton state: FULL
+	 * Robot transition state to PICKUPCAKE
+	 * Set the robot speed to take a cake
+	 */
 	private void run_robot_full() {
 		state = FULL;
 		robot.setRobot_velocity(movecaket);
 		robot.setGoToState(PICKUPCAKE);
 		System.out.println("[Master]:Picking last cake");
 	}
+	
+	/**
+	 * Restart of the robot
+	 * Robot transition state to the previous which corresponds
+	 * @param movecaket Time needed to transport a cake by the robot
+	 * @param moveblistert Time needed to transport a blister by the robot
+	 * @param f_rate Failure rate in the cake's manufacture
+	 * @param state Previous state
+	 */
+	private void run_robot_start(float movecaket, float moveblistert, int f_rate,
+			String state) {
+		this.movecaket = 3/movecaket;
+		this.moveblistert = 13/moveblistert;
+		robot.setRobot_velocity(moveblistert);
+		//A normal stop ends with the robot empty
 
+		if(state.compareTo("init")==0 || state.compareTo("empty")==0){
+			robot.setCurrentState(EMPTY);
+		} else if (state.compareTo("blister")==0 ){
+			robot.setCurrentState(BLISTER);
+		}else if (state.compareTo("cake1")==0 ){
+			robot.setCurrentState(CAKE1);
+		}else if (state.compareTo("cake2")==0 ){
+			robot.setCurrentState(CAKE2);
+		}else if (state.compareTo("cake3")==0 ){
+			robot.setCurrentState(CAKE3);
+		}else if (state.compareTo("full")==0 ){
+			robot.setCurrentState(FULL);
+		}
+		f_chance=f_rate/4;	
+	}
+	
+	/**
+	 * Control and synchronize the manufacture process in the different subsystems
+	 * Notify the INIT, RESTART, STOP, EMERGENCY and RESET to the different subsystems
+	 * @param msg Message employed for the synchronization
+	 */
 	@Override
 	public synchronized void newMsg(String msg) {
 		/*while (treatingupdate) {
@@ -271,31 +360,11 @@ public class MasterAutomaton extends Automaton {
 		}
 	}
 
-	private void run_robot_start(float movecaket, float moveblistert, int f_rate,
-			String state) {
-		this.movecaket = 3/movecaket;
-		this.moveblistert = 13/moveblistert;
-		robot.setRobot_velocity(moveblistert);
-		//A normal stop ends with the robot empty
-
-		if(state.compareTo("init")==0 || state.compareTo("empty")==0){
-			robot.setCurrentState(EMPTY);
-		} else if (state.compareTo("blister")==0 ){
-			robot.setCurrentState(BLISTER);
-		}else if (state.compareTo("cake1")==0 ){
-			robot.setCurrentState(CAKE1);
-		}else if (state.compareTo("cake2")==0 ){
-			robot.setCurrentState(CAKE2);
-		}else if (state.compareTo("cake3")==0 ){
-			robot.setCurrentState(CAKE3);
-		}else if (state.compareTo("full")==0 ){
-			robot.setCurrentState(FULL);
-		}
-
-		f_chance=f_rate/4;
-		
-	}
-
+	/**
+	 * Transition state diagram for the manufacture process
+	 * @param o RobotState
+	 * @param arg 
+	 */
 	@Override
 	public void update(Observable o, Object arg) {
 		treatingupdate=true;
@@ -402,10 +471,16 @@ public class MasterAutomaton extends Automaton {
 		treatingupdate=false;
 	}
 
+	/**
+	 * Run the MasterAutomaton
+	 */
 	public void run() {
 	};
 	
-	//stop because we want an "unclean", sudden stop
+	/**
+	 * Stop the MasterAutomaton's communication channels (mailboxes)
+	 * Deprecated stop method is employed for an "unclean" sudden stop
+	 */
 	@SuppressWarnings("deprecation")
 	@Override
 	public void destroyAutomaton(){
@@ -415,7 +490,11 @@ public class MasterAutomaton extends Automaton {
 		mboxCake.mbox_thread.stop();
 		mboxScada.mbox_thread.stop();
 	}
-
+	
+	/**
+	 * Execute the MaterAutomaton independently
+	 * @param args The command line arguments
+	 */
 	public static void main(String args[]) {
 		/*
 		 * String scada, int scada_in, int scada_out, String cake, int cake_in,
