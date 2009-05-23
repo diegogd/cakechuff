@@ -86,7 +86,7 @@ public class Mailbox implements Runnable {
 
 	/**
 	 * Loop for receiving messages from the MasterMailbox
-	 * @exception Connection failure
+	 * @exception Exception Connection failure
 	 * @exception IOException Communication error
 	 */
 	private void receiveMsgs() {

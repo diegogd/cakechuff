@@ -32,7 +32,7 @@ public class MasterMailbox implements Runnable{
 	 * Constructor
 	 * Set the owner, the input port, the output port and the destination
 	 * Address of the mailbox
-	 * @param owner Automaton owner of the mailbox
+	 * @param owner MasterAutomaton
 	 * @param portin Input port used by mailbox
 	 * @param portout Output port used by mailbox
 	 * @param address Destination address of the mailbox
