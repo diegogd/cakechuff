@@ -28,7 +28,7 @@ public abstract class Automaton implements Observer, Runnable{
 	}
 
 	/**
-	 * Manage the new arrived messages in the mailbox.
+	 * Manage the new arrived messages in the mailbox
 	 * @param msg Message received.
 	 */
 	public abstract void newMsg(String msg);
