@@ -16,8 +16,14 @@ public class XMLManager{
 	
 	private static XMLManager _uniqueInstance;
  
+	/**
+	 * Constructor
+	 */
 	private XMLManager(){}
   
+	/**
+	 * Singleton pattern
+	 */
 	public static XMLManager getInstance(){
 		if (_uniqueInstance==null){
 			_uniqueInstance = new XMLManager();

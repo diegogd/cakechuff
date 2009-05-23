@@ -28,6 +28,7 @@ public class SCADA {
 	private ControlInterface _ci;
 
 	/**
+	 * Constructor
 	 * Establish the communication through a mailbox with the Master Automaton
 	 * Instantiates the Graphical User Interface
 	 * @param ci Graphical User Interface 
