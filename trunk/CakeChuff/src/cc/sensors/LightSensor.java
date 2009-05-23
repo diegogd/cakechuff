@@ -5,7 +5,11 @@ package cc.sensors;
  * @author CaKeChuff team
  */
 public class LightSensor extends Sensor {
-
+	/**
+	 * Constructor
+	 * Initializes the identification of the sensor
+	 * @param id Sensor identification
+	 */
 	public LightSensor(String id) {
 		super(id);
 	}
