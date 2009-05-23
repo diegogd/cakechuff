@@ -17,7 +17,12 @@ import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.scene.shape.Cylinder;
-
+/**
+ * Implementation and definition of the valves, one of
+ * the simulation elements that compose CakeChuff system
+ * @version 1.0, 29/05/09
+ * @author CaKeChuff team
+ */
 public class Valve extends Node{
 	
 	/**
@@ -33,7 +38,11 @@ public class Valve extends Node{
 	private float timeOpen = 0;
 	private float totalAmount = 100;
 	boolean valveCompleteOpen = false, valveActived = false;
-	
+	/**
+	 * Constructor
+	 * Initializes the touch sensor and assigns an id to it
+	 * @param id Identification of the touch sensor
+	 */
 	public Valve(String id, ColorRGBA color) {
 		this.setName(id);
 		loadShape();
@@ -75,14 +84,19 @@ public class Valve extends Node{
 		//this.attachChild(liquidPivotUp);
 		this.attachChild(liquidPivotDown);
 	}
-
+	/**
+	 * Loads the graphical shape of the valve
+	 */
 	public void loadShape(){
 		
 		URL path = getClass().getClassLoader().getResource("model/valve.obj");
 		
 		this.attachChild(ModelLoader.loadOBJ(path, false));
 	}
-	
+	/**
+	 * Updates the state of the valve
+	 * @param timeperframes Parameter used to modify the liquid pivot
+	 */
 	public void update(float timeperframes)
 	{
 		if(contentPivot.getLocalScale().z < 0.02f) contentPivot.getLocalScale().z = 1;
@@ -108,14 +122,21 @@ public class Valve extends Node{
 			}
 		}
 	}
-	
+	/**
+	 * Checks for a collision with the liquid stream
+	 * @param element The element that wants to be known if the liquid has "collapsed" with
+	 * @return true If no collision occured, false if yes.
+	 */
 	public boolean checkCollision(Spatial element){
 		if(valveCompleteOpen && liquidstream.hasCollision(element, false)){
 			return true;
 		}
 		return false;
 	}
-	
+	/**
+	 * Opens the valve a specified time
+	 * @param seconds Time the valve is opened
+	 */
 	public void open(float seconds)
 	{
 		timeOpen = seconds;
