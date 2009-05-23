@@ -25,6 +25,7 @@ public class GeneratePDF {
 	private String path; 
 	
 	  /**
+	   * Constructor
 	   * Set the values of the report
 	   * @param path Path of the file to be generated
 	   * @param p Number of processed packets

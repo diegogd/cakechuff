@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import cc.automatons.Automaton;
 
 /**
- * Communication channel for the Master Automaton, the Subsystem Automatons and SCADA
+ * Communication channel for the Subsystem Automatons side
  * @version 1.0, 29/05/09
  * @author CaKeChuff team
  */
@@ -26,6 +26,18 @@ public class Mailbox implements Runnable {
 	private Automaton owner;
 	private boolean failure;
 		
+	/**
+	 * Constructor
+	 * Set the owner and the port of the mailbox
+	 * @param owner Automaton owner of the mailbox
+	 * @param port Port used by mailbox
+	 */
+	public Mailbox(Automaton owner, int port) throws IOException{
+		this.owner=owner;
+		ss = new ServerSocket(port);
+		msg_list=new ArrayList<String>();
+	}
+	
 	/**
 	 * Get the state of the mailbox connection
 	 * @return failure True if the mailbox connection has failed
@@ -40,17 +52,6 @@ public class Mailbox implements Runnable {
 	 */
 	public void setFailure(boolean failure) {
 		this.failure = failure;
-	}
-
-	/**
-	 * Set the owner and the port of the mailbox
-	 * @param owner Automaton owner of the mailbox
-	 * @param port Port used by mailbox
-	 */
-	public Mailbox(Automaton owner, int port) throws IOException{
-		this.owner=owner;
-		ss = new ServerSocket(port);
-		msg_list=new ArrayList<String>();
 	}
 	
 	/**
@@ -84,7 +85,7 @@ public class Mailbox implements Runnable {
 	}
 
 	/**
-	 * Loop for receiving messages from the mailbox
+	 * Loop for receiving messages from the MasterMailbox
 	 * @exception Connection failure
 	 * @exception IOException Communication error
 	 */
@@ -110,7 +111,7 @@ public class Mailbox implements Runnable {
 	
 	/**
 	 * Close the sockets and buffers of the mailbox
-	 * @throws IOException Communication error
+	 * @exception IOException Communication error
 	 */
 	public void end(){
 		try {

@@ -10,6 +10,11 @@ import java.util.Vector;
 import cc.automatons.MasterAutomaton;
 import cc.simulation.state.CakeSubsystemState;
 
+/**
+ * Communication channel for the Master Automatons side
+ * @version 1.0, 29/05/09
+ * @author CaKeChuff team
+ */
 public class MasterMailbox implements Runnable{
 
 	private Mailbox mbox;
@@ -22,6 +27,19 @@ public class MasterMailbox implements Runnable{
 	private String destination;
 	public Thread mbox_thread;
 	Vector<String> msgs;
+	
+	/**
+	 * Constructor
+	 * Set the owner, the input port, the output port and the destination
+	 * Address of the mailbox
+	 * @param owner Automaton owner of the mailbox
+	 * @param portin Input port used by mailbox
+	 * @param portout Output port used by mailbox
+	 * @param address Destination address of the mailbox
+	 * @exception UnknownHostException Communication error
+	 * @exception IOException Communication error
+	 * @exception SecurityException Security error
+	 */
 	public MasterMailbox(MasterAutomaton owner, int portin, int portout, String address){
 		this.portin=portin;
 		this.portout=portout;
@@ -38,9 +56,13 @@ public class MasterMailbox implements Runnable{
 			
 		}catch(SecurityException se){
 			
-		}
-		
+		}		
 	}
+	
+	/**
+	 * Run the mailbox connection while messages are being sent
+	 * @exception Exception Error
+	 */
 	public void run(){
 		if(sout==null || !sout.isConnected()){
 			connect();
@@ -65,10 +87,20 @@ public class MasterMailbox implements Runnable{
 			}
 		}
 	}
+	
+	/**
+	 * Send a message through the mailbox
+	 * @param msg Message to be sent 
+	 */
 	public synchronized void send(String msg){
 		msgs.add(msg);
 		(new Thread(this)).start();
 	}
+	
+	/**
+	 * Connect the mailbox with the client socket and the destination buffer
+	 * @exception IOException Communication error
+	 */
 	private void connect(){
 		boolean success=false;
 		while(!success){
