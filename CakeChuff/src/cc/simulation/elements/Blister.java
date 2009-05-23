@@ -1,5 +1,6 @@
 package cc.simulation.elements;
 
+import java.io.IOException;
 import java.net.URL;
 
 import cc.simulation.utils.ModelLoader;
@@ -10,7 +11,12 @@ import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.scene.shape.Box;
-
+/**
+ * Implementation and definition of the Blister, one of
+ * the simulation elements that compose CakeChuff system
+ * @version 1.0, 29/05/09
+ * @author CaKeChuff team
+ */
 public class Blister extends Node {
 
 	public boolean[] spaces = { false, false, false, false };
@@ -30,6 +36,12 @@ public class Blister extends Node {
 	// // loadBox();
 	// }
 
+	/**
+	 * Constructor
+	 * Assigns an id and initializes the holes, the wrapper and the
+	 * pivot that compose the blister.
+	 * @param id Blister identification 
+	 */
 	public Blister(int id) {
 		pivot = new Node();
 		this.attachChild(pivot);
@@ -91,7 +103,10 @@ public class Blister extends Node {
 		this.setName("Blister" + id);
 
 	}
-
+	/**
+	 * Specific blister is graphically displayed as a box
+	 * @param id Blister identification
+	 */
 	private void loadBox(int id) {
 
 		Box blister = new Box("blister" + id, new Vector3f(-2f, 0.99f, -2f),
@@ -103,26 +118,47 @@ public class Blister extends Node {
 		blister.updateRenderState();
 		pivot.attachChild(blister);
 	}
-
+	/**
+	 * Loads the graphical model of the blister
+	 */
 	private void loadModel() {
 		URL model = getClass().getClassLoader()
 				.getResource("model/blister.obj");
 		pivot.attachChild(ModelLoader.loadOBJ(model, true));
 	}
-	
+	/**
+	 * Returns the hole 1 of the blister 
+	 * @return hole1 One of the holes of the blister
+	 */
 	public Spatial getHole1() {
 		return hole1;
 	}
+	/**
+	 * Returns the hole 2 of the blister 
+	 * @return hole2 One of the holes of the blister
+	 */
 	public Spatial getHole2() {
 		return hole2;
 	}
+	/**
+	 * Returns the hole 3 of the blister 
+	 * @return hole3 One of the holes of the blister
+	 */
 	public Spatial getHole3() {
 		return hole3;
 	}
+	/**
+	 * Returns the hole 4 of the blister 
+	 * @return hole4 One of the holes of the blister
+	 */
 	public Spatial getHole4() {
 		return hole4;
 	}
-
+	/**
+	 * Places a cake in the first empty hole of the
+	 * blister found.
+	 * @param cake The cake to be placed in the hole
+	 */
 	public void placeCake(Spatial cake) {
 		if (cake.removeFromParent()) {
 			if(!spaces[0]){
@@ -140,7 +176,10 @@ public class Blister extends Node {
 			}
 		}
 	}
-	
+	/**
+	 * Places the wrapper that covers the blister
+	 * @param wrapper The wrapper of the blister 
+	 */
 	public void placeWrapper(Spatial wrapper) {
 		//if (wrapper.removeFromParent()) {
 				this.wrapper.attachChild(wrapper);
