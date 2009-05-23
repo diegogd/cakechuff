@@ -224,6 +224,8 @@ public class CakeAutomaton extends Automaton {
 			run_stop();
 		else if (content[0].equalsIgnoreCase("STOP"))
 			stop = true;
+		else if (content[0].equalsIgnoreCase("RESET")) 
+			run_failure(content[1]);
 		else if (content[0].equalsIgnoreCase("RESTART")) {
 			String pars[] = content[1].split("\\$");
 			run_failure(pars[1]);
