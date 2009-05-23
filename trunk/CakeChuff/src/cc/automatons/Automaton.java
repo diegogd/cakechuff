@@ -8,7 +8,8 @@ import java.util.Observer;
 import cc.communications.Mailbox;
 
 /**
- * Generic Automaton which defines the basic communication features
+ * Generic Automaton 
+ * Define the basic communication commands
  * @version 1.0, 29/05/09
  * @author CaKeChuff team
  */
@@ -34,7 +35,7 @@ public abstract class Automaton implements Observer, Runnable{
 	public abstract void newMsg(String msg);
 	
 	/**
-	 * Send a message to the master automaton.
+	 * Send a message to the MasterAutomaton.
 	 * @param msg Message to be sent.
 	 */
 	protected void send(String msg){
@@ -59,7 +60,7 @@ public abstract class Automaton implements Observer, Runnable{
 	}
 	
 	/**
-	 * Stop the automaton's thread
+	 * Stop the automaton's communication channel (mailbox)
 	 * Deprecated stop method is employed for an "unclean" sudden stop
 	 */
 	@SuppressWarnings("deprecation")
