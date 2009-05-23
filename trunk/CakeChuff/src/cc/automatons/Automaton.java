@@ -62,7 +62,6 @@ public abstract class Automaton implements Observer, Runnable{
 	 * Stop the automaton's thread
 	 * Deprecated stop method is employed for an "unclean" sudden stop
 	 */
-	//
 	@SuppressWarnings("deprecation")
 	public void destroyAutomaton(){
 		mbox_thread.stop();
