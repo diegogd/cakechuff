@@ -19,7 +19,12 @@ import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.scene.shape.AxisRods;
 import com.jme.scene.shape.Cylinder;
-
+/**
+ * Implementation and definition of the robots, one of
+ * the simulation elements that compose CakeChuff system
+ * @version 1.0, 29/05/09
+ * @author CaKeChuff team
+ */
 public class Robot extends Node {
 
 	private static Logger logger = Logger.getLogger(Robot.class.getName());
@@ -60,7 +65,11 @@ public class Robot extends Node {
 
 	private Node pivotBase, pivotBody, pivotHead, pivotHeadLeft,
 			pivotHeadRight, pivotElement, Father;
-
+	/**
+	 * Constructor
+	 * Initializes the robot and its position
+	 * @param positionRobot Initial position of the robot
+	 */
 	public Robot(Vector3f positionRobot) {
 		has_object = false;
 		takenObject = null;
@@ -75,7 +84,9 @@ public class Robot extends Node {
 		// Colocar Robot en la posicion
 		this.setLocalTranslation(this.positionRobot);
 	}
-
+	/**
+	 * Auxiliary method. Loads a temporary graphic model of the robot
+	 */
 	private void loadTempModel() {
 
 		base = new Cylinder("base", 5, 25, 0.2f, 0.1f, true);
@@ -199,7 +210,9 @@ public class Robot extends Node {
 		this.setLocalScale(10);
 
 	}
-
+	/**
+	 * Loads the graphic model of the robot
+	 */
 	public void loadModel() {
 
 		loadObject("robotBase.obj", this, false);
@@ -245,7 +258,12 @@ public class Robot extends Node {
 
 		this.setLocalScale(10);
 	}
-
+	/**
+	 * Loads a graphic model of an object
+	 * @param objectName Name of the object to be loaded
+	 * @param parent Father node of the object to be loaded
+	 * @param bounding True if the object has boundings and false if it does not
+	 */
 	private void loadObject(String objectName, Node parent, boolean bounding) {
 		URL model = getClass().getClassLoader().getResource(
 				"model/" + objectName);
@@ -253,19 +271,33 @@ public class Robot extends Node {
 		object.setLocalScale(0.1f);
 		parent.attachChild(object);
 	}
-
+	/**
+	 * Modifies the speed of the robot
+	 * @param speed The new speed of the robot
+	 */
 	public void setSpeed(float speed) {
 		this.speed = speed;
 	}
-
+	/**
+	 * Returns the speed of the robot
+	 * @return The speed of the robot
+	 */
 	public float getSpeed() {
 		return speed;
 	}
-
+	/**
+	 * Returns the robot has an object
+	 * @return True if the robot has an object, false if it does not
+	 */
 	public boolean getHasObject() {
 		return has_object;
 	}
-
+	/**
+	 * Opens the hand of the robot
+	 * @param angle Angle that the hand opens
+	 * @param time Time taken for the robot to open its hand
+	 * @return True if the robot opens its hands with no problem, false if it does not
+	 */
 	public boolean openHand(float angle, float time) {
 		// Calculate direction of movement
 		int direction = (int) Math.ceil(angleClaws * 180 / FastMath.PI)
@@ -310,7 +342,11 @@ public class Robot extends Node {
 			}
 		}
 	}
-	
+	/**
+	 * Makes the robot take a list of elements
+	 * @param elements List of spatial elements to be taken
+	 * @return True if the robot takes the elements with no problem, false if it does not
+	 */
 	public boolean takeObject(List<Spatial> elements) {
 		boolean taken = false;
 
@@ -511,7 +547,11 @@ public class Robot extends Node {
 //			}
 //		}else return true;
 //	}	
-
+	/**
+	 * Makes the robot take a list of elements
+	 * @param elements List of spatial elements to be taken
+	 * @return True if the robot takes the elements with no problem, false if it does not
+	 */
 	public boolean leaveHandObject(float angle, float time, Spatial element) {
 		// Calculate direction of movement
 		int direction = (int) Math.ceil(angleClaws * 180 / FastMath.PI)
@@ -590,7 +630,11 @@ public class Robot extends Node {
 		}
 		return true;
 	}
-	
+	/**
+	 * Makes the robot get the nearest object to its position
+	 * @param elements List of spatial elements to be taken
+	 * @return True if the robot takes the elements with no problem, false if it does not
+	 */
 	private Spatial getNearestObject(List<Spatial> elements){
 		float distance=0, tempDistance;
 		Spatial nearest = null, current;
@@ -612,7 +656,11 @@ public class Robot extends Node {
 		
 		return nearest;
 	}
-	
+	/**
+	 * Calculate the distance from the robot to another object
+	 * @param otherObject Object whose distance to wants to be calculated
+	 * @return The distance from the robot to the other object
+	 */
 	private float distance(Spatial otherObject){
 		float distance=0;		
 		distance = Math.min(
@@ -622,6 +670,12 @@ public class Robot extends Node {
 	}
 
 	// Bend body having known angleBody
+	/**
+	 * Bends the body of the robot knowing the angle
+	 * @param angle Angle that the body has to be bent
+	 * @param time Time taken for the body to bend
+	 * @return True if the body of the robot bends with no problem, false if it does not
+	 */
 	public boolean bendBody(float angle, float time) {
 
 		// Calculate direction of movement
@@ -655,7 +709,12 @@ public class Robot extends Node {
 			}
 		}
 	}
-
+	/**
+	 * Modification of the position of the robot
+	 * @param angle Angle of the movement of the robot
+	 * @param time Time taken 
+	 * @return True if the no problems occured, false if it does not
+	 */
 	public boolean moveTo(float angle, float time) {
 
 		// Calculate direction of movement
