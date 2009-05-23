@@ -4,6 +4,7 @@ import java.io.IOException;
 
 /**
  * Definition of the implementation of the sensors of the CakeChuff system
+ * It is a high level definition of all the different sensors of the system
  * @version 1.0, 29/05/09
  * @author CaKeChuff team
  */
