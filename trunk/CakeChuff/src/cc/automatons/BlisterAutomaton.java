@@ -93,7 +93,7 @@ public class BlisterAutomaton extends Automaton {
 	public void run_start(int speed, int belt_lg) {
 		this.speed = (float) speed / (belt_lg * 7);
 		this.belt_lg = belt_lg;
-		stamper = new Stamper(blistersystem, sys, speed);
+		stamper = new Stamper(blistersystem, sys, this.speed);
 		(new Thread(stamper)).start();
 		state = START;
 		// send new state
@@ -320,7 +320,7 @@ public class BlisterAutomaton extends Automaton {
 		private float time;
 		// simulation
 		private BlisterSubsystemState blistersystem;
-		private int freq;
+		private float freq;
 		private SystemState sys;
 
 		/**
@@ -331,11 +331,11 @@ public class BlisterAutomaton extends Automaton {
 		 * @param speed Speed of the conveyor belt
 		 */
 		private Stamper(BlisterSubsystemState blisters, SystemState sys,
-				int speed) {
+				float speed) {
 			time = 0;
 			blistersystem = blisters;
 			this.sys = sys;
-			freq = (int) (60 * 1000 * 3 / (speed));
+			freq =  (1000 *4/ (speed));
 			working = false;
 		}
 
@@ -364,7 +364,7 @@ public class BlisterAutomaton extends Automaton {
 				}
 				if (working) {
 					time = time + 500;
-					if (time == freq) {
+					if (time >= freq) {
 						blistersystem.setEngraver_secs(5);
 						sys.setMakeBlister();
 						time = 0;

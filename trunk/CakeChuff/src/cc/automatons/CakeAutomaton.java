@@ -111,9 +111,9 @@ public class CakeAutomaton extends Automaton {
 		this.vt1=vt1;
 		this.vt2 = vt2;
 		state=START;
-		sys.setDropCake();
-		blistercakes=1;
-		ncakes--;
+		//sys.setDropCake();
+		blistercakes=0;
+		//ncakes--;
 		if(!waitingcake)
 			run_init();
 		else run_wait();
@@ -126,6 +126,16 @@ public class CakeAutomaton extends Automaton {
 	 * Set the conveyor belt speed
 	 */
 	private void run_init(){
+		/*There are cakes left
+		 * &
+		 * if the automaton is going to stop, the number of cakes dropped for this blister mist be 4
+		 * to fill it.
+		 */		
+		if(ncakes>0 && (!stop||blistercakes<4)){
+			sys.setDropCake();
+			ncakes--;
+			blistercakes++;
+		}
 		//start conveyor
 		cakesystem.setConveyor_velocity(speed);
 		state= INIT;
@@ -169,16 +179,6 @@ public class CakeAutomaton extends Automaton {
 		state=CHOC_CAR;
 		send("A1:choc_car");
 		if(!waitingcake)cakesystem.setConveyor_velocity(speed);
-		/*There are cakes left
-		 * &
-		 * if the automaton is going to stop, the number of cakes dropped for this blister mist be 4
-		 * to fill it.
-		 */		
-		if(ncakes>0 && (!stop||blistercakes<4)){
-			sys.setDropCake();
-			ncakes--;
-			blistercakes++;
-		}	
 	}
 	
 	/**
