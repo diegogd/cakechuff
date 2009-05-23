@@ -4,8 +4,6 @@
 //TODO: Ajustar velocidades al entorno de ejecución -
 //TODO: Recuperación desde parada de emergencia??
 
-
-
 package cc.automatons;
 
 import java.util.Observable;
@@ -13,6 +11,11 @@ import java.util.Observable;
 import cc.communications.MasterMailbox;
 import cc.simulation.state.Robot1State;
 
+/**
+ * Automaton which defines the internal logic of the master system
+ * @version 1.0, 29/05/09
+ * @author CaKeChuff team
+ */
 public class MasterAutomaton extends Automaton {
 	//Robot states
 	private Robot1State robot;
