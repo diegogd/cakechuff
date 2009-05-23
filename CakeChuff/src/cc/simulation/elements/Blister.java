@@ -26,9 +26,7 @@ public class Blister extends Node {
 
 	Node hole1, hole2, hole3, hole4,wrapper;
 
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 4426672713022189512L;
 
 	// public Blister() {
