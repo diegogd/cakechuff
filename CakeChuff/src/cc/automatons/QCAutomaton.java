@@ -107,10 +107,11 @@ public class QCAutomaton extends Automaton {
 	 * Set the conveyor belt speed
 	 */
 	private void run_init(){
+		state=INIT;
+		send("A3:init");
 		if(!stop){
 			qcsystem.setConveyor_velocity(speed);
-			state=INIT;
-			send("A3:init");
+			
 		}
 	}
 	
@@ -261,10 +262,11 @@ public class QCAutomaton extends Automaton {
 	 * Restart after a stop
 	 */
 	private void run_stop(){
+		stop=true;
 		qcsystem.setConveyor_velocity(0);
 		qcsystem.deleteObserver(this);
 		qcsystem.setRobotMoving(false);
-		state=START;
+		//state=START;
 	}
 	
 	/**
@@ -363,7 +365,7 @@ public class QCAutomaton extends Automaton {
 
 				}
 		} else if (o instanceof QualitySubsystemState && ((QualitySubsystemState) o).isChanged_CS()) {
-			qcsystem.deleteObserver(this);
+			//qcsystem.deleteObserver(this);
 			if (!qcsystem.getRobotIfMoving()) {
 				if (qcsystem.getRobotCurrentState() == qcsystem.PICKUPPACKET) {
 					if (state == OK_WAIT) {
@@ -379,7 +381,7 @@ public class QCAutomaton extends Automaton {
 					}
 				}
 			}
-			qcsystem.addObserver(this);
+			//qcsystem.addObserver(this);
 		}
 
 	}
