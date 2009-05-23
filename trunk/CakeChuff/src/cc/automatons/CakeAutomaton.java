@@ -17,6 +17,12 @@ import cc.simulation.state.CakeSubsystemState;
 import cc.simulation.state.SystemState;
 
 import cc.simulation.elements.Sensor;
+
+/**
+ * Define the internal logic of the CakeAutomaton
+ * @version 1.0, 29/05/09
+ * @author CaKeChuff team
+ */
 public class CakeAutomaton extends Automaton {
 	
 	Thread changingstate;
@@ -39,6 +45,17 @@ public class CakeAutomaton extends Automaton {
 	//simulation
 	private CakeSubsystemState cakesystem;
 	private SystemState sys;
+	
+	/**
+	 * Constructor
+	 * Initialize the communication channel (mailbox) with the MasterAutomaton 
+	 * @param portin Input port of the Mailbox with the MasterAutomaton
+	 * @param portout Output port of the Mailbox with the MasterAutomaton
+	 * @param master Destination address of the Mailbox with the MasterAutomaton
+	 * @exception UnknownHostException Communication error
+	 * @exception IOException Communication error
+	 * @exception SecurityException Security error
+	 */
 	public CakeAutomaton(int portin, int portout, String master){
 		System.out.println("[CakeAutomaton]:Creating...");
 		state=START;
@@ -76,6 +93,15 @@ public class CakeAutomaton extends Automaton {
 		System.out.println("[CakeAutomaton]:Creation finished");
 		
 	}
+	
+	/**
+	 * Set the CakeAutomaton start parameters
+	 * @param cake_cap Number of cakes (capacity)
+	 * @param speed	Conveyor belt speed
+	 * @param belt_lg Conveyor belt length
+	 * @param vt1 Caramel valve activation time
+	 * @param vt2 Chocolate valve activation time
+	 */
 	private void run_start(int cake_cap, int speed, int belt_lg, int vt1, int vt2){
 		System.out.println("Initializating cake automaton...");
 		this.speed = (float)speed/(belt_lg*3);
@@ -93,13 +119,28 @@ public class CakeAutomaton extends Automaton {
 		else run_wait();
 		
 	}
+	
+	/**
+	 * The conveyor belt has to move
+	 * Cake Automaton state: INIT
+	 * Set the conveyor belt speed
+	 */
 	private void run_init(){
-		
 		//start conveyor
 		cakesystem.setConveyor_velocity(speed);
 		state= INIT;
 		send("A1:init");
 	}
+	
+	/**
+	 * The chocolate valve has to be activated
+	 * Cake Automaton state: CHOC
+	 * Stop the conveyor belt
+	 * Open the chocolate valve
+	 * Close the chocolate valve
+	 * Restart the conveyor belt
+	 * @exception InterruptedException Thread error
+	 */
 	private void run_choc(){
 		state=CHOC;
 		send("A1:choc");
@@ -116,9 +157,14 @@ public class CakeAutomaton extends Automaton {
 		//close chocolate valve ¿?
 		cakesystem.setValve1_open_secs(0);
 		//run conveyor
-		run_choc_car();
-		
+		run_choc_car();	
 	}
+	
+	/**
+	 * The cake is between the two valves
+	 * Cake Automaton state: CHOC_CAR
+	 * Retain the cake until the end of the conveyor belt is free
+	 */
 	private void run_choc_car(){
 		state=CHOC_CAR;
 		send("A1:choc_car");
@@ -132,10 +178,18 @@ public class CakeAutomaton extends Automaton {
 			sys.setDropCake();
 			ncakes--;
 			blistercakes++;
-		}
-		
-		
+		}	
 	}
+	
+	/**
+	 * The caramel valve has to be activated
+	 * Cake Automaton state: CHOC
+	 * Stop the conveyor belt
+	 * Open the caramel valve
+	 * Close the caramel valve
+	 * Restart the conveyor belt
+	 * @exception InterruptedException Thread error
+	 */
 	private void run_car(){
 		state=CHOC;
 		send("A1:car");
@@ -152,20 +206,31 @@ public class CakeAutomaton extends Automaton {
 		run_car_wait();
 		
 	}
+	
+	/**
+	 * Another cake in the conveyor belt has to be taken by the robot
+	 */
 	private void run_car_wait(){
 		state=CAR_WAIT;
 		send("A1:car_wait");
 		if(!waitingcake)cakesystem.setConveyor_velocity(speed);
 		
 	}
+	
+	/**
+	 * The cake has to be taken by the robot beacuse it has rechaed the end of the
+	 * conveyor belt
+	 * Stop the conveyor belt
+	 */
 	private void run_wait(){
 		state=WAIT;
 		send("A1:wait");
 		cakesystem.setConveyor_velocity(0);
 		waitingcake=true;
 	}
-	/*
-	 * Recover form a failure
+	
+	/**
+	 * Recover from a failure
 	 */
 	private void run_failure(String data){
 		System.out.println("[CakeAutomaton]:Restoring");
@@ -202,12 +267,21 @@ public class CakeAutomaton extends Automaton {
 		}
 		
 	}
+	
+	/**
+	 * Restart after a stop
+	 */
 	private void run_stop(){
 		cakesystem.setConveyor_velocity(0);
 		cakesystem.setValve1_open_secs(0);
 		cakesystem.setValve2_open_secs(0);
 		state=START;
 	}
+	
+	/**
+	 * Manage the control and synchronize messages received from the MasterAutomaton
+	 * @param msg Message received from the MasterAutomaton
+	 */
 	@Override
 	public synchronized void newMsg(String msg) {
 		/*while (treatingupdate){
@@ -277,6 +351,10 @@ public class CakeAutomaton extends Automaton {
 			}*/
 	}
 
+	/**
+	 * Produce state transition depending on the signals received from the sensors
+	 * @param arg1 Sensor in the conveyor belt which detects the position of the cake
+	 */
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		treatingupdate=true;
@@ -313,6 +391,10 @@ public class CakeAutomaton extends Automaton {
 			treatingupdate=false;;
 		}
 	}
+	
+	/**
+	 * Run the CakeAutomaton
+	 */
 	public void run(){
 		switch(state){
 		case START:break;
@@ -329,6 +411,11 @@ public class CakeAutomaton extends Automaton {
 		break;
 		}
 	}
+	
+	/**
+	 * Execute the CakeAutomaton independently
+	 * @param args The command line arguments
+	 */
 	public static void main(String args[]){
 		CakeAutomaton aut=new CakeAutomaton(Integer.parseInt(args[0]),Integer.parseInt(args[1]),args[2]);
 		
@@ -341,7 +428,10 @@ public class CakeAutomaton extends Automaton {
 		}
 	}
 	
-	//stop() because we want an "unclean", sudden stop
+	/**
+	 * Stop the CakeAutomaton's communication channel (mailbox)
+	 * Deprecated stop method is employed for an "unclean" sudden stop
+	 */
 	@SuppressWarnings("deprecation")
 	public void destroyAutomaton(){
 		changingstate.stop();

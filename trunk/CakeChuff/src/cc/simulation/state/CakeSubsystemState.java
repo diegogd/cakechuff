@@ -54,7 +54,7 @@ public class CakeSubsystemState extends Observable {
 	
 	/**
 	 * Return the seconds that the conveyor still opened.
-	 * @return
+	 * @return valve1_open_secs
 	 */
 	public float getValve1_open_secs() {
 		return valve1_open_secs;
