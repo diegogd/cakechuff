@@ -209,6 +209,7 @@ public class CakeAutomaton extends Automaton {
 	
 	/**
 	 * Another cake in the conveyor belt has to be taken by the robot
+	 * Cake Automaton state: CAR_WAIT
 	 */
 	private void run_car_wait(){
 		state=CAR_WAIT;
@@ -218,8 +219,8 @@ public class CakeAutomaton extends Automaton {
 	}
 	
 	/**
-	 * The cake has to be taken by the robot beacuse it has rechaed the end of the
-	 * conveyor belt
+	 * The cake has to be taken by the robot because it has reached the end of the conveyor belt
+	 * Cake Automaton state: WAIT
 	 * Stop the conveyor belt
 	 */
 	private void run_wait(){
