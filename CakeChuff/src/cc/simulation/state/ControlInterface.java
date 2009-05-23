@@ -48,6 +48,7 @@ public class ControlInterface extends javax.swing.JFrame implements ActionListen
         private static Timer time = null;
         
         private boolean hasStarted = false;
+        private boolean reset = false;
         
         private JFileChooser fc;
         
@@ -246,7 +247,7 @@ public class ControlInterface extends javax.swing.JFrame implements ActionListen
         spinnerBeltSpeed2.setName("beltspeed2"); // NOI18N
         spinnerBeltSpeed2.addChangeListener(this);
 
-        spinnerBeltLenght2.setModel(new javax.swing.SpinnerNumberModel(0, 0, 40, 1));
+        spinnerBeltLenght2.setModel(new javax.swing.SpinnerNumberModel(1, 1, 40, 1));
         spinnerBeltLenght2.setName("beltlenght2l"); // NOI18N
         spinnerBeltLenght2.addChangeListener(this);
 
@@ -284,7 +285,7 @@ public class ControlInterface extends javax.swing.JFrame implements ActionListen
 
         jLabel13.setText("Chocolate Valve (secs):");
 
-        spinnerBeltLenght1.setModel(new javax.swing.SpinnerNumberModel(0, 0, 40, 1));
+        spinnerBeltLenght1.setModel(new javax.swing.SpinnerNumberModel(1, 1, 40, 1));
         spinnerBeltLenght1.setName("beltlenght"); // NOI18N
         spinnerBeltLenght1.addChangeListener(this);
 
@@ -372,7 +373,7 @@ public class ControlInterface extends javax.swing.JFrame implements ActionListen
 
         jLabel17.setText("Sealing Time (secs):");
 
-        spinnerBeltLenght3.setModel(new javax.swing.SpinnerNumberModel(0, 0, 40, 1));
+        spinnerBeltLenght3.setModel(new javax.swing.SpinnerNumberModel(1, 1, 40, 1));
         spinnerBeltLenght3.setName("beltlenght3"); // NOI18N
         spinnerBeltLenght3.addChangeListener(this);
 
@@ -980,8 +981,13 @@ private void StartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     this._scada.setStatistics("procesedPackages", "0");
     this._scada.setStatistics("faultyPackages", "0");
     
-    //Send the initial info to master
-    this._scada.sendtoMaster(_scada.sendInitInfo());   
+    if (!reset){
+	    //Send the initial info to master
+	    this._scada.sendtoMaster(_scada.sendInitInfo()); 
+    }else{
+    	//Send the message to reset the system, with all the info
+    	this._scada.sendtoMaster(_scada.sendResetInfo());
+    }
     
 }//GEN-LAST:event_StartButtonActionPerformed
 
@@ -989,6 +995,8 @@ private void StopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     
     this.StopButton.setEnabled(false);
     this.EmergencyButton.setEnabled(false);
+    this.StartButton.setText("Re-Start");
+    this.reset = true; 
     this.StartButton.setEnabled(true);
     
     //To reset the counter
@@ -1013,6 +1021,8 @@ private void EmergencyButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
     
     this.StopButton.setEnabled(false);
     this.EmergencyButton.setEnabled(false);
+    this.StartButton.setText("Re-Start");
+    this.reset = true; 
     this.StartButton.setEnabled(true);
     
     //To reset the counter
