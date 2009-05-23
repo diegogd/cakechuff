@@ -6,6 +6,6 @@
   <conveyorSpeed>30</conveyorSpeed>
   <conveyorLenght>5</conveyorLenght>
   <defaultLenght>20</defaultLenght>
-  <state>init</state>
+  <state>press</state>
 </ss2Info>
 

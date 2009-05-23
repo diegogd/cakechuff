@@ -7,6 +7,11 @@ import java.util.Observer;
 
 import cc.communications.Mailbox;
 
+/**
+ * Generic Automaton which defines the basic communication features
+ * @version 1.0, 29/05/09
+ * @author CaKeChuff team
+ */
 public abstract class Automaton implements Observer, Runnable{
 	protected int state;
 	protected boolean stop;
@@ -22,14 +27,13 @@ public abstract class Automaton implements Observer, Runnable{
 	public Automaton() {
 	}
 
-	/*
-	 * Manage new messages in the mailbox.
-	 * The mailbox will run this method when a new message
-	 * arrives.
+	/**
+	 * Manage the new arrived messages in the mailbox.
 	 * @param msg Message received.
 	 */
 	public abstract void newMsg(String msg);
-	/*
+	
+	/**
 	 * Send a message to the master automaton.
 	 * @param msg Message to be sent.
 	 */
@@ -54,7 +58,11 @@ public abstract class Automaton implements Observer, Runnable{
 			
 	}
 	
-	//stop is not wrong because we want an "unclean", sudden stop
+	/**
+	 * Stop the automaton's thread
+	 * Deprecated stop method is employed for an "unclean" sudden stop
+	 */
+	//
 	@SuppressWarnings("deprecation")
 	public void destroyAutomaton(){
 		mbox_thread.stop();
