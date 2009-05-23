@@ -10,7 +10,12 @@ import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.scene.shape.Box;
-
+/**
+ * Implementation and definition of the packet, one of
+ * the simulation elements that compose CakeChuff system
+ * @version 1.0, 29/05/09
+ * @author CaKeChuff team
+ */
 public class Packet extends Node {
 	
 	
@@ -21,7 +26,11 @@ public class Packet extends Node {
 ////		loadModel();
 ////		loadBox();
 //	}
-	
+	/**
+	 * Constructor
+	 * Initializes the packet and assigns an id to it.
+	 * @param id Identification of the packet
+	 */
 	public Packet(String id) {
 		pivot  = new Node();
 		this.attachChild(pivot);
@@ -31,7 +40,9 @@ public class Packet extends Node {
 		this.setName("Packet"+id);
 		
 	}
-	
+	/**
+	 * Packet is graphically displayed as a box
+	 */
 	private void loadBox(String id){
 		
 		Box blister = new Box("packet"+id,new Vector3f(-2f,0.99f,-2f), new Vector3f(2f, 1f, 2f));
@@ -42,7 +53,9 @@ public class Packet extends Node {
 		blister.updateRenderState();
 		pivot.attachChild(blister);
 	}
-	
+	/**
+	 * Loads the graphical model of the packet
+	 */
 	private void loadModel(){
 		URL model=getClass().getClassLoader().getResource("model/wrap.obj");
 		pivot.attachChild(ModelLoader.loadOBJ(model, false));
