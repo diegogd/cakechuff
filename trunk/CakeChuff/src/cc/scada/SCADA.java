@@ -49,7 +49,6 @@ public class SCADA {
 				dout = new PrintWriter(sout.getOutputStream(), true);
 				connected = true;
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				//e.printStackTrace();
 				System.out.println("Connecting...");
 			}
@@ -92,7 +91,7 @@ public class SCADA {
 	 * Recover the information from the subsystems
 	 * @param subsystem Name of the subsystem (ss1Info, ss2Info, ss3Info, robot)
 	 * @param key Name of the tag in the .xml file to be recover 
-	 * (defaultSpeed, conveyorSpeed, defaultv1, defaultv2, v1, v2) 
+	 * (defaultSpeed, conveyorSpeed, defaultv1, defaultv2, v1, v2, state, robot:pickblister, robot:move_place_cake) 
 	 * @param value Value of the tag
 	 */
 	public void setValues(String subsystem, String key, String value){
@@ -241,7 +240,7 @@ public class SCADA {
         
     /**
      * Compress a EMERGENCY STOP message to be sent to the master automaton
-     * @return A The stop message
+     * @return A The emergency stop message
      */
     public String emergencyStop(){
     	return "EMERGENCY";  
