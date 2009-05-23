@@ -12,6 +12,11 @@ import java.util.ArrayList;
 
 import cc.automatons.Automaton;
 
+/**
+ * Communication channel for the Master Automaton, the Subsystem Automatons and SCADA
+ * @version 1.0, 29/05/09
+ * @author CaKeChuff team
+ */
 public class Mailbox implements Runnable {
 
 	private ServerSocket ss;
@@ -20,20 +25,38 @@ public class Mailbox implements Runnable {
 	private ArrayList<String> msg_list;
 	private Automaton owner;
 	private boolean failure;
+		
+	/**
+	 * Get the state of the mailbox connection
+	 * @return failure True if the mailbox connection has failed
+	 */
 	public boolean isFailure() {
 		return failure;
 	}
 
+	/**
+	 * Set if the mailbox connection has failed
+	 * @param failure True if the mailbox connection has failed
+	 */
 	public void setFailure(boolean failure) {
 		this.failure = failure;
 	}
 
+	/**
+	 * Set the owner and the port of the mailbox
+	 * @param owner Automaton owner of the mailbox
+	 * @param port Port used by mailbox
+	 */
 	public Mailbox(Automaton owner, int port) throws IOException{
 		this.owner=owner;
 		ss = new ServerSocket(port);
 		msg_list=new ArrayList<String>();
 	}
 	
+	/**
+	 * Run the mailbox connection while no failure is produced
+	 * @exception IOException Communication error
+	 */
 	@Override
 	public void run() {
 		//Accept connections
@@ -51,11 +74,20 @@ public class Mailbox implements Runnable {
 		
 	}
 
+	/**
+	 * Connect the mailbox with the server socket
+	 * @throws IOException Communication error
+	 */
 	private void connect() throws IOException {
 		so = ss.accept();
 		din= new BufferedReader(new InputStreamReader( so.getInputStream()));
 	}
 
+	/**
+	 * Loop for receiving messages from the mailbox
+	 * @exception Connection failure
+	 * @exception IOException Communication error
+	 */
 	private void receiveMsgs() {
 		String msg;
 		while (!failure) {
@@ -75,6 +107,11 @@ public class Mailbox implements Runnable {
 			}
 		}
 	}
+	
+	/**
+	 * Close the sockets and buffers of the mailbox
+	 * @throws IOException Communication error
+	 */
 	public void end(){
 		try {
 			so.close();
