@@ -90,9 +90,16 @@ public class ScadaMailbox implements Runnable {
 				//msg = din.readUTF();
 				msg=din.readLine();
 				owner.newMsg(msg);				
-			} catch (IOException ioe) {
+			} catch (Exception e) {
 				// connection failure
-				ioe.printStackTrace();
+				try{
+					System.out.print("[Mailbox]:Error, Re-connecting...");
+					this.connect();
+					System.out.println("ok");
+				}catch(IOException ioe){
+					//cannot connect
+					ioe.printStackTrace();
+				}
 			}
 		}
 	}
