@@ -49,7 +49,7 @@ public class PlasticSupplier extends Node{
 	}
 	/**
 	 * Makes the plastic bigger
-	 * @param amaount Factor to increase the plastic
+	 * @param amount Factor to increase the plastic
 	 */
 	public void grow(float amount){
 		plastic.setLocalScale(new Vector3f(plastic.getLocalScale().x+amount/2,1,1));
