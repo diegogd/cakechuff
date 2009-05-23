@@ -65,21 +65,21 @@ public class MasterAutomaton extends Automaton {
 
 	/**
 	 * Constructor
-	 * Initialize the communication channels (mailboxes) from the MasterAutomaton 
+	 * Initialize the communication channels (mailboxes) 
 	 * side with SCADA and the rest subsystems
 	 * Initialize the control parameters
-	 * @param scada Destination address for the SCADA MasterMailbox
-	 * @param scada_in Input port for the SCADA MasterMailbox
-	 * @param scada_out Output port the SCADA MasterMailbox
-	 * @param cake Destination address for the Cake Subsystem MasterMailbox
-	 * @param cake_in Input port for the Cake Subsystem MasterMailbox
-	 * @param cake_out Output port for the Cake Subsystem MasterMailbox
-	 * @param blister Destination address for the Blister Subsystem MasterMailbox
-	 * @param blister_in Input port for the Blister Subsystem MasterMailbox
-	 * @param blister_out Output port for the Blister Subsystem MasterMailbox
-	 * @param qc Destination address for the Quality&Control Subsystem MasterMailbox
-	 * @param qc_in Input port for the Quality&Control Subsystem MasterMailbox
-	 * @param qc_out Output port for the Quality&Control Subsystem MasterMailbox
+	 * @param scada Destination address of the SCADA MasterMailbox
+	 * @param scada_in Input port of the SCADA MasterMailbox
+	 * @param scada_out Output port of the SCADA MasterMailbox
+	 * @param cake Destination address of the Cake Subsystem MasterMailbox
+	 * @param cake_in Input port of the Cake Subsystem MasterMailbox
+	 * @param cake_out Output port of the Cake Subsystem MasterMailbox
+	 * @param blister Destination address of the Blister Subsystem MasterMailbox
+	 * @param blister_in Input port of the Blister Subsystem MasterMailbox
+	 * @param blister_out Output port of the Blister Subsystem MasterMailbox
+	 * @param qc Destination address of the Quality&Control Subsystem MasterMailbox
+	 * @param qc_in Input port of the Quality&Control Subsystem MasterMailbox
+	 * @param qc_out Output port of the Quality&Control Subsystem MasterMailbox
 	 */
 	public MasterAutomaton(String scada, int scada_in, int scada_out,
 			String cake, int cake_in, int cake_out, String blister,
@@ -115,7 +115,7 @@ public class MasterAutomaton extends Automaton {
 	}
 
 	/**
-	 * Set robot start parameters
+	 * Set the robot start parameters
 	 * @param movecaket Time needed to transport a cake by the robot
 	 * @param moveblistert Time needed to transport a blister by the robot
 	 * @param f_rate Failure rate in the cake's manufacture
