@@ -8,8 +8,9 @@ import com.lowagie.text.*;
 import com.lowagie.text.pdf.*;
 
 /**
- * Class to generate the pdf reports
- * Author: CakeChuff team
+ * PDF generator for the CakeChuff system reports 
+ * @version 1.0, 29/05/09
+ * @author CaKeChuff team
  */
 public class GeneratePDF {
 	
@@ -23,6 +24,17 @@ public class GeneratePDF {
 	
 	private String path; 
 	
+	  /**
+	   * Set the values of the report
+	   * @param path Path of the file to be generated
+	   * @param p Number of processed packets
+	   * @param f Number of faulty packets
+	   * @param ok Number of total OK cakes
+	   * @param ko Number of total KO cakes
+	   * @param sts Number of starts
+	   * @param stp Number of stops
+	   * @param e Number of emergency stops
+	   */
 	public GeneratePDF (String path, String p, String f, String ok, String ko, String sts, String stp, String e){
 		this.procesed_packs = p;
 		this.faulty_packs = f;
@@ -35,7 +47,11 @@ public class GeneratePDF {
 		this.path = path;
 	}
 
-
+	/**
+	 * Load the PDF model to be generated
+	 * Remove the last PDF report generated if named in the same way
+	 * @return true If it is ready to generate the PDF report
+	 */
 	public boolean generate() {
 		
 		boolean success = true; 
@@ -90,9 +106,9 @@ public class GeneratePDF {
 	}
 
 	/**
-	 * Generates a PDF file.
-	 * 
-	 * @param filename The name of the PDF file.
+	 * Generate the PDF report from the loaded model
+	 * @param filename Name of the file to be generated
+	 * @return true If the PDF report is generated correctly
 	 */
 	private boolean createPdf(String filename) {
 		boolean success = true; 
