@@ -234,6 +234,7 @@ public class CakeAutomaton extends Automaton {
 	 * Recover from a failure
 	 */
 	private void run_failure(String data){
+		stop=false;
 		System.out.println("[CakeAutomaton]:Restoring");
 		String pars[]=data.split("#");
 		
@@ -273,10 +274,12 @@ public class CakeAutomaton extends Automaton {
 	 * Restart after a stop
 	 */
 	private void run_stop(){
+		stop=true;
 		cakesystem.setConveyor_velocity(0);
 		cakesystem.setValve1_open_secs(0);
 		cakesystem.setValve2_open_secs(0);
-		state=START;
+		//state=START;
+		changingstate.stop();
 	}
 	
 	/**

@@ -186,7 +186,7 @@ public class BlisterAutomaton extends Automaton {
 	public void run_stop() {
 		blistersystem.setConveyor_velocity(0);
 		stamper.stop();
-		state = START;
+		//state = START;
 	}
 
 	/**
