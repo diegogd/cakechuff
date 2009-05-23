@@ -15,7 +15,7 @@ public class LightSensor extends Sensor {
 	Cylinder light;
 	/**
 	 * Constructor
-	 * Initializes the light sensor (color of the light and graphical model)
+	 * Initializes the light sensor (color of the light, graphical model, id...)
 	 * @param id Identification of the light sensor
 	 */
 	public LightSensor(String id) {
