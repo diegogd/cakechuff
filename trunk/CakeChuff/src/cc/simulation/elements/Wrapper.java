@@ -4,7 +4,12 @@ import cc.simulation.utils.ModelLoader;
 
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
-
+/**
+ * Implementation and definition of the wrapper, one of
+ * the simulation elements that compose CakeChuff system
+ * @version 1.0, 29/05/09
+ * @author CaKeChuff team
+ */
 public class Wrapper extends Node {
 
 	private float speed;
@@ -13,7 +18,11 @@ public class Wrapper extends Node {
 	public boolean finished = true;
 
 	Node pivot;
-
+	/**
+	 * Constructor
+	 * Initializes the speed, direction and pivot of the wrapper. It also loads its graphical model.
+	 * @param id Identification of the touch sensor
+	 */
 	public Wrapper() {
 
 		speed = 0;
@@ -23,20 +32,32 @@ public class Wrapper extends Node {
 		this.attachChild(pivot);
 		this.setName("Wrapper");
 	}
-
+	/**
+	 * Returns the speed of the wrapper
+	 * @return The speed of the wrapper
+	 */
 	public float getSpeed() {
 		return this.speed;
 	}
-
+	/**
+	 * Modifies the speed of the wrapper
+	 * @param speed The new speed of the wrapper
+	 */
 	public void setSpeed(float speed) {
 		this.speed = speed;
 	}
-
+	/**
+	 * Loads the graphical shape of the wrapper
+	 */
 	public void loadShape() {
 		pivot.attachChild(ModelLoader.loadOBJ(getClass().getClassLoader()
 				.getResource("model/engraver.obj"), true));
 	}
-
+	/**
+	 * Updates the state of the wrapper when an element wants to be wrapped
+	 * @param timeperframes Parameter used in the translation of the wrapper
+	 * @element element Element (a blister) that want to be wrapped up 
+	 */
 	public void update(float timeperframes, Spatial element) {
 		// System.out.println(pivot.getLocalTranslation().y);
 		if (speed > 0) {
@@ -73,7 +94,10 @@ public class Wrapper extends Node {
 			}
 		}
 	}
-
+	/**
+	 *Wrap an element (a blister)
+	 * @element element Element that want to be wrapped up
+	 */
 	public void WrapUp(Spatial element) {
 
 		if (element instanceof Blister) {
