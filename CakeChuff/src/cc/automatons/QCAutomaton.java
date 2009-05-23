@@ -147,13 +147,14 @@ public class QCAutomaton extends Automaton {
 		qcsystem.setRobotGoToState(qcsystem.PICKUPPACKET);
 	}
 	private void run_failure(String data){
+		//TODO: Ver que hacer con el estado del robot 
 		String pars[]=data.split("#");
 		stop=false;
-		this.belt_lg = Integer.parseInt(pars[2]);
-		this.speed = Float.parseFloat(pars[1])/(belt_lg*3);
-		this.t_stamp=Integer.parseInt(pars[4]);
-		this.t_rob=Integer.parseInt(pars[5]);
-		this.f_chance=Integer.parseInt(pars[3]);
+		this.belt_lg = Integer.parseInt(pars[3]);
+		this.speed = Float.parseFloat(pars[2])/(belt_lg*3);
+		this.t_stamp=Integer.parseInt(pars[5]);
+		this.t_rob=Integer.parseInt(pars[6]);
+		this.f_chance=Integer.parseInt(pars[4]);
 		//Recover state
 		if(pars[0].equalsIgnoreCase("INIT")){
 			run_init();
@@ -189,6 +190,8 @@ public class QCAutomaton extends Automaton {
 		//Emergencies work for any state
 		if(content[0].equals("EMERGENCY")) run_stop();
 		else if (content[0].equalsIgnoreCase("STOP")) stop=true;
+		else if (content[0].equalsIgnoreCase("RESET")) 
+			run_failure(content[1]);
 		else if (content[0].equalsIgnoreCase("RESTART")) {
 			String pars[] = content[1].split("\\$");
 			run_failure(pars[1]);
