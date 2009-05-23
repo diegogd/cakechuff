@@ -31,7 +31,7 @@ public class SCADA {
 	 * Establish the communication through a mailbox with the Master Automaton
 	 * Instantiates the Graphical User Interface
 	 * @param ci Graphical User Interface 
-	 * @throws IOException Error establishing the communication through the mailbox
+	 * @exception IOException Error establishing the communication through the mailbox
 	 */
 	public SCADA (ControlInterface ci){
 		_ci= ci;
@@ -159,21 +159,21 @@ public class SCADA {
 		return this.getValue("pick_blister", "robot") + "#" +  this.getValue("move_place_cake", "robot");
 	}
 	
-     /**
+    /**
 	 * Inform about the data of the automaton 3
-      * @return send String containing the information of the automaton 3
-      */
-     public String sendAutomatonInfo3(){
-    	 String send = "";
+     * @return send String containing the information of the automaton 3
+     */
+	public String sendAutomatonInfo3(){
+		String send = "";
 
-    	 send = this.getValue("conveyorSpeed", "ss3Info") + "#" +
-    	 this.getValue("conveyorLenght", "ss3Info") + "#" +
-    	 this.getValue("failure_range", "ss3Info")+ "#"+
-    	 this.getValue("time_pack", "ss3Info")+ "#"+
-    	 this.getValue("pick_blister", "ss3Info");
+		send = this.getValue("conveyorSpeed", "ss3Info") + "#" +
+    	this.getValue("conveyorLenght", "ss3Info") + "#" +
+    	this.getValue("failure_range", "ss3Info")+ "#"+
+    	this.getValue("time_pack", "ss3Info")+ "#"+
+    	this.getValue("pick_blister", "ss3Info");
 
-    	 return send;
-     }
+    	return send;
+	}
 	
 	/**
 	 * Compress all the initial info needed by the CakeChuff system
@@ -213,7 +213,7 @@ public class SCADA {
     /**
      * Compress all the info needed to restart one subsystem, 
      * in response a petition from the Master automaton
-     *  @return s String containing the info needed to restart one subsystem
+     * @return s String containing the info needed to restart one subsystem
      */
     public String sendRestartInfo(String subsystem_name){
     	String s = "RESTART" + ":" + subsystem_name + "$";
@@ -310,7 +310,7 @@ public class SCADA {
     /**
      * Send a message to the master
 	 * @param msg Message to be sent
-	 * @throws IOException Communication failure
+	 * @exception IOException Communication failure
 	 */
 	public void sendtoMaster(String msg){
 		try{
