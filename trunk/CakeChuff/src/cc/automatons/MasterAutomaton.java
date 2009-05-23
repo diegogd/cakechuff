@@ -258,7 +258,42 @@ public class MasterAutomaton extends Automaton {
 			mboxQC.send(msg);
 			robot.deleteObserver(this);
 			robot.setMoving(false);
+		}else if (content[0].equalsIgnoreCase("RESET")){
+			String[] pars = content[1].split("\\$");
+			mboxCake.send("RESET:"+ pars[0]);
+			mboxBlister.send("RESET:"+pars[1]);
+			mboxQC.send("RESET:"+ pars[2]);
+			String[] parsrob = pars[3].split("\\#");
+			run_robot_start(Integer.parseInt(parsrob[0]), Integer
+					.parseInt(parsrob[1]), Integer.parseInt(pars[2].split("\\#")[2]), parsrob[2]);
+			//Set to false for the next time
+			stop = false;
 		}
+	}
+
+	private void run_robot_start(float movecaket, float moveblistert, int f_rate,
+			String state) {
+		this.movecaket = 3/movecaket;
+		this.moveblistert = 13/moveblistert;
+		robot.setRobot_velocity(moveblistert);
+		//A normal stop ends with the robot empty
+
+		if(state.compareTo("init")==0 || state.compareTo("empty")==0){
+			robot.setCurrentState(EMPTY);
+		} else if (state.compareTo("blister")==0 ){
+			robot.setCurrentState(BLISTER);
+		}else if (state.compareTo("cake1")==0 ){
+			robot.setCurrentState(CAKE1);
+		}else if (state.compareTo("cake2")==0 ){
+			robot.setCurrentState(CAKE2);
+		}else if (state.compareTo("cake3")==0 ){
+			robot.setCurrentState(CAKE3);
+		}else if (state.compareTo("full")==0 ){
+			robot.setCurrentState(FULL);
+		}
+
+		f_chance=f_rate/4;
+		
 	}
 
 	@Override
