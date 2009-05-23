@@ -299,7 +299,7 @@ public class ControlInterface extends javax.swing.JFrame implements ActionListen
         spinnerBeltSpeed1.setName("beltspeed"); // NOI18N
         spinnerBeltSpeed1.addChangeListener(this);
 
-        spinnerCakesCapacity.setModel(new javax.swing.SpinnerNumberModel(0, 0, 51, 1));
+        spinnerCakesCapacity.setModel(new javax.swing.SpinnerNumberModel(4, 4, 100, 1));
         spinnerCakesCapacity.setName("Cakes"); // NOI18N
         spinnerCakesCapacity.addChangeListener(this);
 
@@ -379,7 +379,7 @@ public class ControlInterface extends javax.swing.JFrame implements ActionListen
 
         jLabel18.setText("Robot: Pick Blister (secs):");
 
-        spinnerRobot2Pick.setModel(new javax.swing.SpinnerNumberModel(0, 0, 20, 1));
+        spinnerRobot2Pick.setModel(new javax.swing.SpinnerNumberModel(1, 1, 20, 1));
         spinnerRobot2Pick.setName("robot2time"); // NOI18N
         spinnerRobot2Pick.addChangeListener(this);
 
@@ -473,13 +473,13 @@ public class ControlInterface extends javax.swing.JFrame implements ActionListen
 
         jLabel24.setText("Pick Cake (secs):");
 
-        spinnerRobot1PickCake.setModel(new javax.swing.SpinnerNumberModel(0, 0, 20, 1));
+        spinnerRobot1PickCake.setModel(new javax.swing.SpinnerNumberModel(1, 1, 20, 1));
         spinnerRobot1PickCake.setName("robotpickcake"); // NOI18N
         spinnerRobot1PickCake.addChangeListener(this);
 
         jLabel25.setText("Move Blister (secs):");
 
-        spinnerRobot1MoveBlister.setModel(new javax.swing.SpinnerNumberModel(0, 0, 20, 1));
+        spinnerRobot1MoveBlister.setModel(new javax.swing.SpinnerNumberModel(1, 1, 20, 1));
         spinnerRobot1MoveBlister.setName("robotmove"); // NOI18N
         spinnerRobot1MoveBlister.addChangeListener(this);
 
