@@ -124,7 +124,7 @@ public class MasterAutomaton extends Automaton {
 		this.movecaket = 3/movecaket;
 		this.moveblistert = 13/moveblistert;
 		robot.setRobot_velocity(moveblistert);
-		f_chance=f_rate/4;
+		f_chance=f_rate;
 	}
 
 	/**
@@ -254,11 +254,6 @@ public class MasterAutomaton extends Automaton {
 				mboxScada.send(msg);
 				if (content[1].equalsIgnoreCase("WAIT")) {
 					System.out.println("[Master]: Cake awaiting");
-					// Error chance
-					if ((Math.random() * 100) < f_chance) {
-						System.out.println("[Master]: Simulated error");
-						mistake = true;
-					}
 					if(robot.getIfMoving())cake_waiting = true;
 					else if (state == BLISTER) {
 						run_robot_cake1();
@@ -386,58 +381,114 @@ public class MasterAutomaton extends Automaton {
 				mboxCake.send("R1:cake");
 				break;
 			case (DROPINTABLE):
-				if (state == EMPTY) {	
+				if (state == EMPTY) {
+					//TODO: Borrar ?
 					state = BLISTER;
+					System.out.println("***************************************");
+					System.out.println("***		This shouldn't happen		***");
+					System.out.println("***************************************");
 					if (cake_waiting) {
-						System.out.println("[Master to Robot1]: EMPTY->BLISTER");
+						System.out
+								.println("[Master to Robot1]: EMPTY->BLISTER");
 						robot.setRobot_velocity(movecaket);
 						robot.setGoToState(PICKUPCAKE);
-						if(mistake) state = CAKE2;
-						else state = CAKE1;
-					}else if(mistake) state = CAKE1;
+						if (mistake)
+							state = CAKE2;
+						else
+							state = CAKE1;
+					} else if (mistake)
+						state = CAKE1;
 				} else if (state == BLISTER) {
-					if (cake_waiting) {
-						System.out.println("[Master to Robot1]: BLISTER->CAKE1");
-						robot.setRobot_velocity(movecaket);
-						robot.setGoToState(PICKUPCAKE);
-						if(mistake) state = CAKE2;
-						else state = CAKE1;
-					}else if(mistake) state = CAKE1;
+					// Error chance
+					double error = Math.random();
+					System.out.println("[Master]: Error chance : " + error + "<" +f_chance+"??");
+					if ((error) < (Math.pow(f_chance, 4) / 100000000)) {
+						System.out.println("[Master]: Sim. error, skipping all cakes");
+						state = FULL;
+						if (qc_free) {
+							robot.setRobot_velocity(moveblistert);
+							robot.setGoToState(PICKUPPACKET);
+						} else
+							packet_waiting = true;
+					} else if ((error) < (Math.pow(f_chance, 3) / 1000000)) {
+						if (cake_waiting) {
+							System.out
+									.println("[Master to Robot1]: Sim. ERROR :BLISTER->CAKE4");
+							robot.setRobot_velocity(movecaket);
+							robot.setGoToState(PICKUPCAKE);
+							state = FULL;
+						} else
+							state = CAKE3;
+					} else if (error < ((f_chance * f_chance) / 10000d)) {
+						if (cake_waiting) {
+							System.out
+									.println("[Master to Robot1]: Sim. ERROR :BLISTER->CAKE3");
+							robot.setRobot_velocity(movecaket);
+							robot.setGoToState(PICKUPCAKE);
+							state = CAKE3;
+						} else
+							state = CAKE2;
+					} else if (error < (f_chance / 100d)) {
+						if (cake_waiting) {
+							System.out
+									.println("[Master to Robot1]: Sim. ERROR : BLISTER->CAKE2");
+							robot.setRobot_velocity(movecaket);
+							robot.setGoToState(PICKUPCAKE);
+							state = CAKE2;
+						} else
+							state = CAKE1;
+					} else {
+						if (cake_waiting) {
+							System.out
+									.println("[Master to Robot1]: BLISTER->CAKE1");
+							robot.setRobot_velocity(movecaket);
+							robot.setGoToState(PICKUPCAKE);
+							state = CAKE1;
+						}
+					}
 				} else if (state == CAKE1) {
 					if (cake_waiting) {
 						System.out.println("[Master to Robot1]: CAKE1->CAKE2");
 						robot.setRobot_velocity(movecaket);
 						robot.setGoToState(PICKUPCAKE);
-						if(mistake) state = CAKE3;
-						else state = CAKE2;
-					}else if(mistake) state = CAKE2;
+						if (mistake)
+							state = CAKE3;
+						else
+							state = CAKE2;
+					} else if (mistake)
+						state = CAKE2;
 				} else if (state == CAKE2) {
 					if (cake_waiting) {
 						System.out.println("R1: CAKE2->CAKE3");
 						robot.setRobot_velocity(movecaket);
 						robot.setGoToState(PICKUPCAKE);
-						if(mistake) state = FULL;
-						else state = CAKE3;
-					}else if(mistake) state = CAKE3;
+						if (mistake)
+							state = FULL;
+						else
+							state = CAKE3;
+					} else if (mistake)
+						state = CAKE3;
 				} else if (state == CAKE3) {
 					if (cake_waiting) {
 						System.out.println("[Master to Robot1]: CAKE3->FULL");
 						robot.setRobot_velocity(movecaket);
 						robot.setGoToState(PICKUPCAKE);
 						state = FULL;
-					}else if(mistake){
+					} else if (mistake) {
 						state = FULL;
 						System.out.println("[Master to Robot1]: PICK PACKET");
 						robot.setRobot_velocity(moveblistert);
 						robot.setGoToState(PICKUPPACKET);
 					}
-				} else if (state == FULL ) {
-					if(qc_free)
-					System.out.println("[Master to Robot1]: PICK PACKET");
+				} else if (state == FULL) {
+					if (qc_free){
+						System.out.println("[Master to Robot1]: PICK PACKET");
 					robot.setRobot_velocity(moveblistert);
 					robot.setGoToState(PICKUPPACKET);
-				}else packet_waiting=true;
-				mistake=false;
+					} else
+						packet_waiting = true;
+				}
+				mistake = false;
 				break;
 			case (PICKUPBLISTER):
 				System.out.println("[Master to Robot1]: BLISTER -> TABLE");
@@ -460,7 +511,7 @@ public class MasterAutomaton extends Automaton {
 				System.out.println("\n\n------------[Robot1]:Pack Done-----------------\n\n");
 				if (blister_waiting && !stop) {
 					System.out.println("[Master to Robot1]: PICK AWAITING BLISTER");
-					state=BLISTER;
+					//state=BLISTER;
 					robot.setRobot_velocity(moveblistert);
 					robot.setGoToState(PICKUPBLISTER);
 				} 
