@@ -6,7 +6,12 @@ import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
 import com.jme.scene.shape.Box;
 import com.jme.scene.shape.Cylinder;
-
+/**
+ * Implementation and definition of the plastic supplier, one of
+ * the simulation elements that compose CakeChuff system
+ * @version 1.0, 29/05/09
+ * @author CaKeChuff team
+ */
 public class PlasticSupplier extends Node{
 
 	/**
@@ -15,11 +20,16 @@ public class PlasticSupplier extends Node{
 	private static final long serialVersionUID = 8853840882662831706L;
 	Cylinder roll;
 	Box plastic;
-	
+	/**
+	 * Constructor
+	 * Initializes pole role and plastic of the supplier .
+	 */
 	public PlasticSupplier() {
 		initElement();
 	}
-	
+	/**
+	 * Initializes pole role and plastic of the supplier .
+	 */
 	public void initElement(){
 		
 		roll = new Cylinder("pole", 4, 20, 0.2f, 4.5f,true);
@@ -37,7 +47,10 @@ public class PlasticSupplier extends Node{
 		plastic.updateModelBound();
 		this.attachChild(plastic);
 	}
-	
+	/**
+	 * Makes the plastic bigger
+	 * @param amaount Factor to increase the plastic
+	 */
 	public void grow(float amount){
 		plastic.setLocalScale(new Vector3f(plastic.getLocalScale().x+amount/2,1,1));
 		
