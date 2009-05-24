@@ -188,7 +188,7 @@ public class CakeSubsystem extends Node implements Observer {
 	}
 	/**
 	 * Updates the state of the valves (opens them x seconds) of the cake subsystem 
-	 * @element arg0 Observable object
+	 * @param arg0 Observable object
 	 * @param arg1 Has to be null for the modifications to take place
 	 */
 	@Override
