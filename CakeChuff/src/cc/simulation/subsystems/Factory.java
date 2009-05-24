@@ -13,7 +13,6 @@ import cc.simulation.state.SystemState;
 import cc.simulation.utils.Rotations;
 
 import com.jme.app.SimpleGame;
-import com.jme.app.SimplePassGame;
 import com.jme.image.Texture;
 import com.jme.image.Texture.MagnificationFilter;
 import com.jme.image.Texture.MinificationFilter;
@@ -22,17 +21,12 @@ import com.jme.light.PointLight;
 import com.jme.light.SpotLight;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
-import com.jme.renderer.Renderer;
-import com.jme.renderer.pass.RenderPass;
-import com.jme.renderer.pass.ShadowedRenderPass;
 import com.jme.scene.Spatial;
 import com.jme.scene.shape.Box;
 import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.TextureState;
 import com.jme.scene.state.MaterialState.ColorMaterial;
-import com.jme.scene.state.ShadeState.ShadeMode;
 import com.jme.util.TextureManager;
-import com.sun.org.apache.bcel.internal.classfile.PMGClass;
 
 /**
  * Implementation of the Factory simulation subsystem. It is composed by all the simulation elements of the system
