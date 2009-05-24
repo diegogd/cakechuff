@@ -81,12 +81,6 @@ public class Factory extends SimpleGame implements Observer {
 			numBlisters--;
 		}
 
-		// for(int i=0; i < numPackets; i++){
-		// Wrap();
-		// numPackets--;
-		// }
-
-		// TODO Auto-generated method stub
 		super.simpleUpdate();
 
 		float time = timer.getTimePerFrame();
@@ -95,19 +89,8 @@ public class Factory extends SimpleGame implements Observer {
 		blisterSub.update(time);
 		qualitySub.update(time);
 
-		// robot1.moveToSub1(time);
-
 		// Lo correcto seria:robot1.update(time,rootNode.getChildren());
 		robot1.update(time, this);
-
-		// axis.setLocalRotation( new Quaternion().fromAngleAxis(
-		// display.getRenderer().getCamera().getDirection().angleBetween(axis.getLocalRotation().getRotationColumn(0)),
-		// display.getRenderer().getCamera().getDirection()) );
-		// axis.setLocalTranslation(display.getRenderer().getCamera().getLocation().getX(),
-		// display.getRenderer().getCamera().getLocation().getY(),
-		// display.getRenderer().getCamera().getLocation().getZ()-2
-		// );
-
 	}
 	/**
 	 * Initializes all the elements that compose the simulation of the system and loads their graphical model. 
@@ -156,32 +139,15 @@ public class Factory extends SimpleGame implements Observer {
 		wallright.updateRenderState();
 		rootNode.attachChild(wallright);
 
-		// Texture t0 =
-		// TextureManager.loadTexture(
-		// getClass().getClassLoader().getResource("model/texture/floor.jpg"),
-		// MinificationFilter.Trilinear,
-		// MagnificationFilter.Bilinear);
-		// // t0.setScale(new Vector3f(10f, 10f, 1f));
-		// // t0.setWrap(Texture.WrapMode.Repeat);
-		// ts.setTexture(t0);
-		// ts.setEnabled(true);
-		// floor.setRenderState(ts);
-		// floor.updateRenderState();
-
 		floor = new Box("floor", new Vector3f(-40, 0f, -40), new Vector3f(60,
 				-0.1f, 30));
 		floor.setDefaultColor(ColorRGBA.brown);
 		floor.updateRenderState();
 
-		// floor.setModelBound(new BoundingBox());
-		// floor.updateModelBound();
-		// TextureState ts = display.getRenderer().createTextureState();
 		ts = display.getRenderer().createTextureState();
 		t0 = TextureManager.loadTexture(getClass().getClassLoader()
 				.getResource("model/texture/floor.jpg"),
 				MinificationFilter.Trilinear, MagnificationFilter.Bilinear);
-		// t0.setScale(new Vector3f(10f, 10f, 1f));
-		// t0.setWrap(Texture.WrapMode.Repeat);
 		ts.setTexture(t0);
 		ts.setEnabled(true);
 		
@@ -209,34 +175,9 @@ public class Factory extends SimpleGame implements Observer {
 		rootNode.attachChild(table);
 
 		robot1 = new Robot1();
-		// robot.pickUpCake();
 		rootNode.attachChild(robot1);
 
-		// test = new Box("test", new Vector3f(-0.5f, 0f,-0.5f), new
-		// Vector3f(0.5f,1f,0.5f));
-		// test.setModelBound(new BoundingBox());
-		// test.updateModelBound();
-		// test.setLocalTranslation(new Vector3f(-4.5f,4f,-7f));
-		// test.setLocalScale(2.0f);
-		// test.updateRenderState();
-		// combination.add(test);
-
 		rootNode.attachChild(test);
-
-		//		
-		// Node prueba = new Node();
-		// rootNode.attachChild(prueba);
-		//		
-		// test.removeFromParent();
-		// prueba.attachChild(test);
-		//		
-		// test.removeFromParent();
-		// rootNode.attachChild(test);
-
-		// //Create an right handed axisrods object with a scale of 1/2
-		// axis = new AxisRods("rods", true, 0.5f);
-		// //Attach ar to the node we want to visualize
-		// rootNode.attachChild(axis);
 
 		MaterialState ms = display.getRenderer().createMaterialState();
 		ms.setColorMaterial(ColorMaterial.AmbientAndDiffuse);
@@ -256,8 +197,6 @@ public class Factory extends SimpleGame implements Observer {
 		lightSub1.setAngle(10);
 		lightSub1.setLocation(new Vector3f(-11, 40, -1.5f));
 		lightSub1.setDirection(new Vector3f(0,-1,0));
-		// lightSub1.setShadowCaster(true);
-		//lightSub1.setDirection(new Vector3f(-6,0,-3));
 		lightSub1.setEnabled(true);
 		lightState.attach(lightSub1);
 		
@@ -270,20 +209,17 @@ public class Factory extends SimpleGame implements Observer {
 		lightSub2.setAngle(20);
 		lightSub2.setLocation(new Vector3f(-11, 40, 22.5f));
 		lightSub2.setDirection(new Vector3f(0,-1,0));		
-		//lightSub1.setDirection(new Vector3f(-6,0,-3));
 		lightSub2.setEnabled(true);
 		lightState.attach(lightSub2);
 		
 		// Lights
 		SpotLight lightSub3;
-		// Setting Lights
 		lightSub3 = new SpotLight();
 		lightSub3.setDiffuse(ColorRGBA.white);
 		lightSub3.setAmbient(ColorRGBA.gray);
 		lightSub3.setAngle(20);
 		lightSub3.setLocation(new Vector3f(16, 40, 14));
 		lightSub3.setDirection(new Vector3f(0,-1,0));		
-		//lightSub1.setDirection(new Vector3f(-6,0,-3));
 		lightSub3.setEnabled(true);
 		lightState.attach(lightSub3);
 		
@@ -374,17 +310,6 @@ public class Factory extends SimpleGame implements Observer {
 		//combination.add(blister);
 	}
 
-	// private void Wrap() {
-	// Packet packet = new Packet(packets.size());
-	// packet.setLocalTranslation(15f, 10.2f, -8.1f);
-	// packet.setLocalScale(-1.1f);
-	// packet.updateRenderState();
-	// rootNode.attachChild(packet);
-	// rootNode.updateWorldBound();
-	// rootNode.updateRenderState();
-	// packets.add(packet);
-	// combination.add(packet);
-	// }
 	/**
 	 * Updates the camera and the number of blisters and cakes
 	 * @param o Observable object
@@ -405,10 +330,6 @@ public class Factory extends SimpleGame implements Observer {
 			if (_state.makeBlister()) {
 				numBlisters++;
 			}
-			// if(_state.makePacket())
-			// {
-			// numPackets++;
-			// }
 		}
 	}
 
