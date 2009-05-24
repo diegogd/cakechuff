@@ -2,8 +2,6 @@
 cc
 cc.automatons
 cc.communications
-cc.communications.rmi
-cc.communicationsSockets
 cc.robots
 cc.scada
 cc.sensors

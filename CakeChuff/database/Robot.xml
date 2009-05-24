@@ -6,6 +6,6 @@
   <defaultPick>5</defaultPick>
   <move_place_cake>5</move_place_cake>
   <defaultMove>5</defaultMove>
-  <state>init</state>
+  <state>cake2</state>
 </robot>
 

@@ -6,6 +6,6 @@
   <conveyorSpeed>30</conveyorSpeed>
   <conveyorLenght>5</conveyorLenght>
   <defaultLenght>20</defaultLenght>
-  <state>press</state>
+  <state>blister_ready</state>
 </ss2Info>
 
