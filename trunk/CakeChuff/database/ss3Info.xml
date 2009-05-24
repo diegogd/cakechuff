@@ -10,7 +10,7 @@
   <time_pack>5</time_pack>
   <defaultRange>5</defaultRange>
   <failure_range>20</failure_range>
-  <state>init</state>
+  <state>ok_wait</state>
   <defaultTimeRobot>5</defaultTimeRobot>
   <pick_blister>5</pick_blister>
   <robot_state>init</robot_state>

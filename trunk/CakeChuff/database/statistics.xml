@@ -2,12 +2,12 @@
 <!DOCTYPE statistics SYSTEM "dtd/statistics.dtd">
 
 <statistics>
-  <procesedPackages>0</procesedPackages>
+  <procesedPackages>1</procesedPackages>
   <faultyPackages>0</faultyPackages>
   <total_ko_cakes>0</total_ko_cakes>
-  <total_ok_cakes>0</total_ok_cakes>
-  <start>2</start>
+  <total_ok_cakes>16</total_ok_cakes>
+  <start>14</start>
   <emergency_stops>0</emergency_stops>
-  <stops>0</stops>
+  <stops>1</stops>
 </statistics>
 

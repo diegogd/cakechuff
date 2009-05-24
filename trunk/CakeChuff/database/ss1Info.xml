@@ -12,6 +12,6 @@
   <defaultLenght>10</defaultLenght>
   <cakesCapacity>50</cakesCapacity>
   <defaultCapacity>50</defaultCapacity>
-  <state>init</state>
+  <state>wait</state>
 </ss1Info>
 
