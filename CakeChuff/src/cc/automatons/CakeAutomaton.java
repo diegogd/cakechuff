@@ -195,7 +195,7 @@ public class CakeAutomaton extends Automaton {
 	 * @exception InterruptedException Thread error
 	 */
 	private void run_car(){
-		state=CHOC;
+		state=CAR;
 		send("A1:car");
 		//stop conveyor
 		cakesystem.setConveyor_velocity(0);
