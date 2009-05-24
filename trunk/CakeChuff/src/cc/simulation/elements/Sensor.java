@@ -41,7 +41,7 @@ public class Sensor extends Node {
 	}
 	/**
 	 * Modifies the state of modification of the robot
-	 * @param isActived True: it is modified, false: not modified
+	 * @param modified True: it is modified, false: not modified
 	 */
 	public void setModified(boolean modified) {
 		this.modified = modified;

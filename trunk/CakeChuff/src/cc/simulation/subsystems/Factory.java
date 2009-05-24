@@ -393,8 +393,8 @@ public class Factory extends SimpleGame implements Observer {
 	// }
 	/**
 	 * Updates the camera and the number of blisters and cakes
-	 * @element arg0 Observable object
-	 * @param arg1 State of the system
+	 * @param o Observable object
+	 * @param arg State of the system
 	 */
 	@Override
 	public void update(Observable o, Object arg) {

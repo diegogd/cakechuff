@@ -149,7 +149,7 @@ public class QualitySubsystemState extends Observable {
 	}
 	/**
 	 * Sets the seconds of the wrapper
-	 * @param  The new time elapsed of the wrapper
+	 * @param wrapper_secs The new time elapsed of the wrapper
 	 */
 	public void setWrapper_secs(float wrapper_secs) {
 		this.wrapper_secs = wrapper_secs;
@@ -171,7 +171,7 @@ public class QualitySubsystemState extends Observable {
 	}
 	/**
 	 * Modifies the robots velocity.
-	 * @param New robots velocity.
+	 * @param robot_velocity New robots velocity.
 	 */
 	public void setRobot_velocity(float robot_velocity) {
 		if (!getRobotIfMoving()) {
@@ -182,7 +182,7 @@ public class QualitySubsystemState extends Observable {
 	}
 	/**
 	 * Makes the robot change to another state
-	 * @param New state of the robot
+	 * @param goToState New state of the robot
 	 */
 	public void setRobotGoToState(int goToState) {
 		if (!getRobotIfMoving()) {
@@ -203,7 +203,7 @@ public class QualitySubsystemState extends Observable {
 	}
 	/**
 	 * Makes the robot change its current state
-	 * @param currentSate New state of the robot
+	 * @param currentState New state of the robot
 	 */
 	public void setRobotCurrentState(int currentState) {
 		if (this.robot_current_state != currentState) {

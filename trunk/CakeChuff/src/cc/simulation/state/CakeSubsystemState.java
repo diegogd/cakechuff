@@ -65,7 +65,7 @@ public class CakeSubsystemState extends Observable {
 	}
 	/**
 	 * Modifies the seconds that the valve 1 is still opened.
-	 * @param The new value for the seconds that the valve 1 is still opened.
+	 * @param valve1_open_secs The new value for the seconds that the valve 1 is still opened.
 	 */
 	public void setValve1_open_secs(float valve1_open_secs) {
 		this.valve1_open_secs = valve1_open_secs;
@@ -87,7 +87,7 @@ public class CakeSubsystemState extends Observable {
 	}
 	/**
 	 * Modifies the seconds that the valve 2 is still opened.
-	 * @param The new value for the seconds that the valve 2 is still opened.
+	 * @param valve2_open_secs The new value for the seconds that the valve 2 is still opened.
 	 */
 	public void setValve2_open_secs(float valve2_open_secs) {
 		this.valve2_open_secs = valve2_open_secs;
