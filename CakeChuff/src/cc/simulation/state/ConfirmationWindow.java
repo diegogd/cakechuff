@@ -11,15 +11,20 @@ import javax.swing.ImageIcon;
 import cc.scada.*;
 
 /**
- *
- * @author  cakechuff team
+ * Implementation of the confirmation window of the graphical user interface
+ * @version 1.0, 29/05/09
+ * @author CaKeChuff team
  */
 public class ConfirmationWindow extends javax.swing.JFrame {
 
     private SCADA _scada;
     private ControlInterface _ui;
     
-    /** Creates new form ConfirmationWindow */
+    /** Creates new form ConfirmationWindow
+     * @param s The SCADA
+     * @param c The control interface
+     * @return The confirmation window
+     */
     public ConfirmationWindow(SCADA s, ControlInterface c) {
         _scada =s;
         _ui =c;
