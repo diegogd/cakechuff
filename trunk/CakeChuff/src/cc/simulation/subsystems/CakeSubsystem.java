@@ -14,7 +14,11 @@ import cc.simulation.state.CakeSubsystemState;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
-
+/**
+ * Implementation of the cake simulation subsystem
+ * @version 1.0, 29/05/09
+ * @author CaKeChuff team
+ */
 public class CakeSubsystem extends Node implements Observer {
 	
 	private static final long serialVersionUID = -4388993500227829190L;
@@ -36,14 +40,20 @@ public class CakeSubsystem extends Node implements Observer {
 	
 	// Produced cakes
 	public List<Spatial> cakes;
-
+	/**
+	 * Constructor
+	 * Initializes the attributes of the cake subsystem and instantiates its state
+	 */
 	public CakeSubsystem() {
 		_state = CakeSubsystemState.getInstance();
 		_state.addObserver(this);
 		initElements();
 		cakes = new Vector<Spatial>();
 	}
-
+	/**
+	 * Initializes the attributes of the cake subsystem such as the velocity and
+	 * instantiates its elements (the three sensors and the chocolate and the caramel valve)
+	 */
 	private void initElements() {
 		conv = new ConveyorCake();
 		conv.setVelocity(0f);
@@ -74,7 +84,10 @@ public class CakeSubsystem extends Node implements Observer {
 		caramel.setLocalTranslation(3, 8, 0);
 		this.attachChild(caramel);
 	}
-
+	/**
+	 * Updates the state of the sensors of the cake subsystem 
+	 * @param timePerFrame Parameter used in the modification of the position of the cakes
+	 */
 	public void update(float timePerFrame) {
 		boolean sen1 = false, sen2 = false, sen3 = false;
 
@@ -173,7 +186,11 @@ public class CakeSubsystem extends Node implements Observer {
 
 		_state.checkSensorsChanges();
 	}
-
+	/**
+	 * Updates the state of the valves (opens them x seconds) of the cake subsystem 
+	 * @element arg0 Observable object
+	 * @param arg1 Has to be null for the modifications to take place
+	 */
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		// Dont treat sensors changes.
