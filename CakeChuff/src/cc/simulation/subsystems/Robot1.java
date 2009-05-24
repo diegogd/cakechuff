@@ -248,7 +248,7 @@ public class Robot1 extends Node implements Observer {
 	/**
 	 * Makes the robot drop a blister
 	 * @param time Time it takes the robot to do the movement
-	 * @param element Blister to be dropped
+	 * @param target Blister to be dropped
 	 * @return True -> Movement done with no problems; False -> Could not make the movement
 	 */
 	public boolean dropBlister(float time, Spatial target) {

@@ -83,7 +83,7 @@ public class Robot1State extends Observable {
 	// LLamada para cambiar los estados!!
 	/**
 	 * Makes the robot change to another state
-	 * @param New state of the robot
+	 * @param goToState New state of the robot
 	 */
 	public void setGoToState(int goToState) {
 		if (!getIfMoving()) {

@@ -21,8 +21,7 @@ public class Wrapper extends Node {
 	Node pivot;
 	/**
 	 * Constructor
-	 * Initializes the speed, direction and pivot of the wrapper. It also loads its graphical model.
-	 * @param id Identification of the touch sensor
+	 * Initializes the speed, direction and pivot of the wrapper. It also loads its graphical model
 	 */
 	public Wrapper() {
 

@@ -549,7 +549,9 @@ public class Robot extends Node {
 //	}	
 	/**
 	 * Makes the robot take a list of elements
-	 * @param elements List of spatial elements to be taken
+	 * @param angle Angle of the robot arm
+	 * @param time Time for leaving the object
+	 * @param element Place where leave the object
 	 * @return True if the robot takes the elements with no problem, false if it does not
 	 */
 	public boolean leaveHandObject(float angle, float time, Spatial element) {

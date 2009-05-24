@@ -2,7 +2,6 @@
 cc
 cc.automatons
 cc.communications
-cc.robots
 cc.scada
 cc.sensors
 cc.simulation.elements
