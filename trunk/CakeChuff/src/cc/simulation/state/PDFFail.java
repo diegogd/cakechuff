@@ -9,14 +9,17 @@ package cc.simulation.state;
 import javax.swing.ImageIcon;
 
 /**
- *
- * @author  CakeChuff Team
+ * Implementation of the pdf document failure form of the graphical user interface
+ * @version 1.0, 29/05/09
+ * @author CaKeChuff team
  */
 public class PDFFail extends javax.swing.JFrame {
 
     private ControlInterface _ui;
     
-    /** Creates new form PDFFail */
+    /** 
+     * Constructor
+     * Creates new form PDFFail */
     public PDFFail(ControlInterface ui) {
         _ui=ui;
         initComponents();
