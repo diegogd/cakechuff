@@ -56,7 +56,7 @@ public class Wrapper extends Node {
 	/**
 	 * Updates the state of the wrapper when an element wants to be wrapped
 	 * @param timeperframes Parameter used in the translation of the wrapper
-	 * @element element Element (a blister) that want to be wrapped up 
+	 * @param element Element (a blister) that want to be wrapped up 
 	 */
 	public void update(float timeperframes, Spatial element) {
 		// System.out.println(pivot.getLocalTranslation().y);
@@ -96,7 +96,7 @@ public class Wrapper extends Node {
 	}
 	/**
 	 *Wrap an element (a blister)
-	 * @element element Element that want to be wrapped up
+	 * @param element Element that want to be wrapped up
 	 */
 	public void WrapUp(Spatial element) {
 
