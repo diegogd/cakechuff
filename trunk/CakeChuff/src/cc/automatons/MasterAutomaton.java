@@ -214,7 +214,7 @@ public class MasterAutomaton extends Automaton {
 		robot.setRobot_velocity(moveblistert);
 		//A normal stop ends with the robot empty
 		if(robot.getCurrentState()!=robot.getGoToState()) 
-		robot.setMoving(true);
+			robot.setMoving(true);
 		/*if(state.equalsIgnoreCase("init")|| state.equalsIgnoreCase("empty")){
 			this.state=EMPTY;
 			//robot.setCurrentState(EMPTY);
@@ -480,6 +480,7 @@ public class MasterAutomaton extends Automaton {
 				mistake = false;
 				break;
 			case (PICKUPBLISTER):
+				blister_waiting=false;
 				System.out.println("[Master to Robot1]: BLISTER -> TABLE");
 				state=BLISTER;
 				mboxScada.send("R1:blister");

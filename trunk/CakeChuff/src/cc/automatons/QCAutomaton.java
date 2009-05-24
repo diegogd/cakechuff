@@ -238,7 +238,7 @@ public class QCAutomaton extends Automaton {
 		this.t_stamp=Integer.parseInt(pars[5]);
 		this.t_rob=Integer.parseInt(pars[6]);
 		//this.f_chance=Integer.parseInt(pars[4]);
-		//qcsystem.setRobotMoving(true);
+		if(qcsystem.getRobotCurrentState()!=qcsystem.getRobotGoToState())qcsystem.setRobotMoving(true); 
 		//Recover state
 		if(pars[0].equalsIgnoreCase("INIT")){
 			run_init();
@@ -275,7 +275,7 @@ public class QCAutomaton extends Automaton {
 		if(changingstate!=null) changingstate.stop();
 		qcsystem.setConveyor_velocity(0);
 		//qcsystem.deleteObserver(this);
-		//qcsystem.setRobotMoving(false);
+		qcsystem.setRobotMoving(false);
 		//state=START;
 	}
 	
