@@ -20,10 +20,11 @@ public class ConfirmationWindow extends javax.swing.JFrame {
     private SCADA _scada;
     private ControlInterface _ui;
     
-    /** Creates new form ConfirmationWindow
+    /**
+     * Constructor 
+     * Creates new form ConfirmationWindow
      * @param s The SCADA
      * @param c The control interface
-     * @return The confirmation window
      */
     public ConfirmationWindow(SCADA s, ControlInterface c) {
         _scada =s;
