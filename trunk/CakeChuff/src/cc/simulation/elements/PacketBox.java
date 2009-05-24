@@ -54,7 +54,7 @@ public class PacketBox extends Node{
 	 * Loads the graphical model of the box of the packet
 	 */
 	private void loadModel(){
-		URL model=getClass().getClassLoader().getResource("model/box.obj");
+		URL model=getClass().getClassLoader().getResource("model/boxok.obj");
 		pivot.attachChild(ModelLoader.loadOBJ(model, false));
 //		URL model2=getClass().getClassLoader().getResource("model/blister.obj");
 //		Spatial aux = ModelLoader.loadOBJ(model2);

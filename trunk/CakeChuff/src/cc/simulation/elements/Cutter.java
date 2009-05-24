@@ -5,11 +5,16 @@ import java.net.URL;
 import cc.simulation.utils.ModelLoader;
 
 import com.jme.bounding.BoundingBox;
+import com.jme.image.Texture.MagnificationFilter;
+import com.jme.image.Texture.MinificationFilter;
 import com.jme.math.FastMath;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
 import com.jme.scene.shape.Box;
+import com.jme.scene.state.TextureState;
+import com.jme.system.DisplaySystem;
+import com.jme.util.TextureManager;
 /**
  * Implementation and definition of the cutter, one of
  * the simulation elements that compose CakeChuff system
@@ -21,7 +26,7 @@ public class Cutter extends Node {
 	
 	private static final long serialVersionUID = 1256342121415489725L;
 	
-	private float speed;
+	private float speed;	
 	
 	Node pivot;
 	
@@ -30,12 +35,12 @@ public class Cutter extends Node {
 	 * Constructor
 	 * Initializes cutters direction and speed. Also loads it in the graphic interface.
 	 */
-	public Cutter() {
+	public Cutter(DisplaySystem mainDisplay) {
 //		loadModel();
 
 		pivot = new Node();
 		this.attachChild(pivot);
-		loadBox();
+		loadBox(mainDisplay);
 		direction = false;
 		speed = 0;
 	}
@@ -56,7 +61,7 @@ public class Cutter extends Node {
 	/**
 	 * Cutter is graphically displayed as a box
 	 */
-	private void loadBox(){
+	private void loadBox(DisplaySystem mainDisplay){
 		
 		Box cutter = new Box("cutter",new Vector3f(-2f,0.99f,-2f), new Vector3f(2f, 1f, 2f));
 		
@@ -64,6 +69,10 @@ public class Cutter extends Node {
 		cutter.updateModelBound();
 		cutter.setDefaultColor(ColorRGBA.gray);
 		cutter.updateRenderState();
+		TextureState ts = mainDisplay.getRenderer().createTextureState();
+		ts.setTexture(TextureManager.loadTexture(this.getClass().getResource("/model/texture/cutter.jpg"),
+				MinificationFilter.BilinearNearestMipMap, MagnificationFilter.Bilinear));
+		this.setRenderState(ts);
 		float angles[] = new float[]{0,0,FastMath.PI/2};
 		cutter.getLocalRotation().fromAngles(angles);
 		pivot.attachChild(cutter);

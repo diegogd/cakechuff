@@ -2,8 +2,11 @@ package cc.simulation.elements;
 
 
 import cc.simulation.utils.ModelLoader;
+import cc.simulation.utils.Rotations;
 
+import com.jme.renderer.Renderer;
 import com.jme.scene.Node;
+import com.jme.scene.Spatial;
 /**
  * Implementation and definition of the engraver, one of
  * the simulation elements that compose CakeChuff system
@@ -30,6 +33,7 @@ public class Engraver extends Node{
 		pivot = new Node();
 		loadShape();
 		this.attachChild(pivot);
+		this.setLocalRotation(Rotations.rotateY(1));
 	}
 	/**
 	 * Returns the speed of the engraver
@@ -50,8 +54,9 @@ public class Engraver extends Node{
 	 */
 	public void loadShape(){
 		pivot.attachChild(
-		ModelLoader.loadOBJ(getClass().getClassLoader().getResource("model/engraver.obj"), true)
+		ModelLoader.loadOBJ(getClass().getClassLoader().getResource("model/engraver2.obj"), true)
 		);
+		// pivot.setRenderQueueMode(Renderer.QUEUE_INHERIT);
 	}
 	
 	/**

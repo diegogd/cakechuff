@@ -1,5 +1,7 @@
 package cc.simulation.subsystems;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -11,17 +13,27 @@ import cc.simulation.state.SystemState;
 import cc.simulation.utils.Rotations;
 
 import com.jme.app.SimpleGame;
+import com.jme.app.SimplePassGame;
 import com.jme.image.Texture;
 import com.jme.image.Texture.MagnificationFilter;
 import com.jme.image.Texture.MinificationFilter;
+import com.jme.light.Light;
+import com.jme.light.PointLight;
+import com.jme.light.SpotLight;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
+import com.jme.renderer.Renderer;
+import com.jme.renderer.pass.RenderPass;
+import com.jme.renderer.pass.ShadowedRenderPass;
 import com.jme.scene.Spatial;
 import com.jme.scene.shape.Box;
 import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.TextureState;
 import com.jme.scene.state.MaterialState.ColorMaterial;
+import com.jme.scene.state.ShadeState.ShadeMode;
 import com.jme.util.TextureManager;
+import com.sun.org.apache.bcel.internal.classfile.PMGClass;
+
 /**
  * Implementation of the Factory simulation subsystem. It is composed by all the simulation elements of the system
  * (the other 3 subsystems, the robots...). It is also in charge of the camera control and the simulation of the factory process.
@@ -34,8 +46,6 @@ public class Factory extends SimpleGame implements Observer {
 	final int CAMERA_CAKESUB = 1;
 	final int CAMERA_BLISTERSUB = 2;
 	final int CAMERA_QASUB = 3;
-
-	// Factory Elements
 
 	// Conveyer Belts
 	public CakeSubsystem cakeSub;
@@ -190,7 +200,7 @@ public class Factory extends SimpleGame implements Observer {
 		cakeSub.setLocalTranslation(new Vector3f(-11, 0, -7.5f));
 		rootNode.attachChild(cakeSub);
 
-		blisterSub = new BlisterSubsystem();
+		blisterSub = new BlisterSubsystem(display);
 		blisterSub.setLocalTranslation(new Vector3f(-11, 0, 8.5f));
 		rootNode.attachChild(blisterSub);
 
@@ -237,6 +247,80 @@ public class Factory extends SimpleGame implements Observer {
 		MaterialState ms = display.getRenderer().createMaterialState();
 		ms.setColorMaterial(ColorMaterial.AmbientAndDiffuse);
 		rootNode.setRenderState(ms);
+		
+		
+		List<Light> luces = lightState.getLightList();
+		Iterator<Light> itligh = luces.iterator();
+		while(itligh.hasNext()) itligh.next().setEnabled(false);		
+		
+		// Lights
+		SpotLight lightSub1;
+		// Setting Lights
+		lightSub1 = new SpotLight();
+		lightSub1.setDiffuse(ColorRGBA.white);
+		lightSub1.setAmbient(ColorRGBA.gray);
+		lightSub1.setAngle(10);
+		lightSub1.setLocation(new Vector3f(-11, 40, -1.5f));
+		lightSub1.setDirection(new Vector3f(0,-1,0));
+		// lightSub1.setShadowCaster(true);
+		//lightSub1.setDirection(new Vector3f(-6,0,-3));
+		lightSub1.setEnabled(true);
+		lightState.attach(lightSub1);
+		
+		// Lights
+		SpotLight lightSub2;
+		// Setting Lights
+		lightSub2 = new SpotLight();
+		lightSub2.setDiffuse(ColorRGBA.white);
+		lightSub2.setAmbient(ColorRGBA.gray);
+		lightSub2.setAngle(20);
+		lightSub2.setLocation(new Vector3f(-11, 40, 22.5f));
+		lightSub2.setDirection(new Vector3f(0,-1,0));		
+		//lightSub1.setDirection(new Vector3f(-6,0,-3));
+		lightSub2.setEnabled(true);
+		lightState.attach(lightSub2);
+		
+		// Lights
+		SpotLight lightSub3;
+		// Setting Lights
+		lightSub3 = new SpotLight();
+		lightSub3.setDiffuse(ColorRGBA.white);
+		lightSub3.setAmbient(ColorRGBA.gray);
+		lightSub3.setAngle(20);
+		lightSub3.setLocation(new Vector3f(16, 40, 14));
+		lightSub3.setDirection(new Vector3f(0,-1,0));		
+		//lightSub1.setDirection(new Vector3f(-6,0,-3));
+		lightSub3.setEnabled(true);
+		lightState.attach(lightSub3);
+		
+		// Lights in boxes
+		SpotLight redLight = new SpotLight();
+		redLight.setDiffuse(ColorRGBA.red);
+		redLight.setAmbient(ColorRGBA.white);
+		
+		redLight.setAngle(20);
+		redLight.setLocation(new Vector3f(37f, 20f, 5.5f));
+		redLight.setDirection(new Vector3f(0,-1,0));
+		redLight.setEnabled(true);
+		lightState.attach(redLight);
+
+		SpotLight greenLight = new SpotLight();
+		greenLight.setDiffuse(ColorRGBA.green);
+		greenLight.setAmbient(ColorRGBA.white);		
+		greenLight.setAngle(20);
+		greenLight.setLocation(new Vector3f(37f, 20f, -5.5f));
+		greenLight.setDirection(new Vector3f(0,-1,0));
+		greenLight.setEnabled(true);
+		lightState.attach(greenLight);
+
+		PointLight mainLight = new PointLight();
+		mainLight.setDiffuse(ColorRGBA.gray);
+		mainLight.setAmbient(ColorRGBA.gray);
+		mainLight.setLocation(new Vector3f(0,100,0));
+		mainLight.setEnabled(true);
+		lightState.attach(mainLight);
+		
+		rootNode.updateRenderState();
 
 		loadCamera(CAMERA_WHOLE);
 	}
