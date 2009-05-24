@@ -31,8 +31,9 @@ import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
- *
- * @author cakechuff team
+ * Implementation of the control part of the graphical user interface
+ * @version 1.0, 29/05/09
+ * @author CaKeChuff team
  */
 public class ControlInterface extends javax.swing.JFrame implements ActionListener, ChangeListener {
 
@@ -52,7 +53,9 @@ public class ControlInterface extends javax.swing.JFrame implements ActionListen
         
         private JFileChooser fc;
         
-    /** Creates new form ControlInterface */
+    /**
+     * Constructor 
+     * Creates new form ControlInterface */
     public ControlInterface() {
 
         _scada = new SCADA(this);
@@ -81,7 +84,8 @@ public class ControlInterface extends javax.swing.JFrame implements ActionListen
         this.startTimer();
       
     }
-    
+    /** Auxiliary method. Starts a new timer
+     */
     	private void startTimer() {
 		if (time == null) {
 			time = new Timer();
