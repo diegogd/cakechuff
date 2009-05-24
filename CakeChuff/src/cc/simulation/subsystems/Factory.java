@@ -36,10 +36,10 @@ import com.jme.util.TextureManager;
  */
 public class Factory extends SimpleGame implements Observer {
 
-	final int CAMERA_WHOLE = 0;
-	final int CAMERA_CAKESUB = 1;
-	final int CAMERA_BLISTERSUB = 2;
-	final int CAMERA_QASUB = 3;
+	public final int CAMERA_WHOLE = 0;
+	public final int CAMERA_CAKESUB = 1;
+	public final int CAMERA_BLISTERSUB = 2;
+	public final int CAMERA_QASUB = 3;
 
 	// Conveyer Belts
 	public CakeSubsystem cakeSub;
@@ -279,6 +279,10 @@ public class Factory extends SimpleGame implements Observer {
 					Vector3f.UNIT_Y);
 			break;
 		case CAMERA_QASUB: // Quality Subsystem
+			display.getRenderer().getCamera().setLocation(
+					new Vector3f(31.92f, 17.168f, 30.73f));
+			display.getRenderer().getCamera().lookAt(new Vector3f(25, 3, -8),
+					Vector3f.UNIT_Y);
 			break;
 		}
 
