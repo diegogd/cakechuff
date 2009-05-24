@@ -24,8 +24,9 @@ import cc.simulation.elements.LightSensor;
 import cc.simulation.elements.TouchSensor;
 
 /**
- * 
- * @author diego
+ * Implementation of the factory of the graphical user interface
+ * @version 1.0, 29/05/09
+ * @author CaKeChuff team
  */
 public class FactoryInterface extends javax.swing.JFrame implements Observer {
 
@@ -36,7 +37,9 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer {
 	private QualitySubsystemState _qualitySubState = null;
 	private Robot1State _robot1State = null;
 
-	/** Creates new form FactoryInterface */
+	/**
+	 * Constructor
+	 *  Creates new form FactoryInterface */
 	public FactoryInterface() {
 		// ^ Just notify no observer
 		_systemState = SystemState.getInstance();
@@ -69,7 +72,11 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * Auxiliary method. Changes the color of the label
+	 * @param label Label whose color want to be changed
+	 * @param detected Choice between two colors
+	 */
 	private void changeLabelColor(JLabel label, boolean detected) {
 		if (detected) {
 			label.setText("Detection");
