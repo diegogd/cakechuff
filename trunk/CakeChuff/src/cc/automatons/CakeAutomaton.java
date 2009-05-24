@@ -41,7 +41,8 @@ public class CakeAutomaton extends Automaton {
 	private float speed;
 	private int ncakes;
 	private boolean waitingcake;
-	private int blistercakes;
+	//private int blistercakes;
+	private boolean fullblister;
 	private boolean cake_thrown;
 	//simulation
 	private CakeSubsystemState cakesystem;
@@ -113,7 +114,8 @@ public class CakeAutomaton extends Automaton {
 		this.vt2 = vt2;
 		state=START;
 		//sys.setDropCake();
-		blistercakes=0;
+		//blistercakes=0;
+		fullblister=false;
 		//ncakes--;
 		if(!waitingcake)
 			run_init();
@@ -133,15 +135,16 @@ public class CakeAutomaton extends Automaton {
 		 * &
 		 * if the automaton is going to stop, the number of cakes dropped for this blister mist be 4
 		 * to fill it.
-		 */		
-		if(!cake_thrown && ncakes>0 && (!stop||blistercakes<4)){
+		 */
+		//System.out.println("[CakeAutomaton]: Sending "+ blistercakes+" to the blister");
+		//if(!cake_thrown && ncakes>0 && (!stop||blistercakes<4)){
+		if(!cake_thrown && ncakes>0 && (!stop||!fullblister)){
 			sys.setDropCake();
 			cake_thrown=true;
 			ncakes--;
-			blistercakes++;
 		}
 		//start conveyor
-		if(!stop || blistercakes<4 )cakesystem.setConveyor_velocity(speed);
+		if(!stop || !fullblister )cakesystem.setConveyor_velocity(speed);
 		
 	}
 	
@@ -302,7 +305,6 @@ public class CakeAutomaton extends Automaton {
 		else if (content[0].equalsIgnoreCase("RESET")) 
 			run_failure(content[1]);
 		else if (content[0].equalsIgnoreCase("RESTART")) {
-			//String pars[] = content[1].split("\\$");
 			run_failure(content[1]);
 		} else if (content[0].equalsIgnoreCase("INIT")) {
 			String[] pars = content[1].split("\\#");
@@ -312,14 +314,18 @@ public class CakeAutomaton extends Automaton {
 							.parseInt(pars[4]));
 
 		} else if (content[0].equalsIgnoreCase("R1")){
-			waitingcake=false;
-			if (content[1].equalsIgnoreCase("cake")){
-				System.out.println("[CakeAutomaton]: Cake taken.");
-				run_init();
-			}
-			else if (content[1].equalsIgnoreCase("blister"))
-				blistercakes=0;
 			
+			if (content[1].equalsIgnoreCase("cake")){
+				waitingcake=false;
+				fullblister=false;
+				System.out.println("[CakeAutomaton]: Cake taken.");
+				//run_init();
+			}
+			else if (content[1].equalsIgnoreCase("fullblister")){
+				fullblister=true;
+				waitingcake=false;
+			}
+				run_init();
 		}
 	}
 
