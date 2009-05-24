@@ -4,7 +4,11 @@ import java.util.Observable;
 import java.util.Vector;
 
 import cc.simulation.elements.Sensor;
-
+/**
+ * Implementation and definition of the state of the cake subsystem
+ * @version 1.0, 29/05/09
+ * @author CaKeChuff team
+ */
 public class CakeSubsystemState extends Observable {
 	
 	private static CakeSubsystemState _instance = null;
