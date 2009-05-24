@@ -129,7 +129,7 @@ public class BlisterSubsystem extends Node implements Observer {
 	}
 	/**
 	 * Updates the blister subsystem with a new cutter and engraver speed
-	 * @element arg0 Observable object
+	 * @param arg0 Observable object
 	 * @param arg1 Has to be null for the modifications to take place
 	 */
 	@Override

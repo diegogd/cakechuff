@@ -23,7 +23,11 @@ import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.scene.shape.Box;
-
+/**
+ * Implementation of the quality simulation subsystem
+ * @version 1.0, 29/05/09
+ * @author CaKeChuff team
+ */
 public class QualitySubsystem extends Node implements Observer {
 	
 	private static final long serialVersionUID = 483908354130145983L;
@@ -65,7 +69,10 @@ public class QualitySubsystem extends Node implements Observer {
 	Wrapper wrapper;
 
 	private int phase;
-
+	/**
+	 * Constructor
+	 * Initializes the attributes of the quality subsystem and instantiates the elements that compose it
+	 */
 	public QualitySubsystem() {
 		_state = QualitySubsystemState.getInstance();
 		_state.addObserver(this);
@@ -73,7 +80,9 @@ public class QualitySubsystem extends Node implements Observer {
 		phase = 0;
 		takenBlisters = new Vector<Spatial>();
 	}
-
+	/**
+	 * Initializes the elements of the quality subsystem such as its sensors, wrapper, robot and the two boxes as well as its attributes.
+	 */
 	private void initElements() {
 		conv = new ConveyorQuality();
 		conv.setVelocity(0);
@@ -142,7 +151,10 @@ public class QualitySubsystem extends Node implements Observer {
 		// badBox.setLocalScale(1.5f);
 		this.attachChild(badBox);
 	}
-
+	/**
+	 * Updates the state of the elements that compose the quality subsystem (sensors, robot...)
+	 * @param timePerFrame Parameter used in the modification of the position of elements
+	 */
 	public void update(float timePerFrame) {
 		boolean sen1 = false, sen2 = false, sen3 = false;
 
@@ -195,7 +207,11 @@ public class QualitySubsystem extends Node implements Observer {
 
 		_state.checkSensorsChanges();
 	}
-
+	/**
+	 * Updates the state of the wrapper and robot
+	 * @param arg0 Observable object
+	 * @param arg1 Has to be null for the modifications to take place
+	 */
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		if (arg1 == null) {
@@ -225,7 +241,11 @@ public class QualitySubsystem extends Node implements Observer {
 			}
 		}
 	}
-
+	/**
+	 * Quality control simulation for the generated blisters with cakes.
+	 * @param elements Vector composed of blisters
+	 * @param timePerFrame Auxiliary parameter
+	 */
 	private void qualityCheck(Vector<Spatial> elements, float timePerFrame) {
 		boolean sen1 = false, sen2 = false, sen3 = false, sen4 = false;
 		if (this._state.getQualityCheck()) {
@@ -290,7 +310,11 @@ public class QualitySubsystem extends Node implements Observer {
 			_state.resetQualityCheck();
 		}
 	}
-
+	/**
+	 * Updates the state of the robot (initial state, moves blister to the good box or the bad box, picks up a packet...)
+	 * @param element List of spatial elements
+	 * @param time Time it takes for the change of state of the robot
+	 */
 	private void robotUpdate(List<Spatial> element, float time) {
 		if (_state.getRobotIfMoving()) {
 			switch (_state.getRobotGoToState()) {
@@ -354,13 +378,19 @@ public class QualitySubsystem extends Node implements Observer {
 			// _state.setRobotMoving(false); // It has finished moving
 		}
 	}
-
+	/**
+	 * Moves the robot a certain angle in a specific time
+	 * @param angle Angle that the robot moves
+	 * @param time Time it takes the robot to move
+	 */
 	private boolean moveToPlace(float angle, float time) {
 		if (robot2.moveTo(angle, time))
 			return true;
 		return false;
 	}
-
+	/**
+	 * Empties the boxes if the number of packets is bigger than 4
+	 */
 	private void emptyBoxUpdate(){
 		if(goodBox.numOfPackets()>4){
 			
@@ -378,6 +408,13 @@ public class QualitySubsystem extends Node implements Observer {
 //			this.attachChild(badBox);
 		}
 	}
+	
+	/**
+	 * Makes the robot pick up a packet
+	 * @param time Time it takes the robot to do the movement
+	 * @param elements List of packets to be taken by the robot
+	 * @return True -> correct phase, no problems picking the packets; False -> Wrong/incorrect phase
+	 */
 	
 	private boolean pickUpPacket(float time, List<Spatial> elements) {
 
@@ -417,7 +454,13 @@ public class QualitySubsystem extends Node implements Observer {
 		}
 		return false;
 	}
-
+	/**
+	 * Makes the robot drop a packet
+	 * @param time Time it takes the robot to do the movement
+	 * @param element Packet to be dropped by the robot
+	 * @param goodBox True if it has to be dropped in the box of correct packets, false if it has to be dropped in the bad packets box
+	 * @return True -> correct phase, no problems picking the packets; False -> Wrong/incorrect phase
+	 */
 	private boolean dropPacket(float time, Spatial element, boolean goodBox) {
 		switch (this.phase) {
 		case 0:
