@@ -9,15 +9,18 @@ package cc.simulation.state;
 import javax.swing.ImageIcon;
 
 /**
- *
- * @author  CakeChuff Team 
+ * Implementation of the pdf document creation form of the graphical user interface
+ * @version 1.0, 29/05/09
+ * @author CaKeChuff team
  */
 public class PDFCreated extends javax.swing.JFrame {
 
     
     private ControlInterface _ui;
         
-    /** Creates new form PDFCreated */
+    /**
+     * Constructor
+     *  Creates new form PDFCreated */
     public PDFCreated(ControlInterface ui) {
         _ui=ui;
         
