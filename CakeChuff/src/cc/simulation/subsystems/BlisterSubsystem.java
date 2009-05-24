@@ -13,6 +13,7 @@ import cc.simulation.elements.PlasticSupplier;
 import cc.simulation.elements.TouchSensor;
 import cc.simulation.state.BlisterSubsystemState;
 
+import com.jme.system.DisplaySystem;
 import com.jme.math.Vector3f;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
@@ -39,6 +40,7 @@ public class BlisterSubsystem extends Node implements Observer {
 
 	// State
 	BlisterSubsystemState _state;
+	DisplaySystem display;
 
 	// Sensors
 	LightSensor sensor1;
@@ -46,11 +48,13 @@ public class BlisterSubsystem extends Node implements Observer {
 	
 	// Generated Blisters
 	public List<Spatial> blisters;
+
 	/**
 	 * Constructor
 	 * Initializes the attributes of the blister subsystem and instantiates  its state
 	 */
-	public BlisterSubsystem() {
+	public BlisterSubsystem(DisplaySystem mainDisplay) {
+		this.display = mainDisplay;
 		_state = BlisterSubsystemState.getInstance();
 		_state.addObserver(this);
 		initElements();
@@ -70,7 +74,7 @@ public class BlisterSubsystem extends Node implements Observer {
 		engraver = new Engraver();
 		engraver.setLocalTranslation(-6, 7f, 0f);
 		this.attachChild(engraver);
-		cutter = new Cutter();
+		cutter = new Cutter(display);
 		cutter.setLocalTranslation(0, 8.6f, 0f);
 		this.attachChild(cutter);
 

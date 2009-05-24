@@ -26,6 +26,7 @@ public class ModelLoader {
 	{
 		FormatConverter converter = new ObjToJme();
 		converter.setProperty("mtllib", pathmodel);
+		converter.setProperty("texdir", ModelLoader.class.getResource("/model/texture"));
 		
 		ByteArrayOutputStream BO = new ByteArrayOutputStream();
 		try{

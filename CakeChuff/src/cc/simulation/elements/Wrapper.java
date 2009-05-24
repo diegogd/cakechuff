@@ -1,6 +1,7 @@
 package cc.simulation.elements;
 
 import cc.simulation.utils.ModelLoader;
+import cc.simulation.utils.Rotations;
 
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
@@ -31,6 +32,7 @@ public class Wrapper extends Node {
 		loadShape();
 		this.attachChild(pivot);
 		this.setName("Wrapper");
+		this.setLocalRotation(Rotations.rotateY(1));
 	}
 	/**
 	 * Returns the speed of the wrapper
@@ -51,7 +53,7 @@ public class Wrapper extends Node {
 	 */
 	public void loadShape() {
 		pivot.attachChild(ModelLoader.loadOBJ(getClass().getClassLoader()
-				.getResource("model/engraver.obj"), true));
+				.getResource("model/engraver2.obj"), true));
 	}
 	/**
 	 * Updates the state of the wrapper when an element wants to be wrapped
