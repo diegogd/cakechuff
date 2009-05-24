@@ -16,7 +16,11 @@ import cc.simulation.state.BlisterSubsystemState;
 import com.jme.math.Vector3f;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
-
+/**
+ * Implementation of the blister simulation subsystem
+ * @version 1.0, 29/05/09
+ * @author CaKeChuff team
+ */
 public class BlisterSubsystem extends Node implements Observer {
 
 	private static final long serialVersionUID = 1459747352145984978L;
@@ -42,14 +46,20 @@ public class BlisterSubsystem extends Node implements Observer {
 	
 	// Generated Blisters
 	public List<Spatial> blisters;
-
+	/**
+	 * Constructor
+	 * Initializes the attributes of the blister subsystem and instantiates  its state
+	 */
 	public BlisterSubsystem() {
 		_state = BlisterSubsystemState.getInstance();
 		_state.addObserver(this);
 		initElements();
 		blisters = new Vector<Spatial>();
 	}
-
+	/**
+	 * Initializes the attributes of the blister subsystem such as the velocity and
+	 * instantiates its elements (conveyor, supplier, engraver and cutter)
+	 */
 	private void initElements() {
 		conv = new ConveyorBlister();
 		conv.setVelocity(0);
@@ -75,7 +85,10 @@ public class BlisterSubsystem extends Node implements Observer {
 		this.attachChild(sensor2);
 		_state.addSensor(sensor2);
 	}
-
+	/**
+	 * Updates the state of the sensors of the blister subsystem 
+	 * @param timePerFrame Parameter used in the modification of the position of the blister
+	 */
 	public void update(float timePerFrame) {
 		
 		supplier.grow(timePerFrame * conv.getVelocity());
@@ -114,7 +127,11 @@ public class BlisterSubsystem extends Node implements Observer {
 
 		_state.checkSensorsChanges();
 	}
-
+	/**
+	 * Updates the blister subsystem with a new cutter and engraver speed
+	 * @element arg0 Observable object
+	 * @param arg1 Has to be null for the modifications to take place
+	 */
 	@Override
 	public void update(Observable arg0, Object arg1) {
 
