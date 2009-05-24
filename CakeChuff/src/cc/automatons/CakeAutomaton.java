@@ -25,7 +25,7 @@ import cc.simulation.elements.Sensor;
  */
 public class CakeAutomaton extends Automaton {
 	
-	Thread changingstate;
+	private Thread changingstate;
 	//states
 	private static final int START=0;
 	private static final int INIT=1;
@@ -41,7 +41,8 @@ public class CakeAutomaton extends Automaton {
 	private float speed;
 	private int ncakes;
 	private boolean waitingcake;
-	int blistercakes;
+	private int blistercakes;
+	private boolean cake_thrown;
 	//simulation
 	private CakeSubsystemState cakesystem;
 	private SystemState sys;
@@ -126,20 +127,22 @@ public class CakeAutomaton extends Automaton {
 	 * Set the conveyor belt speed
 	 */
 	private void run_init(){
+		state= INIT;
+		send("A1:init");
 		/*There are cakes left
 		 * &
 		 * if the automaton is going to stop, the number of cakes dropped for this blister mist be 4
 		 * to fill it.
 		 */		
-		if(ncakes>0 && (!stop||blistercakes<4)){
+		if(!cake_thrown && ncakes>0 && (!stop||blistercakes<4)){
 			sys.setDropCake();
+			cake_thrown=true;
 			ncakes--;
 			blistercakes++;
 		}
 		//start conveyor
-		cakesystem.setConveyor_velocity(speed);
-		state= INIT;
-		send("A1:init");
+		if(!stop || blistercakes<4 )cakesystem.setConveyor_velocity(speed);
+		
 	}
 	
 	/**
@@ -154,6 +157,7 @@ public class CakeAutomaton extends Automaton {
 	private void run_choc(){
 		state=CHOC;
 		send("A1:choc");
+		cake_thrown=false;
 		//stop conveyor
 		cakesystem.setConveyor_velocity(0);
 		//open chocolate valve
@@ -231,7 +235,7 @@ public class CakeAutomaton extends Automaton {
 	}
 	
 	/**
-	 * Recover from a failure
+	 * Recover from a failure/stop
 	 */
 	private void run_failure(String data){
 		stop=false;
@@ -271,7 +275,7 @@ public class CakeAutomaton extends Automaton {
 	}
 	
 	/**
-	 * Restart after a stop
+	 * Stop the automaton immediately
 	 */
 	private void run_stop(){
 		stop=true;
@@ -279,7 +283,7 @@ public class CakeAutomaton extends Automaton {
 		cakesystem.setValve1_open_secs(0);
 		cakesystem.setValve2_open_secs(0);
 		//state=START;
-		changingstate.stop();
+		if(changingstate!=null) changingstate.stop();
 	}
 	
 	/**
@@ -288,13 +292,6 @@ public class CakeAutomaton extends Automaton {
 	 */
 	@Override
 	public synchronized void newMsg(String msg) {
-		/*while (treatingupdate){
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-
-			}
-		}*/
 		System.out.println("[CakeAutomaton]: Received msg: "+msg);
 		String[] content = msg.split(":");
 		// Emergencies work for any state
@@ -305,8 +302,8 @@ public class CakeAutomaton extends Automaton {
 		else if (content[0].equalsIgnoreCase("RESET")) 
 			run_failure(content[1]);
 		else if (content[0].equalsIgnoreCase("RESTART")) {
-			String pars[] = content[1].split("\\$");
-			run_failure(pars[1]);
+			//String pars[] = content[1].split("\\$");
+			run_failure(content[1]);
 		} else if (content[0].equalsIgnoreCase("INIT")) {
 			String[] pars = content[1].split("\\#");
 			run_start(Integer.parseInt(pars[0]), Integer
@@ -324,35 +321,6 @@ public class CakeAutomaton extends Automaton {
 				blistercakes=0;
 			
 		}
-			/*switch (state) {
-			case START:
-				if (content[0].equalsIgnoreCase("INIT")) {
-					String[] pars = content[1].split("\\#");
-					run_start(Integer.parseInt(pars[0]), Integer
-							.parseInt(pars[1]), Integer.parseInt(pars[2]),
-							Integer.parseInt(pars[3]), Integer
-									.parseInt(pars[4]));
-				}
-				break;
-			case INIT:
-				break;
-			case CHOC:
-				break;
-			case CHOC_CAR:
-				break;
-			case CAR:
-				break;
-			case CAR_WAIT:
-				break;
-			case WAIT:
-				if (content[0].equalsIgnoreCase("R1")){
-						System.out.println("[CakeAutomaton]: Cake taken.");
-					run_init();
-				}
-				break;
-			case FAILURE:
-				break;
-			}*/
 	}
 
 	/**
@@ -438,7 +406,7 @@ public class CakeAutomaton extends Automaton {
 	 */
 	@SuppressWarnings("deprecation")
 	public void destroyAutomaton(){
-		changingstate.stop();
+		if(changingstate!=null) changingstate.stop();
 		mbox_thread.stop();
 		mbox.end();
 		try {

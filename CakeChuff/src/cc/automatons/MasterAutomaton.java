@@ -1,8 +1,5 @@
-//TODO: recuperación de caídas +
-//TODO: Localizar estados y enviárselos al SCADA para permitir la recuperación del master
-//TODO: Errores simulados -> ajustar %, nº de tartas en el blister??
+//TODO: recuperación de caídas(Robots) +
 //TODO: Ajustar velocidades al entorno de ejecución -
-//TODO: Recuperación desde parada de emergencia??
 
 package cc.automatons;
 
@@ -213,10 +210,12 @@ public class MasterAutomaton extends Automaton {
 		this.movecaket = 3/movecaket;
 		this.moveblistert = 13/moveblistert;
 		stop=false;
+		f_chance=f_rate;
 		robot.setRobot_velocity(moveblistert);
 		//A normal stop ends with the robot empty
-		if(robot.getCurrentState()!=robot.getGoToState()) robot.setMoving(true);
-		if(state.equalsIgnoreCase("init")|| state.equalsIgnoreCase("empty")){
+		//if(robot.getCurrentState()!=robot.getGoToState()) 
+		robot.setMoving(true);
+		/*if(state.equalsIgnoreCase("init")|| state.equalsIgnoreCase("empty")){
 			this.state=EMPTY;
 			//robot.setCurrentState(EMPTY);
 		} else if (state.equalsIgnoreCase("blister")){
@@ -234,9 +233,9 @@ public class MasterAutomaton extends Automaton {
 		}else if (state.equalsIgnoreCase("full")){
 			this.state=FULL;
 			//robot.setCurrentState(FULL);
-		}
+		}*/
 		
-		f_chance=f_rate;	
+			
 	}
 	
 	/**
@@ -314,8 +313,8 @@ public class MasterAutomaton extends Automaton {
 				if (content[1].equalsIgnoreCase("KO_WAIT")
 						|| content[1].equalsIgnoreCase("OK_WAIT"))
 					qc_free = true;
-				else if ((content[1].equalsIgnoreCase("QC")))
-					qc_free = false;
+				//else if ((content[1].equalsIgnoreCase("QC")))
+				//	qc_free = false;
 				// state change
 				mboxScada.send(msg);
 				if (qc_free && packet_waiting) {
@@ -358,13 +357,13 @@ public class MasterAutomaton extends Automaton {
 		}else if (content[0].equalsIgnoreCase("RESET")){
 			stop = false;
 			String[] pars = content[1].split("\\$");
+			
+			String[] parsrob = pars[3].split("\\#");
+			run_robot_start(Integer.parseInt(parsrob[1]), Integer
+					.parseInt(parsrob[2]), Integer.parseInt(pars[2].split("\\#")[4]), parsrob[0]);
 			mboxCake.send("RESET:"+ pars[0]);
 			mboxBlister.send("RESET:"+pars[1]);
 			mboxQC.send("RESET:"+ pars[2]);
-			String[] parsrob = pars[3].split("\\#");
-			run_robot_start(Integer.parseInt(parsrob[0]), Integer
-					.parseInt(parsrob[1]), Integer.parseInt(pars[2].split("\\#")[2]), parsrob[2]);
-			//Set to false for the next time
 		}
 	}
 
@@ -388,23 +387,7 @@ public class MasterAutomaton extends Automaton {
 				mboxCake.send("R1:cake");
 				break;
 			case (DROPINTABLE):
-				if (state == EMPTY) {
-					//TODO: Borrar ?
-					state = BLISTER;
-					mboxScada.send("R1:blister");
-					System.out.println("***************************************");
-					System.out.println("***		This shouldn't happen		***");
-					System.out.println("***************************************");
-					if (cake_waiting) {
-						System.out
-								.println("[Master to Robot1]: EMPTY->BLISTER");
-						robot.setRobot_velocity(movecaket);
-						robot.setGoToState(PICKUPCAKE);
-						state = CAKE1;
-						mboxScada.send("R1:cake1");
-					} else if (mistake)
-						state = CAKE1;
-				} else if (state == BLISTER) {
+				if (state == BLISTER) {
 					// Error chance
 					double error = Math.random();
 					System.out.println("[Master]: Error chance : " + error + "<" +f_chance+"??");
@@ -517,6 +500,7 @@ public class MasterAutomaton extends Automaton {
 				mboxQC.send("R1:empty");
 				state = EMPTY;
 				mboxScada.send("R1:empty");
+				qc_free=false;
 				System.out.println("\n\n------------[Robot1]:Pack Done-----------------\n\n");
 				if (blister_waiting && !stop) {
 					System.out.println("[Master to Robot1]: PICK AWAITING BLISTER");
@@ -577,7 +561,6 @@ public class MasterAutomaton extends Automaton {
 			}
 		} catch (Exception e) {
 			System.out.println(e);
-			;
 		}
 	}
 }

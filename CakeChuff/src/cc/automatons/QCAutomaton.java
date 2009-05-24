@@ -1,3 +1,5 @@
+//TODO: Parar el robot en la parada de emergencia (el comportamiento es distinto al del robot1)
+
 package cc.automatons;
 
 import java.io.IOException;
@@ -21,6 +23,7 @@ import cc.simulation.state.QualitySubsystemState;
 public class QCAutomaton extends Automaton {
 	
 
+	private Thread changingstate;
 	//states
 	private static final int START=0;
 	private static final int INIT=1;
@@ -38,9 +41,9 @@ public class QCAutomaton extends Automaton {
 	private float speed;
 	private int cakes_blister;
 	//simulation
-	QualitySubsystemState qcsystem;
-	boolean passed;
-	
+	private QualitySubsystemState qcsystem;
+	private boolean passed;
+
 	/**
 	 * Constructor
 	 * Initialize the communication channel (mailbox) with the MasterAutomaton 
@@ -230,31 +233,37 @@ public class QCAutomaton extends Automaton {
 		String pars[]=data.split("#");
 		stop=false;
 		this.belt_lg = Integer.parseInt(pars[3]);
+		//qcsystem.addObserver(this);
 		this.speed = Float.parseFloat(pars[2])/(belt_lg*3);
 		this.t_stamp=Integer.parseInt(pars[5]);
 		this.t_rob=Integer.parseInt(pars[6]);
-		this.f_chance=Integer.parseInt(pars[4]);
+		//this.f_chance=Integer.parseInt(pars[4]);
+		//qcsystem.setRobotMoving(true);
 		//Recover state
 		if(pars[0].equalsIgnoreCase("INIT")){
 			run_init();
 		}else if(pars[0].equalsIgnoreCase("QC")){
 			state=QC;
-			(new Thread(this)).start();
+			changingstate=new Thread(this);
+			changingstate.start();
 		}else if(pars[0].equalsIgnoreCase("QC_STAMP")){
 			run_qc_stamp();
 		}else if(pars[0].equalsIgnoreCase("STAMP")){
 			state=STAMP;
-			(new Thread(this)).start();
+			changingstate=new Thread(this);
+			changingstate.start();
 		}else if(pars[0].equalsIgnoreCase("STAMP_WAIT")){
 			run_stamp_wait();
 		}else if(pars[0].equalsIgnoreCase("KO_MOV")){
 			run_ko_mov();
 		}else if(pars[0].equalsIgnoreCase("OK_WAIT")){
 			state=OK_WAIT;
-			(new Thread(this)).start();
+			changingstate=new Thread(this);
+			changingstate.start();
 		}else if(pars[0].equalsIgnoreCase("KO_WAIT")){
 			state=KO_WAIT;
-			(new Thread(this)).start();
+			changingstate=new Thread(this);
+			changingstate.start();
 		}
 	}
 	
@@ -263,9 +272,10 @@ public class QCAutomaton extends Automaton {
 	 */
 	private void run_stop(){
 		stop=true;
+		if(changingstate!=null) changingstate.stop();
 		qcsystem.setConveyor_velocity(0);
-		qcsystem.deleteObserver(this);
-		qcsystem.setRobotMoving(false);
+		//qcsystem.deleteObserver(this);
+		//qcsystem.setRobotMoving(false);
 		//state=START;
 	}
 	
@@ -282,8 +292,8 @@ public class QCAutomaton extends Automaton {
 		else if (content[0].equalsIgnoreCase("RESET")) 
 			run_failure(content[1]);
 		else if (content[0].equalsIgnoreCase("RESTART")) {
-			String pars[] = content[1].split("\\$");
-			run_failure(pars[1]);
+			//String pars[] = content[1].split("\\$");
+			run_failure(content[1]);
 		}else
 		switch(state){
 		case START: if(content[0].equalsIgnoreCase("init")){
@@ -343,13 +353,15 @@ public class QCAutomaton extends Automaton {
 
 				if (((Sensor) arg).isActived()) {
 					state = QC;
-					(new Thread(this)).start();
+					changingstate=new Thread(this);
+					changingstate.start();
 				}
 			} else if (((LightSensor) arg).getName().equals("QualitySensor2")) {
 				if (state == QC_STAMP) {
 					if (((Sensor) arg).isActived()) {
 						state = STAMP;
-						(new Thread(this)).start();
+						changingstate=new Thread(this);
+						changingstate.start();
 					}
 				}
 			}
@@ -358,10 +370,12 @@ public class QCAutomaton extends Automaton {
 			if (((Sensor) arg).isActived())
 				if (state == STAMP_WAIT) {
 					state = OK_WAIT;
-					(new Thread(this)).start();
+					changingstate=new Thread(this);
+					changingstate.start();
 				} else {
 					state = KO_WAIT;
-					(new Thread(this)).start();
+					changingstate=new Thread(this);
+					changingstate.start();
 
 				}
 		} else if (o instanceof QualitySubsystemState && ((QualitySubsystemState) o).isChanged_CS()) {
@@ -392,10 +406,20 @@ public class QCAutomaton extends Automaton {
 	 */
 	@SuppressWarnings("deprecation")
 	public void destroyAutomaton(){
+		if(changingstate!=null) changingstate.stop();
+		mbox_thread.stop();
+		mbox.end();
+		try {
+			sout.close();
+			dout.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		qcsystem.deleteObserver(this);
 		qcsystem.setConveyor_velocity(0);
 		qcsystem.setRobotMoving(false);
 		qcsystem.setQualityCheck(false);
-		mbox_thread.stop();
 	}
 	
 	/**
