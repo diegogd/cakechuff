@@ -1,3 +1,4 @@
+//TODO: REcuperacion: REconocer si el sensor de final sigue activo para arrancar el movimiento
 package cc.automatons;
 
 import java.io.DataOutputStream;
@@ -29,7 +30,7 @@ public class BlisterAutomaton extends Automaton {
 	private static final int CUTTING = 3;
 	private static final int BLISTER_READY = 4;
 	private static final int FAILURE = 5;
-
+	private Thread changingstate;
 	// param
 	private int belt_lg;
 	private float speed;
@@ -38,6 +39,7 @@ public class BlisterAutomaton extends Automaton {
 	private BlisterSubsystemState blistersystem;
 	private SystemState sys;
 	private Stamper stamper;
+	private Thread stamperthread;
 
 	/**
 	 * Constructor
@@ -71,6 +73,11 @@ public class BlisterAutomaton extends Automaton {
 			blistersystem = BlisterSubsystemState.getInstance();
 			blistersystem.addObserver(this);
 			sys = SystemState.getInstance();
+			
+			//Prepare the stamper
+			stamper = new Stamper(blistersystem, sys, this.speed);
+			stamperthread= new Thread(stamper);
+			stamperthread.start();
 			// tell the master the automaton is on
 			send("A2:ON");
 		} catch (UnknownHostException uhe) {
@@ -90,16 +97,14 @@ public class BlisterAutomaton extends Automaton {
 	 * @param speed	Conveyor belt speed
 	 * @param belt_lg Conveyor belt length
 	 */
-	public void run_start(int speed, int belt_lg) {
-		this.speed = (float) speed / (belt_lg * 7);
+	public void run_start(float speed, int belt_lg) {
+		this.speed = speed / (belt_lg * 7);
 		this.belt_lg = belt_lg;
-		stamper = new Stamper(blistersystem, sys, this.speed);
-		(new Thread(stamper)).start();
+		stamper.setFreq(1000 *4/ this.speed);
 		state = START;
 		// send new state
 		// send("A2:START");
 		run_init();
-
 	}
 
 	/**
@@ -164,6 +169,7 @@ public class BlisterAutomaton extends Automaton {
 		String pars[] = data.split("#");
 		this.belt_lg = Integer.parseInt(pars[2]);
 		this.speed = Float.parseFloat(pars[1]) / (belt_lg * 7);
+		stamper.setFreq(1000*4/speed);
 		if (pars[0].equalsIgnoreCase("INIT")) {
 			run_init();
 		} else if (pars[0].equalsIgnoreCase("PRESS")) {
@@ -184,6 +190,7 @@ public class BlisterAutomaton extends Automaton {
 	 * Restart after a stop
 	 */
 	public void run_stop() {
+		if(changingstate!=null) changingstate.stop();
 		blistersystem.setConveyor_velocity(0);
 		stamper.stop();
 		//state = START;
@@ -211,8 +218,8 @@ public class BlisterAutomaton extends Automaton {
 		else if (content[0].equalsIgnoreCase("RESET")) 
 			run_failure(content[1]);
 		else if (content[0].equalsIgnoreCase("RESTART")) {
-			String pars[] = content[1].split("\\$");
-			run_failure(pars[1]);
+			//String pars[] = content[1].split("\\$");
+			run_failure(content[1]);
 		} else
 			switch (state) {
 			case START:
@@ -267,7 +274,8 @@ public class BlisterAutomaton extends Automaton {
 		if (arg instanceof LightSensor) {
 			if (((Sensor) arg).isActived()) {
 				state = CUTTING;
-				(new Thread(this)).start();
+				changingstate=new Thread(this);
+				changingstate.start();
 			} else
 				treatingupdate = false;
 			// else run_choc_car();
@@ -275,7 +283,8 @@ public class BlisterAutomaton extends Automaton {
 		} else if (arg instanceof TouchSensor) {
 			if (((Sensor) arg).isActived() && state != BLISTER_READY) {
 				state = BLISTER_READY;
-				(new Thread(this)).start();
+				changingstate=new Thread(this);
+				changingstate.start();
 			} else
 				treatingupdate = false;
 			// else -> no action, blister's pickup is received as a message
@@ -305,9 +314,21 @@ public class BlisterAutomaton extends Automaton {
 	 */
 	@SuppressWarnings("deprecation")
 	public void destroyAutomaton(){
-		blistersystem.setConveyor_velocity(0);		
+		blistersystem.setConveyor_velocity(0);
+		if(changingstate!=null) changingstate.stop();
 		mbox_thread.stop();
+		mbox.end();
+		mbox.end();
+		try {
+			sout.close();
+			dout.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		blistersystem.deleteObserver(this);
 		stamper.stop();
+		
 	}
 
 	/**
@@ -337,6 +358,11 @@ public class BlisterAutomaton extends Automaton {
 			this.sys = sys;
 			freq =  (1000 *4/ (speed));
 			working = false;
+		}
+
+		public void setFreq(float freq) {
+			System.out.println("[STAMPER]: Nueva Velocidad: " +freq);
+			this.freq = freq;
 		}
 
 		/**

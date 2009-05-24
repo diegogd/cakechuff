@@ -1,4 +1,3 @@
-//TODO:Recepción después del reinicio
 package cc.communications;
 
 import java.io.BufferedReader;
@@ -25,6 +24,7 @@ public class Mailbox implements Runnable {
 	private ArrayList<String> msg_list;
 	private Automaton owner;
 	private boolean failure;
+	private MasterMailbox master;
 		
 	/**
 	 * Constructor
@@ -36,6 +36,19 @@ public class Mailbox implements Runnable {
 		this.owner=owner;
 		ss = new ServerSocket(port);
 		msg_list=new ArrayList<String>();
+	}
+	/**
+	 * Constructor for a mailbox connected to a outgoing MasterMailbox
+	 * Set the owner and the port of the mailbox
+	 * @param owner Automaton owner of the mailbox
+	 * @param port Port used by mailbox
+	 * @param master Master Mailbox used together with this mailbox for I/O communication 
+	 */
+	public Mailbox(Automaton owner, int port, MasterMailbox master) throws IOException{
+		this.owner=owner;
+		ss = new ServerSocket(port);
+		msg_list=new ArrayList<String>();
+		this.master=master;
 	}
 	
 	/**
@@ -61,7 +74,7 @@ public class Mailbox implements Runnable {
 	@Override
 	public void run() {
 		//Accept connections
-		while (!failure) {
+		while (true) {
 			try {
 				System.out.print("[Mailbox]: Connecting...");
 				this.connect();
@@ -94,17 +107,25 @@ public class Mailbox implements Runnable {
 		while (!failure) {
 			try {
 				msg=din.readLine();
-				owner.newMsg(msg);				
-			} catch (Exception e) {
-				// connection failure
-				try{
-					System.out.print("[Mailbox]:Error, Re-connecting...");
-					this.connect();
-					System.out.println("ok");
-				}catch(IOException ioe){
-					//cannot connect
-					ioe.printStackTrace();
+				if(msg!=null)
+					owner.newMsg(msg);
+				else{
+					try{
+						//System.out.print("[Mailbox]:Error, Re-connecting...");
+						this.connect();
+						if(master!=null){
+							master.reconnect();
+						}
+						//System.out.println("[Mailbox]: ok, connection stablished");
+					}catch(IOException ioe){
+						//cannot connect
+						ioe.printStackTrace();
+					}
 				}
+			} catch (IOException ioe) {
+				// connection failure
+				ioe.printStackTrace();
+			
 			}
 		}
 	}
@@ -119,7 +140,6 @@ public class Mailbox implements Runnable {
 			ss.close();
 			din.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

@@ -46,7 +46,7 @@ public class MasterMailbox implements Runnable{
 		this.destination=address;
 		msgs=new Vector<String>();
 		try{
-			mbox= new Mailbox(owner, portin);
+			mbox= new Mailbox(owner, portin, this);
 			mbox_thread = (new Thread(mbox));
 			mbox_thread.start();
 			//outgoing connection will be opened when the first message is sent
@@ -96,7 +96,21 @@ public class MasterMailbox implements Runnable{
 		msgs.add(msg);
 		(new Thread(this)).start();
 	}
-	
+	/**
+	 * The Incoming mailbox paired with this outgoing mastermailbox has detected an
+	 * incoming connection failure, asking for reestablishing the outgoing connection too
+	 * 
+	 */
+	public void reconnect(){
+		try {
+			sout.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		dout.close();
+		connect();
+	}
 	/**
 	 * Connect the mailbox with the client socket and the destination buffer
 	 * @exception IOException Communication error
@@ -109,7 +123,8 @@ public class MasterMailbox implements Runnable{
 				success=true;
 				dout=  new PrintWriter(sout.getOutputStream(), true);
 			}catch(IOException ioe){
-				
+				// TODO Auto-generated catch block
+				ioe.printStackTrace();
 			}
 		}
 	}
