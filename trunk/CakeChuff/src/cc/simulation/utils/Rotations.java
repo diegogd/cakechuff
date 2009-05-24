@@ -4,7 +4,7 @@ import com.jme.math.FastMath;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 /**
- * Utility class used in the simulation. Helps in the rotation of objects
+ * Utility class used in the simulation. Helps in the rotation 
  * @version 1.0, 29/05/09
  * @author CaKeChuff team
  */
