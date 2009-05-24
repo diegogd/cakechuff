@@ -22,7 +22,12 @@ import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.TextureState;
 import com.jme.scene.state.MaterialState.ColorMaterial;
 import com.jme.util.TextureManager;
-
+/**
+ * Implementation of the Factory simulation subsystem. It is composed by all the simulation elements of the system
+ * (the other 3 subsystems, the robots...). It is also in charge of the camera control and the simulation of the factory process.
+ * @version 1.0, 29/05/09
+ * @author CaKeChuff team
+ */
 public class Factory extends SimpleGame implements Observer {
 
 	final int CAMERA_WHOLE = 0;
@@ -47,12 +52,18 @@ public class Factory extends SimpleGame implements Observer {
 	private int numBlisters = 0;
 
 	private Box floor;
-
+	/**
+	 * Constructor
+	 * Initializes the state of the system
+	 */
 	public Factory() {
 		_state = SystemState.getInstance();
 		_state.addObserver(this);
 	}
-
+	/**
+	 * Drops the cakes and engraves them. Then updates the state of the three subsystems (cake, blister, quality) and
+	 * of the robot.
+	 */
 	@Override
 	protected void simpleUpdate() {
 
@@ -94,7 +105,9 @@ public class Factory extends SimpleGame implements Observer {
 		// );
 
 	}
-
+	/**
+	 * Initializes all the elements that compose the simulation of the system and loads their graphical model. 
+	 */
 	@Override
 	protected void simpleInitGame() {
 
@@ -227,7 +240,10 @@ public class Factory extends SimpleGame implements Observer {
 
 		loadCamera(CAMERA_WHOLE);
 	}
-
+	/**
+	 * Loads one of the four cameras that can be used in the graphical user interface
+	 * @param id Identification of the camera to be loaded
+	 */
 	public void loadCamera(int id) {
 		switch (id) {
 		case CAMERA_WHOLE: // Whole system
@@ -253,7 +269,9 @@ public class Factory extends SimpleGame implements Observer {
 		}
 
 	}
-
+	/**
+	 * Drops a cake and updates the state of the system 
+	 */
 	public void dropCake() {
 		Cake cake = new Cake(cakeSub.cakes.size(), display);
 		cake.setLocalTranslation(-18, 10f, -7.5f);
@@ -264,7 +282,9 @@ public class Factory extends SimpleGame implements Observer {
 		cakeSub.cakes.add(cake);
 		//combination.add(cake);
 	}
-
+	/**
+	 * Engraves and updates the state of the system 
+	 */
 	private void Engrave() {
 		Blister blister = new Blister(blisterSub.blisters.size());
 		blister.setLocalTranslation(-11f, -1f, 16.8f);
@@ -287,7 +307,11 @@ public class Factory extends SimpleGame implements Observer {
 	// packets.add(packet);
 	// combination.add(packet);
 	// }
-
+	/**
+	 * Updates the camera and the number of blisters and cakes
+	 * @element arg0 Observable object
+	 * @param arg1 State of the system
+	 */
 	@Override
 	public void update(Observable o, Object arg) {
 		if (o instanceof SystemState) {
