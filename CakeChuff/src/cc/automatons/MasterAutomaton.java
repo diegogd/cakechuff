@@ -213,7 +213,7 @@ public class MasterAutomaton extends Automaton {
 		f_chance=f_rate;
 		robot.setRobot_velocity(moveblistert);
 		//A normal stop ends with the robot empty
-		//if(robot.getCurrentState()!=robot.getGoToState()) 
+		if(robot.getCurrentState()!=robot.getGoToState()) 
 		robot.setMoving(true);
 		/*if(state.equalsIgnoreCase("init")|| state.equalsIgnoreCase("empty")){
 			this.state=EMPTY;
@@ -245,13 +245,6 @@ public class MasterAutomaton extends Automaton {
 	 */
 	@Override
 	public synchronized void newMsg(String msg) {
-		/*while (treatingupdate) {
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-
-			}
-		}*/
 		System.out.println("[Master]: Received msg: "+msg);
 		String[] content = msg.split(":");
 		if (content[0].equalsIgnoreCase("A1")) {
@@ -311,10 +304,11 @@ public class MasterAutomaton extends Automaton {
 				// it is free if it is just starting to run (first init) or if
 				// it is boxing its package
 				if (content[1].equalsIgnoreCase("KO_WAIT")
-						|| content[1].equalsIgnoreCase("OK_WAIT"))
+						|| content[1].equalsIgnoreCase("OK_WAIT")){
 					qc_free = true;
-				//else if ((content[1].equalsIgnoreCase("QC")))
-				//	qc_free = false;
+					System.out.println("[Master]: QC is free, good!");
+				}
+					
 				// state change
 				mboxScada.send(msg);
 				if (qc_free && packet_waiting) {
@@ -384,13 +378,16 @@ public class MasterAutomaton extends Automaton {
 				cake_waiting = false;
 				robot.setRobot_velocity(movecaket);
 				robot.setGoToState(DROPINTABLE);
-				mboxCake.send("R1:cake");
+				if(state==FULL)mboxCake.send("R1:fullblister");
+				else mboxCake.send("R1:cake");
+				
 				break;
 			case (DROPINTABLE):
 				if (state == BLISTER) {
 					// Error chance
 					double error = Math.random();
 					System.out.println("[Master]: Error chance : " + error + "<" +f_chance+"??");
+					
 					if ((error) < (Math.pow(f_chance, 4) / 100000000)) {
 						System.out.println("[Master]: Sim. error, skipping all cakes");
 						state = FULL;
@@ -475,8 +472,10 @@ public class MasterAutomaton extends Automaton {
 						System.out.println("[Master to Robot1]: PICK PACKET");
 						robot.setRobot_velocity(moveblistert);
 						robot.setGoToState(PICKUPPACKET);
-					} else
+					} else{
+						System.out.println("[Master]: QC is not available, waiting...");
 						packet_waiting = true;
+					}
 				}
 				mistake = false;
 				break;
@@ -493,7 +492,6 @@ public class MasterAutomaton extends Automaton {
 				System.out.println("[Master to Robot1]: BLISTER -> QC");
 				robot.setRobot_velocity(moveblistert);
 				robot.setGoToState(DROPINSUB3);
-				mboxCake.send("R1:packet");
 				break;
 			case (DROPINSUB3):
 				System.out.println("[Master to Robot1]: PACK LEFT");
