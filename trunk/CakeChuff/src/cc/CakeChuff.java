@@ -43,6 +43,10 @@ public class CakeChuff extends javax.swing.JFrame {
     private final int CAKES=3;
     private final int BLISTERS=4;
     private final int QUALITY=5;
+    
+    private static Factory factory;
+    
+    private boolean scandaRunning = false;
 
     // Threads of every subsystem
     private Automaton masterAutomaton = null;
@@ -65,16 +69,21 @@ public class CakeChuff extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         RunEveryThingButton = new javax.swing.JToggleButton();
-        RunSCADAButton = new javax.swing.JToggleButton();
         RunMasterButton = new javax.swing.JToggleButton();
         RunCakeSubsystemButton = new javax.swing.JToggleButton();
         RunBlisterSubsystemButton = new javax.swing.JToggleButton();
         RunQualitySubystemButton = new javax.swing.JToggleButton();
-        jLabel1 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("CakeChuff - Threads");
 
-        jPanel1.setLayout(new java.awt.GridLayout(6, 0));
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Threads"));
+        jPanel1.setLayout(new java.awt.GridLayout(5, 0));
 
         RunEveryThingButton.setText("Run All the Systems");
         RunEveryThingButton.setMaximumSize(new java.awt.Dimension(100, 23));
@@ -86,17 +95,6 @@ public class CakeChuff extends javax.swing.JFrame {
             }
         });
         jPanel1.add(RunEveryThingButton);
-
-        RunSCADAButton.setForeground(new java.awt.Color(255, 102, 102));
-        RunSCADAButton.setText("SCADA is OFF");
-        RunSCADAButton.setMaximumSize(new java.awt.Dimension(100, 23));
-        RunSCADAButton.setMinimumSize(new java.awt.Dimension(100, 23));
-        RunSCADAButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                RunSCADAButtonActionPerformed(evt);
-            }
-        });
-        jPanel1.add(RunSCADAButton);
 
         RunMasterButton.setForeground(new java.awt.Color(255, 102, 102));
         RunMasterButton.setText("Master Subsystem is OFF");
@@ -140,7 +138,40 @@ public class CakeChuff extends javax.swing.JFrame {
         });
         jPanel1.add(RunQualitySubystemButton);
 
-        jLabel1.setText("Threads");
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Cameras"));
+        jPanel2.setLayout(new java.awt.GridLayout(2, 2));
+
+        jButton1.setText("Main");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButton1);
+
+        jButton3.setText("Cakes");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButton3);
+
+        jButton2.setText("Blisters");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButton2);
+
+        jButton4.setText("Quality");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButton4);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -149,24 +180,25 @@ public class CakeChuff extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void RunCakeSubsystemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RunCakeSubsystemButtonActionPerformed
+    	if( !scandaRunning ) startSubsystem(SCADA);
         if(RunEveryThingButton.isEnabled()) RunEveryThingButton.setEnabled(false);
         if(RunCakeSubsystemButton.isSelected()){
             startSubsystem(CAKES);
@@ -182,6 +214,7 @@ public class CakeChuff extends javax.swing.JFrame {
 }//GEN-LAST:event_RunCakeSubsystemButtonActionPerformed
 
     private void RunBlisterSubsystemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RunBlisterSubsystemButtonActionPerformed
+    	if( !scandaRunning ) startSubsystem(SCADA);
         if(RunEveryThingButton.isEnabled()) RunEveryThingButton.setEnabled(false);
         if(RunBlisterSubsystemButton.isSelected()){
             startSubsystem(BLISTERS);
@@ -197,10 +230,7 @@ public class CakeChuff extends javax.swing.JFrame {
 }//GEN-LAST:event_RunBlisterSubsystemButtonActionPerformed
 
     private void RunEveryThingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RunEveryThingButtonActionPerformed
-        startSubsystem(SCADA);
-        RunSCADAButton.setText("SCADA is ON");
-        RunSCADAButton.setForeground(Color.GREEN);
-        RunSCADAButton.setSelected(true);
+    	if( !scandaRunning ) startSubsystem(SCADA);
         startSubsystem(MASTER);
         RunMasterButton.setText("Master is ON");
         RunMasterButton.setForeground(Color.GREEN);
@@ -221,22 +251,8 @@ public class CakeChuff extends javax.swing.JFrame {
         RunEveryThingButton.setEnabled(false);
 }//GEN-LAST:event_RunEveryThingButtonActionPerformed
 
-    private void RunSCADAButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RunSCADAButtonActionPerformed
-        if(RunEveryThingButton.isEnabled()) RunEveryThingButton.setEnabled(false);
-        if(RunSCADAButton.isSelected()){
-            startSubsystem(SCADA);
-            RunSCADAButton.setText("SCADA is ON");
-            RunSCADAButton.setForeground(Color.GREEN);
-            RunSCADAButton.setSelected(true);
-        } else {
-            stopSubsystem(SCADA);
-            RunSCADAButton.setText("SCADA is OFF");
-            RunSCADAButton.setForeground(Color.RED);
-            RunSCADAButton.setSelected(false);
-        }
-    }//GEN-LAST:event_RunSCADAButtonActionPerformed
-
     private void RunMasterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RunMasterButtonActionPerformed
+    	if( !scandaRunning ) startSubsystem(SCADA);
         if(RunEveryThingButton.isEnabled()) RunEveryThingButton.setEnabled(false);
         if(RunMasterButton.isSelected()){
             startSubsystem(MASTER);
@@ -252,6 +268,7 @@ public class CakeChuff extends javax.swing.JFrame {
     }//GEN-LAST:event_RunMasterButtonActionPerformed
 
     private void RunQualitySubystemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RunQualitySubystemButtonActionPerformed
+    	if( !scandaRunning ) startSubsystem(SCADA);
         if(RunEveryThingButton.isEnabled()) RunEveryThingButton.setEnabled(false);
         if(RunQualitySubystemButton.isSelected()){
             startSubsystem(QUALITY);
@@ -266,6 +283,22 @@ public class CakeChuff extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_RunQualitySubystemButtonActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        factory.loadCamera(factory.CAMERA_WHOLE);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    	factory.loadCamera(factory.CAMERA_CAKESUB);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    	factory.loadCamera(factory.CAMERA_BLISTERSUB);
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    	factory.loadCamera(factory.CAMERA_QASUB);
+    }//GEN-LAST:event_jButton4ActionPerformed
+
     private void startSubsystem(int id){
         switch(id){
             case MASTER:
@@ -276,6 +309,7 @@ public class CakeChuff extends javax.swing.JFrame {
             								 "localhost",9005,9004);
                 break;
             case SCADA:
+            	scandaRunning = true;
             	java.awt.EventQueue.invokeLater(new Runnable() {
                     public void run() {
                         try {
@@ -346,7 +380,7 @@ public class CakeChuff extends javax.swing.JFrame {
             }
         });
         
-        Factory factory = new Factory();
+        factory = new Factory();
 		try {
 			factory.setConfigShowMode(ConfigShowMode.AlwaysShow, new File("")
 					.toURI().toURL());
@@ -355,8 +389,6 @@ public class CakeChuff extends javax.swing.JFrame {
 		}
 
 		factory.start();        	
-        
-        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -365,9 +397,12 @@ public class CakeChuff extends javax.swing.JFrame {
     private javax.swing.JToggleButton RunEveryThingButton;
     private javax.swing.JToggleButton RunMasterButton;
     private javax.swing.JToggleButton RunQualitySubystemButton;
-    private javax.swing.JToggleButton RunSCADAButton;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     // End of variables declaration//GEN-END:variables
 
 }
