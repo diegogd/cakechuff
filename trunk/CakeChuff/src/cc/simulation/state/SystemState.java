@@ -80,7 +80,7 @@ public class SystemState extends Observable {
 	}
 	/**
 	 * Returns if a blister has been made.
-	 * @return True if a blister has been made., false if not.
+	 * @return True if a blister has been made, false if not.
 	 */
 	public boolean makeBlister() {
 		if(makeBlister){
