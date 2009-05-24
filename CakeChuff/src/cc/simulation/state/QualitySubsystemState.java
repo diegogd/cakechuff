@@ -203,7 +203,7 @@ public class QualitySubsystemState extends Observable {
 	}
 	/**
 	 * Makes the robot change its current state
-	 * @param New state of the robot
+	 * @param currentSate New state of the robot
 	 */
 	public void setRobotCurrentState(int currentState) {
 		if (this.robot_current_state != currentState) {
@@ -232,7 +232,7 @@ public class QualitySubsystemState extends Observable {
 	}
 	/**
 	 * Modifies the variable that tells if the robot is moving
-	 * @param New value. True:is moving;false:it is not
+	 * @param moving New value. True:is moving;false:it is not
 	 */
 	public void setRobotMoving(boolean moving) {
 		if (robot_moving != moving) {
