@@ -238,9 +238,53 @@ public class CakeAutomaton extends Automaton {
 	}
 	
 	/**
-	 * Recover from a failure/stop
+	 * Recover from a failure
 	 */
 	private void run_failure(String data){
+		stop=false;
+		System.out.println("[CakeAutomaton]:Restoring");
+		String pars[]=data.split("#");
+		
+		//Reload parameters
+		this.cake_cap = Integer.parseInt(pars[1]);
+		
+		this.belt_lg = Integer.parseInt(pars[3]);
+		this.speed = Float.parseFloat(pars[2])/(belt_lg*3);
+		this.ncakes=cake_cap;
+		this.vt1=Integer.parseInt(pars[4]);
+		this.vt2 =Integer.parseInt(pars[5]);
+		
+		//Recover state
+		if(pars[0].equalsIgnoreCase("INIT")){
+			//run_init(); <- It was most likely thrown already
+			cakesystem.setConveyor_velocity(speed);
+		}else if(pars[0].equalsIgnoreCase("CHOC")){
+			state=CHOC;
+			changingstate=new Thread(this);
+			changingstate.start();
+		}else if(pars[0].equalsIgnoreCase("CHOC_CAR")){
+			state=CHOC_CAR;
+			changingstate=new Thread(this);
+			changingstate.start();
+		}else if(pars[0].equalsIgnoreCase("CAR")){
+			state=CAR;
+			changingstate=new Thread(this);
+			changingstate.start();
+		}else if(pars[0].equalsIgnoreCase("CAR_WAIT")){
+			run_car_wait();
+		}else if(pars[0].equalsIgnoreCase("WAIT")){
+			//check sensor
+			if(cakesystem.isTouchSensorActived())
+				run_wait();
+			else
+				run_init();
+		}
+		
+	}
+	/**
+	 * Recover from a stop
+	 */
+	private void run_reset(String data){
 		stop=false;
 		System.out.println("[CakeAutomaton]:Restoring");
 		String pars[]=data.split("#");
