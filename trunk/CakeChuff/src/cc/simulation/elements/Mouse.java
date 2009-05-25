@@ -56,10 +56,12 @@ public class Mouse extends Node {
 	 */
 	private DisplaySystem display;
 
-	private Vector3f direction;
+	public Vector3f direction;
 	private float angledirection = 0f;
 
 	private float counterMoving = 2;
+	
+	private float leftRadians = 0;
 
 	/**
 	 * Constructor Loads the graphical model of the mouse of the system
@@ -102,14 +104,19 @@ public class Mouse extends Node {
 	public void simpleUpdate(float timeps, Factory father) {
 		counterMoving += timeps;
 		if (counterMoving > 1) {
-			float radians = (float) (FastMath.rand.nextFloat() * 0.5f) - 0.25f;
-			angledirection += radians * FastMath.PI;
+			//float radians = (float) (FastMath.rand.nextFloat() * 0.5f) - 0.25f;
+			leftRadians = (float) ((FastMath.rand.nextFloat() * 0.5f) - 0.25f)*FastMath.PI;
+			// angledirection += radians * FastMath.PI;
 			counterMoving = 0;
-			this.setLocalRotation(this.getWorldRotation().fromAngleAxis(
-					angledirection, Vector3f.UNIT_Y));
-			direction.x = (float) FastMath.cos(angledirection);
-			direction.z = (float) -FastMath.sin(angledirection);			
+						
 		}
+		
+		angledirection -= leftRadians*timeps;
+		this.setLocalRotation(this.getWorldRotation().fromAngleAxis(
+				angledirection, Vector3f.UNIT_Y));
+		direction.x = (float) FastMath.cos(angledirection);
+		direction.z = (float) -FastMath.sin(angledirection);
+		
 		this.updateAutomatic(timeps);
 
 		this.getLocalTranslation().addLocal(direction.mult(8 * timeps));

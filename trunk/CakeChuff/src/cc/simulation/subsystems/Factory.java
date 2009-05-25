@@ -41,6 +41,8 @@ public class Factory extends SimpleGame implements Observer {
 	public final int CAMERA_CAKESUB = 1;
 	public final int CAMERA_BLISTERSUB = 2;
 	public final int CAMERA_QASUB = 3;
+	public final int CAMERA_MOUSE = 4;
+	private int currentCamera = CAMERA_WHOLE;
 	
 	// Mouse
 	private Mouse mouse;
@@ -93,6 +95,9 @@ public class Factory extends SimpleGame implements Observer {
 		blisterSub.update(time);
 		qualitySub.update(time);
 		mouse.simpleUpdate(time, this);
+		
+		if(currentCamera == CAMERA_MOUSE)
+			loadCamera(CAMERA_MOUSE);
 
 		// Lo correcto seria:robot1.update(time,rootNode.getChildren());
 		robot1.update(time, this);
@@ -261,13 +266,14 @@ public class Factory extends SimpleGame implements Observer {
 		
 		rootNode.updateRenderState();
 
-		loadCamera(CAMERA_WHOLE);
+		loadCamera(currentCamera);
 	}
 	/**
 	 * Loads one of the four cameras that can be used in the graphical user interface
 	 * @param id Identification of the camera to be loaded
 	 */
 	public void loadCamera(int id) {
+		currentCamera = id;
 		switch (id) {
 		case CAMERA_WHOLE: // Whole system
 			display.getRenderer().getCamera().setLocation(
@@ -291,6 +297,13 @@ public class Factory extends SimpleGame implements Observer {
 			display.getRenderer().getCamera().setLocation(
 					new Vector3f(31.92f, 17.168f, 30.73f));
 			display.getRenderer().getCamera().lookAt(new Vector3f(25, 3, -8),
+					Vector3f.UNIT_Y);
+			break;
+		case CAMERA_MOUSE: // Camera at the head of the mouse
+			display.getRenderer().getCamera().setLocation(mouse.getLocalTranslation().clone().add(mouse.direction.clone().mult(-2.0f)));
+			display.getRenderer().getCamera().getLocation().y+=0.5f;
+			// display.getRenderer().getCamera().getLocation().x-=0.6f;
+			display.getRenderer().getCamera().lookAt(mouse.getLocalTranslation().clone().add(mouse.direction.clone().mult(15)),
 					Vector3f.UNIT_Y);
 			break;
 		}

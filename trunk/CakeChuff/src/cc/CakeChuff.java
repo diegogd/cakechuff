@@ -78,6 +78,7 @@ public class CakeChuff extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("CakeChuff - Threads");
@@ -139,7 +140,7 @@ public class CakeChuff extends javax.swing.JFrame {
         jPanel1.add(RunQualitySubystemButton);
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Cameras"));
-        jPanel2.setLayout(new java.awt.GridLayout(2, 2));
+        jPanel2.setLayout(new java.awt.GridLayout(3, 2));
 
         jButton1.setText("Main");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -173,6 +174,14 @@ public class CakeChuff extends javax.swing.JFrame {
         });
         jPanel2.add(jButton4);
 
+        jButton5.setText("Mouse Cam");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButton5);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -188,7 +197,7 @@ public class CakeChuff extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -299,6 +308,10 @@ public class CakeChuff extends javax.swing.JFrame {
     	factory.loadCamera(factory.CAMERA_QASUB);
     }//GEN-LAST:event_jButton4ActionPerformed
 
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        factory.loadCamera(factory.CAMERA_MOUSE);
+    }//GEN-LAST:event_jButton5ActionPerformed
+
     private void startSubsystem(int id){
         switch(id){
             case MASTER:
@@ -401,6 +414,7 @@ public class CakeChuff extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     // End of variables declaration//GEN-END:variables
