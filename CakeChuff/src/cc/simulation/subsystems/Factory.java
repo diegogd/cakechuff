@@ -123,7 +123,7 @@ public class Factory extends SimpleGame implements Observer {
 		rootNode.attachChild(wallback);
 
 		Box wallleft = new Box("wallleft", new Vector3f(-40, 0f, -40),
-				new Vector3f(-40.01f, 30f, 30));
+				new Vector3f(-39.99f, 30f, 30));
 		wallleft.setDefaultColor(ColorRGBA.lightGray);
 		ts = display.getRenderer().createTextureState();
 		t0 = TextureManager.loadTexture(getClass().getClassLoader()
