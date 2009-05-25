@@ -8,6 +8,7 @@ import java.util.Observer;
 import cc.simulation.elements.Blister;
 import cc.simulation.elements.Cake;
 import cc.simulation.elements.Conveyor;
+import cc.simulation.elements.Mouse;
 import cc.simulation.elements.Table;
 import cc.simulation.state.SystemState;
 import cc.simulation.utils.Rotations;
@@ -40,6 +41,9 @@ public class Factory extends SimpleGame implements Observer {
 	public final int CAMERA_CAKESUB = 1;
 	public final int CAMERA_BLISTERSUB = 2;
 	public final int CAMERA_QASUB = 3;
+	
+	// Mouse
+	private Mouse mouse;
 
 	// Conveyer Belts
 	public CakeSubsystem cakeSub;
@@ -55,7 +59,7 @@ public class Factory extends SimpleGame implements Observer {
 	private int numcakes = 0;
 	private int numBlisters = 0;
 
-	private Box floor;
+	public Box floor;
 	/**
 	 * Constructor
 	 * Initializes the state of the system
@@ -88,6 +92,7 @@ public class Factory extends SimpleGame implements Observer {
 		cakeSub.update(time);
 		blisterSub.update(time);
 		qualitySub.update(time);
+		mouse.simpleUpdate(time, this);
 
 		// Lo correcto seria:robot1.update(time,rootNode.getChildren());
 		robot1.update(time, this);
@@ -178,6 +183,10 @@ public class Factory extends SimpleGame implements Observer {
 		rootNode.attachChild(robot1);
 
 		rootNode.attachChild(test);
+		
+		mouse = new Mouse(display);
+		mouse.setLocalTranslation(15, 0, 25);
+		rootNode.attachChild(mouse);
 
 		MaterialState ms = display.getRenderer().createMaterialState();
 		ms.setColorMaterial(ColorMaterial.AmbientAndDiffuse);
