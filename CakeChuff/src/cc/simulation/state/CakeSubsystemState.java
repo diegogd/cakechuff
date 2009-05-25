@@ -14,6 +14,7 @@ public class CakeSubsystemState extends Observable {
 	private static CakeSubsystemState _instance = null;
 	
 	private Vector<Sensor> sensors;
+	public Sensor touchSensor;
 	
 	private float conveyor_velocity = 0;
 	private float valve1_open_secs = 0;
@@ -107,6 +108,7 @@ public class CakeSubsystemState extends Observable {
 	public void addSensor(Sensor s){
 		sensors.add(s);
 	}
+	
 	/**
 	 * Checks for any changes in the sensors the subsystem has. In case a change is detected observers are notified.
 	 */
@@ -114,10 +116,25 @@ public class CakeSubsystemState extends Observable {
 		for(int i=0; i< sensors.size(); i++)
 		{
 			if(sensors.get(i).isModified())
-			{
+			{	
 				setChanged();
 				notifyObservers(sensors.get(i));
 			}
 		}
+	}
+	/**
+	 * Inserts a new sensor in the cake subsystem
+	 * @param s Sensor to be inserted
+	 */
+	public void addTouchSensor(Sensor s){
+		sensors.add(s);
+		touchSensor = s;
+	}
+	/**
+	 * Checks if the touch sensor still actived
+	 * @return True if the sensor is actived.
+	 */
+	public boolean isTouchSensorActived(){
+		return touchSensor.isActived();
 	}
 }

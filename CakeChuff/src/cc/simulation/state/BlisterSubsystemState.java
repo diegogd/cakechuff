@@ -14,6 +14,7 @@ public class BlisterSubsystemState extends Observable {
 	private static BlisterSubsystemState _instance = null;
 	
 	private Vector<Sensor> sensors;
+	Sensor touchSensor;
 	
 	private float conveyor_velocity = 0;
 	private float engraver_secs = 0;
@@ -124,5 +125,19 @@ public class BlisterSubsystemState extends Observable {
 			}
 		}
 	}
-		
+	/**
+	 * Inserts a new sensor in the cake subsystem
+	 * @param s Sensor to be inserted
+	 */
+	public void addTouchSensor(Sensor s){
+		sensors.add(s);
+		touchSensor = s;
+	}
+	/**
+	 * Checks if the touch sensor still actived
+	 * @return True if the sensor is actived.
+	 */
+	public boolean isTouchSensorActived(){
+		return touchSensor.isActived();
+	}
 }

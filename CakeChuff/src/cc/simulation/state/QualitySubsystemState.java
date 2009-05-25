@@ -16,6 +16,7 @@ public class QualitySubsystemState extends Observable {
 	private static QualitySubsystemState _instance = null;
 
 	private Vector<Sensor> sensors;
+	Sensor touchSensor;
 
 	private float conveyor_velocity = 0;
 	private boolean quality_check = false;
@@ -362,7 +363,21 @@ public class QualitySubsystemState extends Observable {
 			}
 		}
 	}
-
+	/**
+	 * Inserts a new sensor in the cake subsystem
+	 * @param s Sensor to be inserted
+	 */
+	public void addTouchSensor(Sensor s){
+		sensors.add(s);
+		touchSensor = s;
+	}
+	/**
+	 * Checks if the touch sensor still actived
+	 * @return True if the sensor is actived.
+	 */
+	public boolean isTouchSensorActived(){
+		return touchSensor.isActived();
+	}
 	// public boolean getEmptyBox() {
 	// return emptyBox;
 	// }
