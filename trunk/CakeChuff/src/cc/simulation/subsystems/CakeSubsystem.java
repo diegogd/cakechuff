@@ -72,7 +72,8 @@ public class CakeSubsystem extends Node implements Observer {
 		s3 = new TouchSensor("sensor3");
 		s3.setLocalTranslation(7.5f, 4.2f, 0);
 		this.attachChild(s3);
-		_state.addSensor(s3);
+		//_state.addSensor(s3);
+		_state.addTouchSensor(s3);
 
 		chocolate = new Valve("chocolate", new ColorRGBA(0.31f, 0.192f,
 				0.0705f, 1f));

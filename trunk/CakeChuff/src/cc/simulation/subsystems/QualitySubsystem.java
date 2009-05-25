@@ -127,7 +127,8 @@ public class QualitySubsystem extends Node implements Observer {
 		sensor3 = new TouchSensor("QualitySensor3");
 		sensor3.setLocalTranslation(8f, 4.2f, 0);
 		this.attachChild(sensor3);
-		_state.addSensor(sensor3);
+		// _state.addSensor(sensor3);
+		_state.addTouchSensor(sensor3);
 
 		robot2 = new Robot(new Vector3f(15f, 0, 0));
 		this.attachChild(robot2);

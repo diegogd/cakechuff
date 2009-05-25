@@ -87,7 +87,8 @@ public class BlisterSubsystem extends Node implements Observer {
 		sensor2 = new TouchSensor("BlisterSensor2");
 		sensor2.setLocalTranslation(7.5f, 4.2f, 0);
 		this.attachChild(sensor2);
-		_state.addSensor(sensor2);
+		// _state.addSensor(sensor2);
+		_state.addTouchSensor(sensor2);
 	}
 	/**
 	 * Updates the state of the sensors of the blister subsystem 
