@@ -145,7 +145,7 @@ public class BlisterAutomaton extends Automaton {
 		blistersystem.setCutter_secs((int) (80 / (speed)));
 		stamper.stop();
 		try {
-			Thread.sleep((int) (60*1000 / (speed * 10)));
+			Thread.sleep((int) (2*1000 / (speed)));
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			//e.printStackTrace();
@@ -173,9 +173,9 @@ public class BlisterAutomaton extends Automaton {
 	}
 
 	/**
-	 * Recover from a failure
+	 * Recover from a stop
 	 */
-	public void run_failure(String data) {
+	public void run_reset(String data) {
 		String pars[] = data.split("#");
 		this.belt_lg = Integer.parseInt(pars[2]);
 		this.speed = Float.parseFloat(pars[1]) / (belt_lg * 7);
@@ -198,9 +198,40 @@ public class BlisterAutomaton extends Automaton {
 		}
 
 	}
-
 	/**
-	 * Restart after a stop
+	 * Recover from a failure
+	 */
+	public void run_failure(String data) {
+		String pars[] = data.split("#");
+		this.belt_lg = Integer.parseInt(pars[2]);
+		this.speed = Float.parseFloat(pars[1]) / (belt_lg * 7);
+		stamper.setFreq(1000*4/speed);
+		if (pars[0].equalsIgnoreCase("INIT")) {
+			run_init();
+		} else if (pars[0].equalsIgnoreCase("PRESS")) {
+			state = PRESS;
+			blistersystem.setConveyor_velocity(speed);
+			stamper.work();
+		} else if (pars[0].equalsIgnoreCase("CUTTING")) {
+			//blistersystem.setConveyor_velocity(speed);
+			stamper.work();
+			state=CUTTING;
+			changingstate=new Thread(this);
+			changingstate.run();
+			//run_cutting();
+		} else if (pars[0].equalsIgnoreCase("BLISTER_READY")) {
+			//check sensor
+			if (blistersystem.isTouchSensorActived())
+				run_blister_ready();
+			else{ //The robot has picked the blister while the automaton was off
+				blistersystem.setConveyor_velocity(speed);
+			}
+				
+		}
+
+	}
+	/**
+	 * Stop the subsystem
 	 */
 	public void run_stop() {
 		if(changingstate!=null) changingstate.stop();
@@ -230,7 +261,7 @@ public class BlisterAutomaton extends Automaton {
 		else if (content[0].equalsIgnoreCase("STOP"))
 			stop = true;
 		else if (content[0].equalsIgnoreCase("RESET")) 
-			run_failure(content[1]);
+			run_reset(content[1]);
 		else if (content[0].equalsIgnoreCase("RESTART")) {
 			//String pars[] = content[1].split("\\$");
 			run_failure(content[1]);
