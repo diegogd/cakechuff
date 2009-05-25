@@ -232,6 +232,7 @@ public class QCAutomaton extends Automaton {
 		//TODO: Ver que hacer con el estado del robot 
 		String pars[]=data.split("#");
 		stop=false;
+		qcsystem.setWrappedUp(true);
 		this.belt_lg = Integer.parseInt(pars[3]);
 		//qcsystem.addObserver(this);
 		this.speed = Float.parseFloat(pars[2])/(belt_lg*3);
@@ -272,6 +273,7 @@ public class QCAutomaton extends Automaton {
 	 */
 	private void run_stop(){
 		stop=true;
+		qcsystem.setWrappedUp(false);
 		if(changingstate!=null) changingstate.stop();
 		qcsystem.setConveyor_velocity(0);
 		//qcsystem.deleteObserver(this);

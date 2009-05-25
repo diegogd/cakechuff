@@ -908,7 +908,7 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer {
 		// TODO add your handling code here:
 		_blisterSubState.setEngraver_secs(8);
 		_systemState.setMakeBlister();
-		_qualitySubState.setWrapper_secs(8);
+		_qualitySubState.setWrapper_secs(1);
 		//_systemState.setMakePacket();
 
 	}// GEN-LAST:event_jButtonTakeBlisterActionPerformed
@@ -917,7 +917,16 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer {
 		// TODO add your handling code here:
 		_robot1State.setRobot_velocity(4f);
 		_robot1State.setGoToState(6);
-		_blisterSubState.setCutter_secs(8);
+		_blisterSubState.setCutter_secs(1);
+		
+		if (wrap){
+			_qualitySubState.setPause(wrap);
+			wrap = false;
+		}else{
+			_qualitySubState.setPause(wrap);
+			wrap = true;
+		}
+		//_qualitySubState.setPause(false);
 		//_qualitySubState.setRobotGoToState(5);
 	}// GEN-LAST:event_jButtonTakeBlisterActionPerformed
 
@@ -958,7 +967,10 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer {
 	private void jButtonCamera3ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonCamera3ActionPerformed
 		_robot1State.setRobot_velocity(1);
 		_robot1State.setGoToState(10);
-		_systemState.setId_camera(3);
+//		_systemState.setId_camera(3);
+		
+		
+		
 	}// GEN-LAST:event_jButtonCamera3ActionPerformed
 
 	private void jButtonCamera4ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonCamera4ActionPerformed
@@ -1048,6 +1060,8 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer {
 	private javax.swing.JSpinner jSpinnerConveyor3;
 	private javax.swing.JSpinner jSpinnerValve1;
 	private javax.swing.JSpinner jSpinnerValve2;
+	
+	private boolean wrap = false;
 
 	// End of variables declaration//GEN-END:variables
 

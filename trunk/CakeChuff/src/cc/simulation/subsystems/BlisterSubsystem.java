@@ -141,10 +141,10 @@ public class BlisterSubsystem extends Node implements Observer {
 
 		if (arg1 == null) {
 			conv.setVelocity(_state.getConveyor_velocity());
-			if (_state.getCutter_secs() > 0) {
+			//if (_state.getCutter_secs() > 0) {
 				cutter.setSpeed(_state.getCutter_secs());
 				_state.resetCutter_secs();
-			}
+			//}
 			if (_state.getEngraver_secs() > 0) {
 				engraver.setSpeed(_state.getEngraver_secs());
 				_state.resetEngraver_secs();
