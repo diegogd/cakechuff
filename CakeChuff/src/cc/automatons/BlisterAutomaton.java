@@ -140,11 +140,21 @@ public class BlisterAutomaton extends Automaton {
 	 * Set the blade cutting time
 	 */
 	public void run_cutting() {
+		blistersystem.setConveyor_velocity(0);
 		// blade down
-		blistersystem.setCutter_secs((int) (60 / (speed * 10)));
+		blistersystem.setCutter_secs((int) (80 / (speed)));
+		stamper.stop();
+		try {
+			Thread.sleep((int) (60*1000 / (speed * 10)));
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+		}
+		stamper.work();
 		state = CUTTING;
 		// send new state
 		send("A2:cutting");
+		blistersystem.setConveyor_velocity(speed);
 	}
 
 	/**
@@ -177,9 +187,12 @@ public class BlisterAutomaton extends Automaton {
 			blistersystem.setConveyor_velocity(speed);
 			stamper.work();
 		} else if (pars[0].equalsIgnoreCase("CUTTING")) {
-			blistersystem.setConveyor_velocity(speed);
+			//blistersystem.setConveyor_velocity(speed);
 			stamper.work();
-			run_cutting();
+			state=CUTTING;
+			changingstate=new Thread(this);
+			changingstate.run();
+			//run_cutting();
 		} else if (pars[0].equalsIgnoreCase("BLISTER_READY")) {
 			run_blister_ready();
 		}
@@ -193,6 +206,7 @@ public class BlisterAutomaton extends Automaton {
 		if(changingstate!=null) changingstate.stop();
 		blistersystem.setConveyor_velocity(0);
 		stamper.stop();
+		blistersystem.setCutter_secs(0);
 		//state = START;
 	}
 
