@@ -98,9 +98,9 @@ public class BlisterAutomaton extends Automaton {
 	 * @param belt_lg Conveyor belt length
 	 */
 	public void run_start(float speed, int belt_lg) {
-		this.speed = speed / (belt_lg * 7);
+		this.speed = speed / (belt_lg * 5);
 		this.belt_lg = belt_lg;
-		stamper.setFreq(1000 *4/ this.speed);
+		stamper.setFreq(1200 *4/ this.speed);
 		state = START;
 		// send new state
 		// send("A2:START");
@@ -142,10 +142,11 @@ public class BlisterAutomaton extends Automaton {
 	public void run_cutting() {
 		blistersystem.setConveyor_velocity(0);
 		// blade down
-		blistersystem.setCutter_secs((int) (80 / (speed)));
+		blistersystem.setCutter_secs(5);
 		stamper.stop();
+		//stamper.setTime(0);
 		try {
-			Thread.sleep((int) (2*1000 / (speed)));
+			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			//e.printStackTrace();
@@ -178,8 +179,8 @@ public class BlisterAutomaton extends Automaton {
 	public void run_reset(String data) {
 		String pars[] = data.split("#");
 		this.belt_lg = Integer.parseInt(pars[2]);
-		this.speed = Float.parseFloat(pars[1]) / (belt_lg * 7);
-		stamper.setFreq(1000*4/speed);
+		this.speed = Float.parseFloat(pars[1]) / (belt_lg * 5);
+		stamper.setFreq(1200*4/speed);
 		if (pars[0].equalsIgnoreCase("INIT")) {
 			run_init();
 		} else if (pars[0].equalsIgnoreCase("PRESS")) {
@@ -204,8 +205,8 @@ public class BlisterAutomaton extends Automaton {
 	public void run_failure(String data) {
 		String pars[] = data.split("#");
 		this.belt_lg = Integer.parseInt(pars[2]);
-		this.speed = Float.parseFloat(pars[1]) / (belt_lg * 7);
-		stamper.setFreq(1000*4/speed);
+		this.speed = Float.parseFloat(pars[1]) / (belt_lg * 5);
+		stamper.setFreq(1200*4/speed);
 		if (pars[0].equalsIgnoreCase("INIT")) {
 			run_init();
 		} else if (pars[0].equalsIgnoreCase("PRESS")) {
@@ -384,6 +385,10 @@ public class BlisterAutomaton extends Automaton {
 	private class Stamper implements Runnable {
 		private boolean working;
 		private float time;
+		public void setTime(float time) {
+			this.time = time;
+		}
+
 		// simulation
 		private BlisterSubsystemState blistersystem;
 		private float freq;
@@ -401,7 +406,7 @@ public class BlisterAutomaton extends Automaton {
 			time = 0;
 			blistersystem = blisters;
 			this.sys = sys;
-			freq =  (1000 *4/ (speed));
+			freq =  (1200 *4/ (speed));
 			working = false;
 		}
 
