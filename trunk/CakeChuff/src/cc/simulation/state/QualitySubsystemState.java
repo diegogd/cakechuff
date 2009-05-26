@@ -36,8 +36,6 @@ public class QualitySubsystemState extends Observable {
 	boolean robot_moving, robot_changed_GTS, robot_changed_CS;
 	private float robot_velocity;
 
-	private float wrapper_pause_secs; 
-
 	/**
 	 * Constructor It creates the vector of sensors and initializes the state,
 	 * movement and velocity of the robot.
@@ -47,7 +45,6 @@ public class QualitySubsystemState extends Observable {
 		robot_current_state = 0;
 		robot_moving = false;
 		robot_velocity = 0;
-		wrapper_pause_secs = 0;
 	}
 
 	/**
@@ -196,30 +193,6 @@ public class QualitySubsystemState extends Observable {
 	 */
 	public void resetWrapper_secs() {
 		this.wrapper_secs = 0;
-	}
-
-	/**
-	 * 
-	 */
-	public void setPause(boolean on) {
-//		if (on) {
-//			this.wrapper_pause_secs = this.wrapper_secs;
-//			this.wrapper_secs = 0;
-////			setChanged();
-////			notifyObservers(2);
-//		} else {
-//			this.wrapper_secs = this.wrapper_pause_secs;
-////			setChanged();
-////			notifyObservers(3);
-//		}
-		///if(on){
-			this.wrapup=on;
-			setChanged();
-			if (wrapup)
-				notifyObservers(1);
-			else
-				notifyObservers(0);
-		//(}
 	}
 
 	/**
