@@ -920,10 +920,10 @@ public class FactoryInterface extends javax.swing.JFrame implements Observer {
 		_blisterSubState.setCutter_secs(1);
 		
 		if (wrap){
-			_qualitySubState.setPause(wrap);
+//			_qualitySubState.setPause(wrap);
 			wrap = false;
 		}else{
-			_qualitySubState.setPause(wrap);
+//			_qualitySubState.setPause(wrap);
 			wrap = true;
 		}
 		//_qualitySubState.setPause(false);
