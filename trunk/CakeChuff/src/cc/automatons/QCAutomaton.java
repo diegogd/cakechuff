@@ -165,7 +165,7 @@ public class QCAutomaton extends Automaton {
 	 */
 	private void run_stamp(){
 		qcsystem.setConveyor_velocity(0);
-		qcsystem.setWrapper_secs(t_stamp*2);
+		qcsystem.setWrapper_secs(5f/t_stamp);
 		qcsystem.setWrappedUp(true);
 		try{
 			Thread.sleep(t_stamp*1000);
