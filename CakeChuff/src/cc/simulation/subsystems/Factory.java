@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Vector;
 
 import cc.simulation.elements.Blister;
 import cc.simulation.elements.Cake;
@@ -46,6 +47,7 @@ public class Factory extends SimpleGame implements Observer {
 	
 	// Mouse
 	private Mouse mouse;
+	Vector<Mouse> mices;
 
 	// Conveyer Belts
 	public CakeSubsystem cakeSub;
@@ -69,6 +71,7 @@ public class Factory extends SimpleGame implements Observer {
 	public Factory() {
 		_state = SystemState.getInstance();
 		_state.addObserver(this);
+		mices = new Vector<Mouse>();
 	}
 	/**
 	 * Drops the cakes and engraves them. Then updates the state of the three subsystems (cake, blister, quality) and
@@ -94,7 +97,10 @@ public class Factory extends SimpleGame implements Observer {
 		cakeSub.update(time);
 		blisterSub.update(time);
 		qualitySub.update(time);
-		mouse.simpleUpdate(time, this);
+		Iterator<Mouse> itera = mices.iterator();
+		while(itera.hasNext())
+			itera.next().simpleUpdate(time, this);
+		// mouse.simpleUpdate(time, this);
 		
 		if(currentCamera == CAMERA_MOUSE)
 			loadCamera(CAMERA_MOUSE);
@@ -189,9 +195,15 @@ public class Factory extends SimpleGame implements Observer {
 
 		rootNode.attachChild(test);
 		
-		mouse = new Mouse(display);
-		mouse.setLocalTranslation(15, 0, 25);
+		for(int i=0; i < 150; i ++){
+		mouse = new Mouse(display);		
+		float x = (float)Math.random()*40-20;
+		float y = (float)Math.random()*40-20;
+		mouse.setLocalTranslation(x, 0, y);
+		mices.add(mouse);
+		// mouse.setLocalTranslation(15, 0, 25);
 		rootNode.attachChild(mouse);
+		}
 
 		MaterialState ms = display.getRenderer().createMaterialState();
 		ms.setColorMaterial(ColorMaterial.AmbientAndDiffuse);
