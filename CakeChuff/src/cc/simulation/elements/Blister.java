@@ -25,6 +25,8 @@ public class Blister extends Node {
 	Node pivot;
 
 	Node hole1, hole2, hole3, hole4,wrapper;
+	
+	private int numCakes = 0;
 
 	
 	private static final long serialVersionUID = 4426672713022189512L;
@@ -157,22 +159,34 @@ public class Blister extends Node {
 	 * blister found.
 	 * @param cake The cake to be placed in the hole
 	 */
-	public void placeCake(Spatial cake) {
-		if (cake.removeFromParent()) {
+	public boolean placeCake(Spatial cake) {
+		if(numCakes>=4){
+			System.err.println("Blister Full!");
+			return false;
+		}else if (cake.removeFromParent()) {
 			if(!spaces[0]){
 				hole1.attachChild(cake);
 				spaces[0]=true;
+				numCakes++;
+				return true;
 			}else if(!spaces[1]){
 				hole2.attachChild(cake);
 				spaces[1]=true;
+				numCakes++;
+				return true;
 			}else if(!spaces[2]){
 				hole3.attachChild(cake);
 				spaces[2]=true;
+				numCakes++;
+				return true;
 			}else if(!spaces[3]){
 				hole4.attachChild(cake);
 				spaces[3]=true;
-			}
-		}
+				numCakes++;
+				return true;
+			}else return false;
+		}else return false;
+		
 	}
 	/**
 	 * Places the wrapper that covers the blister
@@ -189,5 +203,9 @@ public class Blister extends Node {
 				
 				wrapperIsPlaced = true;			
 		//}
+	}
+	
+	public int getNumberOfCakes(){
+		return numCakes;
 	}
 }
