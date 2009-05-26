@@ -51,7 +51,7 @@ public class Robot extends Node {
 	private Cylinder lowerHeadLeft, lowerHeadRight;
 	private Cylinder upperHeadLeft, upperHeadRight;
 	
-	private int precision = 2;
+	private int precision = 4;
 
 	private float angleBody;
 	private float angleFloor;

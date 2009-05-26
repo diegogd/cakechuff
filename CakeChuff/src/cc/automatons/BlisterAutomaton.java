@@ -154,7 +154,7 @@ public class BlisterAutomaton extends Automaton {
 		state = CUTTING;
 		// send new state
 		send("A2:cutting");
-		blistersystem.setConveyor_velocity(speed);
+		if(!blistersystem.isTouchSensorActived()) blistersystem.setConveyor_velocity(speed);
 	}
 
 	/**
