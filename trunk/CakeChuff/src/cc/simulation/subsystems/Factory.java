@@ -48,6 +48,7 @@ public class Factory extends SimpleGame implements Observer {
 	// Mouse
 	private Mouse mouse;
 	Vector<Mouse> mices;
+	private int num_rats = 3;
 
 	// Conveyer Belts
 	public CakeSubsystem cakeSub;
@@ -195,7 +196,7 @@ public class Factory extends SimpleGame implements Observer {
 
 		rootNode.attachChild(test);
 		
-		for(int i=0; i < 150; i ++){
+		for(int i=0; i < num_rats; i ++){
 		mouse = new Mouse(display);		
 		float x = (float)Math.random()*40-20;
 		float y = (float)Math.random()*40-20;
