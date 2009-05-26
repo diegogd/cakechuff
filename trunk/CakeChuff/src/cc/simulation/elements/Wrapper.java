@@ -5,9 +5,11 @@ import cc.simulation.utils.Rotations;
 
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
+
 /**
- * Implementation and definition of the wrapper, one of
- * the simulation elements that compose CakeChuff system
+ * Implementation and definition of the wrapper, one of the simulation elements
+ * that compose CakeChuff system
+ * 
  * @version 1.0, 29/05/09
  * @author CaKeChuff team
  */
@@ -19,9 +21,10 @@ public class Wrapper extends Node {
 	public boolean finished = true;
 
 	Node pivot;
+
 	/**
-	 * Constructor
-	 * Initializes the speed, direction and pivot of the wrapper. It also loads its graphical model
+	 * Constructor Initializes the speed, direction and pivot of the wrapper. It
+	 * also loads its graphical model
 	 */
 	public Wrapper() {
 
@@ -33,20 +36,26 @@ public class Wrapper extends Node {
 		this.setName("Wrapper");
 		this.setLocalRotation(Rotations.rotateY(1));
 	}
+
 	/**
 	 * Returns the speed of the wrapper
+	 * 
 	 * @return The speed of the wrapper
 	 */
 	public float getSpeed() {
 		return this.speed;
 	}
+
 	/**
 	 * Modifies the speed of the wrapper
-	 * @param speed The new speed of the wrapper
+	 * 
+	 * @param speed
+	 *            The new speed of the wrapper
 	 */
 	public void setSpeed(float speed) {
 		this.speed = speed;
 	}
+
 	/**
 	 * Loads the graphical shape of the wrapper
 	 */
@@ -54,15 +63,23 @@ public class Wrapper extends Node {
 		pivot.attachChild(ModelLoader.loadOBJ(getClass().getClassLoader()
 				.getResource("model/engraver2.obj"), true));
 	}
+
 	/**
 	 * Updates the state of the wrapper when an element wants to be wrapped
-	 * @param timeperframes Parameter used in the translation of the wrapper
-	 * @param element Element (a blister) that want to be wrapped up 
+	 * 
+	 * @param timeperframes
+	 *            Parameter used in the translation of the wrapper
+	 * @param element
+	 *            Element (a blister) that want to be wrapped up
 	 */
 	public void update(float timeperframes, Spatial element) {
-		// System.out.println(pivot.getLocalTranslation().y);
+		System.out.println("Wrapper called:" + pivot.getLocalTranslation().y
+				+ "# Speed:" + speed + " Timer: " + timeperframes+ " Desplazamiento:" + speed
+				* timeperframes );
 		if (speed > 0) {
-
+			System.out.println("Wrapper moving:"
+					+ pivot.getLocalTranslation().y + "# Speed:" + speed+ " Timer: " + timeperframes
+					+ " Desplazamiento:" + speed * timeperframes);
 			if (direction) {
 				if (pivot.getLocalTranslation().y >= 0.0f) {
 					pivot.getLocalTranslation().y = 0.0f;
@@ -71,9 +88,11 @@ public class Wrapper extends Node {
 					// Approach 2
 					finished = true;
 					speed = 0;
-//					System.out.println("Finished!!");
+					// System.out.println("Finished!!");
 				} else {
-					pivot.getLocalTranslation().y += speed * timeperframes;
+					if (timeperframes < 1 && timeperframes > 0) {
+						pivot.getLocalTranslation().y += speed * timeperframes;
+					}
 				}
 			} else {
 
@@ -89,15 +108,20 @@ public class Wrapper extends Node {
 				} else if (pivot.getLocalTranslation().y <= -2.6f) {
 					direction = true;
 				} else {
-					pivot.getLocalTranslation().y -= speed * timeperframes;
+					if (timeperframes < 1 && timeperframes > 0) {
+						pivot.getLocalTranslation().y -= speed * timeperframes;
+					}
 				}
 				finished = false;
 			}
 		}
 	}
+
 	/**
-	 *Wrap an element (a blister)
-	 * @param element Element that want to be wrapped up
+	 * Wrap an element (a blister)
+	 * 
+	 * @param element
+	 *            Element that want to be wrapped up
 	 */
 	public void WrapUp(Spatial element) {
 
