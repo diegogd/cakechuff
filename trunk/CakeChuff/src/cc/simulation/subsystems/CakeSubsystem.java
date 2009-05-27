@@ -6,6 +6,7 @@ import java.util.Observer;
 import java.util.Vector;
 
 import cc.simulation.elements.Cake;
+import cc.simulation.elements.CakesContainer;
 import cc.simulation.elements.ConveyorCake;
 import cc.simulation.elements.LightSensor;
 import cc.simulation.elements.TouchSensor;
@@ -14,6 +15,7 @@ import cc.simulation.state.CakeSubsystemState;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
+import com.jme.system.DisplaySystem;
 /**
  * Implementation of the cake simulation subsystem
  * @version 1.0, 29/05/09
@@ -30,6 +32,9 @@ public class CakeSubsystem extends Node implements Observer {
 	// Conveyor
 	ConveyorCake conv;
 	float lastVelocity;
+	
+	//Cake's Container
+	CakesContainer cakeContainer;
 
 	// Valves
 	Valve chocolate;
@@ -40,15 +45,21 @@ public class CakeSubsystem extends Node implements Observer {
 	
 	// Produced cakes
 	public List<Spatial> cakes;
+	
+	//RenderState
+	DisplaySystem mainDisplay;
+	
 	/**
 	 * Constructor
 	 * Initializes the attributes of the cake subsystem and instantiates its state
 	 */
-	public CakeSubsystem() {
+	public CakeSubsystem(DisplaySystem display) {
 		_state = CakeSubsystemState.getInstance();
 		_state.addObserver(this);
+		this.mainDisplay = display;
 		initElements();
 		cakes = new Vector<Spatial>();
+		
 	}
 	/**
 	 * Initializes the attributes of the cake subsystem such as the velocity and
@@ -74,6 +85,10 @@ public class CakeSubsystem extends Node implements Observer {
 		this.attachChild(s3);
 		//_state.addSensor(s3);
 		_state.addTouchSensor(s3);
+		
+		cakeContainer = new CakesContainer(this.mainDisplay);
+		cakeContainer.setLocalTranslation(-7, 13, 0);
+		this.attachChild(cakeContainer);
 
 		chocolate = new Valve("chocolate", new ColorRGBA(0.31f, 0.192f,
 				0.0705f, 1f));
