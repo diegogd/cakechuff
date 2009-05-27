@@ -284,7 +284,8 @@ public class BlisterAutomaton extends Automaton {
 			case BLISTER_READY:
 				if (content[0].equalsIgnoreCase("R1")
 						&& content[1].equalsIgnoreCase("blister")) {
-					run_init();
+					//run_init();
+					blistersystem.setConveyor_velocity(speed);
 				}
 				break;
 			case FAILURE:
