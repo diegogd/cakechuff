@@ -37,7 +37,9 @@ public class QCAutomaton extends Automaton {
 	private static final int FAILURE=9;
 	
 	//parameters
-	private int belt_lg, t_stamp, t_rob,f_chance;
+	private int belt_lg,f_chance;
+	private float t_stamp, t_rob;
+	
 	private float speed;
 	private int cakes_blister;
 	//simulation
@@ -96,7 +98,7 @@ public class QCAutomaton extends Automaton {
 		this.speed = (float)speed/(belt_lg*3);
 		this.belt_lg=belt_lg;
 		this.t_stamp=t_stamp;
-		this.t_rob=7/t_rob;
+		this.t_rob=9f/t_rob;
 		this.f_chance=f_rate;
 		state=START;
 		qcsystem.setRobot_velocity(this.t_rob);
@@ -131,7 +133,7 @@ public class QCAutomaton extends Automaton {
 		qcsystem.setQualityCheck(true);
 		
 		try{
-			Thread.sleep(3*1000);
+			Thread.sleep(2*1000);
 		}catch(InterruptedException ie){
 			//System.out.println("Interrupted");
 			ie.printStackTrace();
@@ -168,7 +170,7 @@ public class QCAutomaton extends Automaton {
 		qcsystem.setWrapper_secs(5f/t_stamp);
 		qcsystem.setWrappedUp(true);
 		try{
-			Thread.sleep(t_stamp*1000);
+			Thread.sleep((int)t_stamp*1000);
 		}catch(InterruptedException ie){
 			ie.printStackTrace();
 		}
@@ -237,7 +239,8 @@ public class QCAutomaton extends Automaton {
 		//qcsystem.addObserver(this);
 		this.speed = Float.parseFloat(pars[2])/(belt_lg*3);
 		this.t_stamp=Integer.parseInt(pars[5]);
-		this.t_rob=Integer.parseInt(pars[6]);
+		this.t_rob=9f/Integer.parseInt(pars[6]);
+		qcsystem.setRobot_velocity(this.t_rob);
 		//this.f_chance=Integer.parseInt(pars[4]);
 		if(qcsystem.getRobotCurrentState()!=qcsystem.getRobotGoToState())qcsystem.setRobotMoving(true); 
 		//Recover state
