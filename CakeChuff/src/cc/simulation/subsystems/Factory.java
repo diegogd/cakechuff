@@ -28,6 +28,7 @@ import com.jme.scene.shape.Box;
 import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.TextureState;
 import com.jme.scene.state.MaterialState.ColorMaterial;
+import com.jme.system.DisplaySystem;
 import com.jme.util.TextureManager;
 
 /**
@@ -73,6 +74,14 @@ public class Factory extends SimpleGame implements Observer {
 		_state = SystemState.getInstance();
 		_state.addObserver(this);
 		mices = new Vector<Mouse>();
+	}
+	
+	public DisplaySystem getDisplayRender(){
+		return display;
+	}
+	
+	public Factory factoryInstance(){
+		return this;
 	}
 	/**
 	 * Drops the cakes and engraves them. Then updates the state of the three subsystems (cake, blister, quality) and
@@ -173,7 +182,7 @@ public class Factory extends SimpleGame implements Observer {
 
 		rootNode.attachChild(floor);
 
-		cakeSub = new CakeSubsystem();
+		cakeSub = new CakeSubsystem(display);
 		cakeSub.setLocalTranslation(new Vector3f(-11, 0, -7.5f));
 		rootNode.attachChild(cakeSub);
 
