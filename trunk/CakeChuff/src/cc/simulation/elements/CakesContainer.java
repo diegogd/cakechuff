@@ -42,21 +42,21 @@ public class CakesContainer extends Node {
 		// look opaque then transparent then opaque and so on
 		MaterialState materialState = display.getRenderer()
 				.createMaterialState();
+//		materialState
+//				.setAmbient(new ColorRGBA(0.0f, 0.0f, 0.0f, opacityAmount));
 		materialState
-				.setAmbient(new ColorRGBA(0.0f, 0.0f, 0.0f, opacityAmount));
-		materialState
-				.setDiffuse(new ColorRGBA(0.1f, 0.5f, 0.8f, opacityAmount));
-		materialState
-				.setSpecular(new ColorRGBA(1.0f, 1.0f, 1.0f, opacityAmount));
-		materialState.setShininess(128.0f);
-		materialState
-				.setEmissive(new ColorRGBA(0.0f, 0.0f, 0.0f, opacityAmount));
+				.setDiffuse(new ColorRGBA(1f, 1f, 1f, opacityAmount));
+//		materialState
+//				.setSpecular(new ColorRGBA(1.0f, 1.0f, 1.0f, opacityAmount));
+//		materialState.setShininess(128.0f);
+//		materialState
+//				.setEmissive(new ColorRGBA(0.0f, 0.0f, 0.0f, opacityAmount));
 		materialState.setEnabled(true);
 
 		// IMPORTANT: this is used to handle the internal sphere faces when
 		// setting them to transparent, try commenting this line to see what
 		// happens
-//		materialState.setMaterialFace(MaterialState.MaterialFace.FrontAndBack);
+		materialState.setMaterialFace(MaterialState.MaterialFace.FrontAndBack);
 
 		plasticBox.setRenderState(materialState);
 		plasticBox.updateRenderState();
