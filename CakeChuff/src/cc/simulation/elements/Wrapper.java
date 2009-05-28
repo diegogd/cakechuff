@@ -73,13 +73,7 @@ public class Wrapper extends Node {
 	 *            Element (a blister) that want to be wrapped up
 	 */
 	public void update(float timeperframes, Spatial element) {
-//		System.out.println("Wrapper called:" + pivot.getLocalTranslation().y
-//				+ "# Speed:" + speed + " Timer: " + timeperframes+ " Desplazamiento:" + speed
-//				* timeperframes );
 		if (speed > 0) {
-//			System.out.println("Wrapper moving:"
-//					+ pivot.getLocalTranslation().y + "# Speed:" + speed+ " Timer: " + timeperframes
-//					+ " Desplazamiento:" + speed * timeperframes);
 			if (direction) {
 				if (pivot.getLocalTranslation().y >= 0.0f) {
 					pivot.getLocalTranslation().y = 0.0f;
@@ -126,7 +120,6 @@ public class Wrapper extends Node {
 	public void WrapUp(Spatial element) {
 
 		if (element instanceof Blister) {
-			System.out.println("Wrapped!!");
 			Packet wrapper = new Packet(((Blister) element).getName());
 			((Blister) element).placeWrapper(wrapper);
 		}
