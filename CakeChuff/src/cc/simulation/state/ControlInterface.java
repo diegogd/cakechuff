@@ -251,7 +251,7 @@ public class ControlInterface extends javax.swing.JFrame implements ActionListen
         spinnerBeltSpeed2.setName("beltspeed2"); // NOI18N
         spinnerBeltSpeed2.addChangeListener(this);
 
-        spinnerBeltLenght2.setModel(new javax.swing.SpinnerNumberModel(1, 1, 40, 1));
+        spinnerBeltLenght2.setModel(new javax.swing.SpinnerNumberModel(3, 3, 40, 1));
         spinnerBeltLenght2.setName("beltlenght2l"); // NOI18N
         spinnerBeltLenght2.addChangeListener(this);
 
@@ -289,7 +289,7 @@ public class ControlInterface extends javax.swing.JFrame implements ActionListen
 
         jLabel13.setText("Chocolate Valve (secs):");
 
-        spinnerBeltLenght1.setModel(new javax.swing.SpinnerNumberModel(1, 1, 40, 1));
+        spinnerBeltLenght1.setModel(new javax.swing.SpinnerNumberModel(3, 3, 40, 1));
         spinnerBeltLenght1.setName("beltlenght"); // NOI18N
         spinnerBeltLenght1.addChangeListener(this);
 
@@ -377,7 +377,7 @@ public class ControlInterface extends javax.swing.JFrame implements ActionListen
 
         jLabel17.setText("Sealing Time (secs):");
 
-        spinnerBeltLenght3.setModel(new javax.swing.SpinnerNumberModel(1, 1, 40, 1));
+        spinnerBeltLenght3.setModel(new javax.swing.SpinnerNumberModel(3, 3, 40, 1));
         spinnerBeltLenght3.setName("beltlenght3"); // NOI18N
         spinnerBeltLenght3.addChangeListener(this);
 
@@ -389,7 +389,7 @@ public class ControlInterface extends javax.swing.JFrame implements ActionListen
 
         jLabel23.setText("Failure Range (%):");
 
-        spinnerSealingTIme.setModel(new javax.swing.SpinnerNumberModel(0, 0, 20, 1));
+        spinnerSealingTIme.setModel(new javax.swing.SpinnerNumberModel(1, 1, 20, 1));
         spinnerSealingTIme.setName("sealtime"); // NOI18N
         spinnerSealingTIme.addChangeListener(this);
 
