@@ -76,9 +76,7 @@ public class Mailbox implements Runnable {
 		//Accept connections
 		while (true) {
 			try {
-				System.out.print("[Mailbox]: Connecting...");
 				this.connect();
-				System.out.println("ok");
 				receiveMsgs();
 			} catch (IOException ioe) {
 				// cannot connect
@@ -111,12 +109,10 @@ public class Mailbox implements Runnable {
 					owner.newMsg(msg);
 				else{
 					try{
-						//System.out.print("[Mailbox]:Error, Re-connecting...");
 						this.connect();
 						if(master!=null){
 							master.reconnect();
 						}
-						//System.out.println("[Mailbox]: ok, connection stablished");
 					}catch(IOException ioe){
 						//cannot connect
 						ioe.printStackTrace();

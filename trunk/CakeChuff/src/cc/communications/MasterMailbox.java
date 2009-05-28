@@ -71,13 +71,10 @@ public class MasterMailbox implements Runnable{
 			String msg=msgs.remove(0);
 			boolean success=false;
 			while (!success) {
-				System.out.println();
 				try {
 					dout.println(msg);
 					success = true;
-					System.out.println("[Master]: Sent: "+msg);
 				} catch (Exception e) {
-					System.out.println("Error:");
 					e.printStackTrace();
 					// restart the receiving connection
 					if (!mbox.isFailure())

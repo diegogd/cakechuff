@@ -1,19 +1,20 @@
-//TODO: recuperación de caídas(Robots) +
-//TODO: Ajustar velocidades al entorno de ejecución -
 
 package cc.automatons;
 
 import java.util.Observable;
 
 import cc.communications.MasterMailbox;
+import cc.simulation.elements.Robot;
 import cc.simulation.state.Robot1State;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  * Define the internal logic of the MasterAutomaton
  * @version 1.0, 29/05/09
  * @author CaKeChuff team
  */
 public class MasterAutomaton extends Automaton {
+	private static Logger logger = Logger.getLogger(MasterAutomaton.class.getName());
 	//Robot states
 	private Robot1State robot;
 	private boolean movingrobot;
@@ -84,18 +85,14 @@ public class MasterAutomaton extends Automaton {
 		state = EMPTY;
 
 		// comm
-		System.out.print("First mbox...");
+		logger.finest("First mbox...");
 		mboxScada = new MasterMailbox(this, scada_in, scada_out, scada);
-		System.out.println("OK");
-		System.out.print("2nd mbox...");
+		logger.finest("2nd mbox...");
 		mboxCake = new MasterMailbox(this, cake_in, cake_out, cake);
-		System.out.println("OK");
-		System.out.print("3rd mbox...");
+		logger.finest("3rd mbox...");
 		mboxBlister = new MasterMailbox(this, blister_in, blister_out, blister);
-		System.out.println("OK");
-		System.out.print("4th mbox...");
+		logger.finest("4th mbox...");
 		mboxQC = new MasterMailbox(this, qc_in, qc_out, qc);
-		System.out.println("OK");
 
 		// subscribe
 		robot = Robot1State.getInstance();
@@ -131,7 +128,7 @@ public class MasterAutomaton extends Automaton {
 	 * Set the robot speed to take a blister
 	 */
 	private void run_robot_blister() {
-		System.out.println("[Master]: Robot1: Picking blister");
+		logger.fine("[Master]: Robot1: Picking blister");
 		// move robot arm to the conveyor
 		robot.setRobot_velocity(moveblistert);
 		robot.setGoToState(PICKUPBLISTER);
@@ -148,7 +145,7 @@ public class MasterAutomaton extends Automaton {
 		mboxScada.send("R1:cake1");
 		robot.setRobot_velocity(movecaket);
 		robot.setGoToState(PICKUPCAKE);
-		System.out.println("[Master]:Picking cake 1");
+		logger.fine("[Master]:Picking cake 1");
 		// put cake in the blister
 		// tell the cake automaton
 	}
@@ -164,7 +161,7 @@ public class MasterAutomaton extends Automaton {
 		mboxScada.send("R1:cake2");
 		robot.setRobot_velocity(movecaket);
 		robot.setGoToState(PICKUPCAKE);
-		System.out.println("[Master]:Picking cake 2");
+		logger.fine("[Master]:Picking cake 2");
 		// put cake in the blister
 		// tell the cake automaton
 	}
@@ -180,7 +177,7 @@ public class MasterAutomaton extends Automaton {
 		mboxScada.send("R1:cake3");
 		robot.setRobot_velocity(movecaket);
 		robot.setGoToState(PICKUPCAKE);
-		System.out.println("[Master]:Picking cake 3");
+		logger.fine("[Master]:Picking cake 3");
 	}
 
 	/**
@@ -194,7 +191,7 @@ public class MasterAutomaton extends Automaton {
 		mboxScada.send("R1:full");
 		robot.setRobot_velocity(movecaket);
 		robot.setGoToState(PICKUPCAKE);
-		System.out.println("[Master]:Picking last cake");
+		logger.fine("[Master]:Picking last cake");
 	}
 	
 	/**
@@ -215,27 +212,6 @@ public class MasterAutomaton extends Automaton {
 		//A normal stop ends with the robot empty
 		if(robot.getCurrentState()!=robot.getGoToState()) 
 			robot.setMoving(true);
-		/*if(state.equalsIgnoreCase("init")|| state.equalsIgnoreCase("empty")){
-			this.state=EMPTY;
-			//robot.setCurrentState(EMPTY);
-		} else if (state.equalsIgnoreCase("blister")){
-			//robot.setCurrentState(BLISTER);
-			this.state=BLISTER;
-		}else if (state.equalsIgnoreCase("cake1")){
-			this.state=CAKE1;
-			//robot.setCurrentState(CAKE1);
-		}else if (state.equalsIgnoreCase("cake2")){
-			this.state=CAKE2;
-			//robot.setCurrentState(CAKE2);
-		}else if (state.equalsIgnoreCase("cake3")){
-			this.state=CAKE3;
-			//robot.setCurrentState(CAKE3);
-		}else if (state.equalsIgnoreCase("full")){
-			this.state=FULL;
-			//robot.setCurrentState(FULL);
-		}*/
-		
-			
 	}
 	
 	/**
@@ -245,7 +221,7 @@ public class MasterAutomaton extends Automaton {
 	 */
 	@Override
 	public synchronized void newMsg(String msg) {
-		System.out.println("[Master]: Received msg: "+msg);
+		logger.fine("[Master]: Received msg: "+msg);
 		String[] content = msg.split(":");
 		if (content[0].equalsIgnoreCase("A1")) {
 			if (content[1].equalsIgnoreCase("ON")) {
@@ -258,7 +234,7 @@ public class MasterAutomaton extends Automaton {
 				// state change
 				mboxScada.send(msg);
 				if (content[1].equalsIgnoreCase("WAIT")) {
-					System.out.println("[Master]: Cake awaiting");
+					logger.fine("[Master]: Cake awaiting");
 					if(robot.getIfMoving())cake_waiting = true;
 					else if (state == BLISTER) {
 						run_robot_cake1();
@@ -306,13 +282,13 @@ public class MasterAutomaton extends Automaton {
 				if (content[1].equalsIgnoreCase("KO_WAIT")
 						|| content[1].equalsIgnoreCase("OK_WAIT")){
 					qc_free = true;
-					System.out.println("[Master]: QC is free, good!");
+					logger.fine("[Master]: QC is free, good!");
 				}
 					
 				// state change
 				mboxScada.send(msg);
 				if (qc_free && packet_waiting) {
-					System.out.println("[Master to Robot1]: Waiting packet -> QC");
+					logger.fine("[Master to Robot1]: Waiting packet -> QC");
 					robot.setRobot_velocity(moveblistert);
 					robot.setGoToState(PICKUPPACKET);
 				}
@@ -329,7 +305,7 @@ public class MasterAutomaton extends Automaton {
 		} else if (content[0].equalsIgnoreCase("RESTART")) {
 			
 			String[] pars = content[1].split("\\$");
-			System.out.println("Received recover information for " + pars[0]);
+			logger.fine("Received recover information for " + pars[0]);
 			if (pars[0].equalsIgnoreCase("A1")) {
 				mboxCake.send("RESTART:" + pars[1]);
 			} else if (pars[0].equalsIgnoreCase("A2")) {
@@ -370,11 +346,11 @@ public class MasterAutomaton extends Automaton {
 	public void update(Observable o, Object arg) {
 		treatingupdate=true;
 		if (o instanceof Robot1State && ! robot.getIfMoving() && ((Robot1State) o).isChanged_CS()) {
-			System.out.println("[Master to Robot1]:Robot state changed");
-			System.out.println("New Robot1 state:"+robot.getCurrentState());
+			logger.fine("[Master to Robot1]:Robot state changed");
+			logger.fine("New Robot1 state:"+robot.getCurrentState());
 			switch (robot.getCurrentState()) {
 			case (PICKUPCAKE):
-				System.out.println("[Master to Robot1]: CAKE -> TABLE");
+				logger.fine("[Master to Robot1]: CAKE -> TABLE");
 				cake_waiting = false;
 				robot.setRobot_velocity(movecaket);
 				robot.setGoToState(DROPINTABLE);
@@ -386,10 +362,10 @@ public class MasterAutomaton extends Automaton {
 				if (state == BLISTER) {
 					// Error chance
 					double error = Math.random();
-					System.out.println("[Master]: Error chance : " + error + "<" +f_chance+"??");
+					logger.fine("[Master]: Error chance : " + error + "<" +f_chance+"??");
 					
 					if ((error) < (Math.pow(f_chance, 4) / 100000000)) {
-						System.out.println("[Master]: Sim. error, skipping all cakes");
+						logger.fine("[Master]: Sim. error, skipping all cakes");
 						state = FULL;
 						mboxScada.send("R1:full");
 						if (qc_free) {
@@ -399,8 +375,7 @@ public class MasterAutomaton extends Automaton {
 							packet_waiting = true;
 					} else if ((error) < (Math.pow(f_chance, 3) / 1000000)) {
 						if (cake_waiting) {
-							System.out
-									.println("[Master to Robot1]: Sim. ERROR :BLISTER->CAKE4");
+							logger.fine("[Master to Robot1]: Sim. ERROR :BLISTER->CAKE4");
 							robot.setRobot_velocity(movecaket);
 							robot.setGoToState(PICKUPCAKE);
 							state = FULL;
@@ -411,8 +386,7 @@ public class MasterAutomaton extends Automaton {
 						}
 					} else if (error < ((f_chance * f_chance) / 10000d)) {
 						if (cake_waiting) {
-							System.out
-									.println("[Master to Robot1]: Sim. ERROR :BLISTER->CAKE3");
+							logger.fine("[Master to Robot1]: Sim. ERROR :BLISTER->CAKE3");
 							robot.setRobot_velocity(movecaket);
 							robot.setGoToState(PICKUPCAKE);
 							state = CAKE3;
@@ -423,8 +397,7 @@ public class MasterAutomaton extends Automaton {
 						}
 					} else if (error < (f_chance / 100d)) {
 						if (cake_waiting) {
-							System.out
-									.println("[Master to Robot1]: Sim. ERROR : BLISTER->CAKE2");
+							logger.fine("[Master to Robot1]: Sim. ERROR : BLISTER->CAKE2");
 							robot.setRobot_velocity(movecaket);
 							robot.setGoToState(PICKUPCAKE);
 							state = CAKE2;
@@ -435,8 +408,7 @@ public class MasterAutomaton extends Automaton {
 						}
 					} else {
 						if (cake_waiting) {
-							System.out
-									.println("[Master to Robot1]: BLISTER->CAKE1");
+							logger.fine("[Master to Robot1]: BLISTER->CAKE1");
 							robot.setRobot_velocity(movecaket);
 							robot.setGoToState(PICKUPCAKE);
 							state = CAKE1;
@@ -445,7 +417,7 @@ public class MasterAutomaton extends Automaton {
 					}
 				} else if (state == CAKE1) {
 					if (cake_waiting) {
-						System.out.println("[Master to Robot1]: CAKE1->CAKE2");
+						logger.fine("[Master to Robot1]: CAKE1->CAKE2");
 						robot.setRobot_velocity(movecaket);
 						robot.setGoToState(PICKUPCAKE);
 						state = CAKE2;
@@ -453,7 +425,7 @@ public class MasterAutomaton extends Automaton {
 					}
 				} else if (state == CAKE2) {
 					if (cake_waiting) {
-						System.out.println("R1: CAKE2->CAKE3");
+						logger.fine("R1: CAKE2->CAKE3");
 						robot.setRobot_velocity(movecaket);
 						robot.setGoToState(PICKUPCAKE);
 						state = CAKE3;
@@ -461,7 +433,7 @@ public class MasterAutomaton extends Automaton {
 					}
 				} else if (state == CAKE3) {
 					if (cake_waiting) {
-						System.out.println("[Master to Robot1]: CAKE3->FULL");
+						logger.fine("[Master to Robot1]: CAKE3->FULL");
 						robot.setRobot_velocity(movecaket);
 						robot.setGoToState(PICKUPCAKE);
 						state = FULL;
@@ -469,11 +441,11 @@ public class MasterAutomaton extends Automaton {
 					}
 				} else if (state == FULL) {
 					if (qc_free){
-						System.out.println("[Master to Robot1]: PICK PACKET");
+						logger.fine("[Master to Robot1]: PICK PACKET");
 						robot.setRobot_velocity(moveblistert);
 						robot.setGoToState(PICKUPPACKET);
 					} else{
-						System.out.println("[Master]: QC is not available, waiting...");
+						logger.fine("[Master]: QC is not available, waiting...");
 						packet_waiting = true;
 					}
 				}
@@ -481,7 +453,7 @@ public class MasterAutomaton extends Automaton {
 				break;
 			case (PICKUPBLISTER):
 				blister_waiting=false;
-				System.out.println("[Master to Robot1]: BLISTER -> TABLE");
+				logger.fine("[Master to Robot1]: BLISTER -> TABLE");
 				state=BLISTER;
 				mboxScada.send("R1:blister");
 				robot.setRobot_velocity(moveblistert);
@@ -490,19 +462,19 @@ public class MasterAutomaton extends Automaton {
 				break;
 			case (PICKUPPACKET):
 				packet_waiting=false;
-				System.out.println("[Master to Robot1]: BLISTER -> QC");
+				logger.fine("[Master to Robot1]: BLISTER -> QC");
 				robot.setRobot_velocity(moveblistert);
 				robot.setGoToState(DROPINSUB3);
 				break;
 			case (DROPINSUB3):
-				System.out.println("[Master to Robot1]: PACK LEFT");
+				logger.fine("[Master to Robot1]: PACK LEFT");
 				mboxQC.send("R1:empty");
 				state = EMPTY;
 				mboxScada.send("R1:empty");
 				qc_free=false;
-				System.out.println("\n\n------------[Robot1]:Pack Done-----------------\n\n");
+				logger.fine("\n\n------------[Robot1]:Pack Done-----------------\n\n");
 				if (blister_waiting && !stop) {
-					System.out.println("[Master to Robot1]: PICK AWAITING BLISTER");
+					logger.fine("[Master to Robot1]: PICK AWAITING BLISTER");
 					//state=BLISTER;
 					robot.setRobot_velocity(moveblistert);
 					robot.setGoToState(PICKUPBLISTER);
@@ -559,7 +531,7 @@ public class MasterAutomaton extends Automaton {
 				}
 			}
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.severe(e.toString());
 		}
 	}
 }

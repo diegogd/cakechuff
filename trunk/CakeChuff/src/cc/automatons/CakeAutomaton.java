@@ -1,8 +1,3 @@
-//TODO: Cinta que no arranca (waitingcake bloqueando?) +++
-//TODO: Parada sin lanzar más tartas de la cuenta --
-//TODO: Estados dobles (esperando y chocolate, etc) -> booleanos para retrasar acciones, 
-// no permitiendo más de una a la vez(lento) +
-
 
 package cc.automatons;
 
@@ -59,7 +54,6 @@ public class CakeAutomaton extends Automaton {
 	 * @exception SecurityException Security error
 	 */
 	public CakeAutomaton(int portin, int portout, String master){
-		System.out.println("[CakeAutomaton]:Creating...");
 		state=START;
 		stop=false;
 		try{
@@ -84,7 +78,6 @@ public class CakeAutomaton extends Automaton {
 			//tell the master the automaton is on
 			send("A1:ON");
 			waitingcake=false;
-			System.out.println("[CakeAutomaton]:Active");
 		}catch(UnknownHostException uhe){
 			
 		}catch(IOException ioe){
@@ -92,7 +85,6 @@ public class CakeAutomaton extends Automaton {
 		}catch(SecurityException se){
 			
 		}
-		System.out.println("[CakeAutomaton]:Creation finished");
 		
 	}
 	
@@ -105,7 +97,6 @@ public class CakeAutomaton extends Automaton {
 	 * @param vt2 Chocolate valve activation time
 	 */
 	private void run_start(int cake_cap, int speed, int belt_lg, int vt1, int vt2){
-		System.out.println("Initializating cake automaton...");
 		this.speed = (float)speed/(belt_lg*3);
 		this.belt_lg = belt_lg;
 		this.cake_cap = cake_cap;
@@ -136,8 +127,6 @@ public class CakeAutomaton extends Automaton {
 		 * if the automaton is going to stop, the number of cakes dropped for this blister mist be 4
 		 * to fill it.
 		 */
-		//System.out.println("[CakeAutomaton]: Sending "+ blistercakes+" to the blister");
-		//if(!cake_thrown && ncakes>0 && (!stop||blistercakes<4)){
 		if(!cake_thrown && ncakes>0 && (!stop||!fullblister)){
 			sys.setDropCake();
 			cake_thrown=true;
@@ -243,7 +232,6 @@ public class CakeAutomaton extends Automaton {
 	private void run_failure(String data){
 		boolean fromstop=stop;
 		stop=false;
-		System.out.println("[CakeAutomaton]:Restoring");
 		String pars[]=data.split("#");
 		
 		//Reload parameters
@@ -287,7 +275,6 @@ public class CakeAutomaton extends Automaton {
 	 */
 	private void run_reset(String data){
 		stop=false;
-		System.out.println("[CakeAutomaton]:Restoring");
 		String pars[]=data.split("#");
 		
 		//Reload parameters
@@ -340,7 +327,6 @@ public class CakeAutomaton extends Automaton {
 	 */
 	@Override
 	public synchronized void newMsg(String msg) {
-		System.out.println("[CakeAutomaton]: Received msg: "+msg);
 		String[] content = msg.split(":");
 		// Emergencies work for any state
 		if (content[0].equals("EMERGENCY"))
@@ -363,7 +349,6 @@ public class CakeAutomaton extends Automaton {
 			if (content[1].equalsIgnoreCase("cake")){
 				waitingcake=false;
 				fullblister=false;
-				System.out.println("[CakeAutomaton]: Cake taken.");
 				//run_init();
 			}
 			else if (content[1].equalsIgnoreCase("fullblister")){
