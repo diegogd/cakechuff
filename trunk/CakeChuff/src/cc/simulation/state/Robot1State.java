@@ -108,7 +108,6 @@ public class Robot1State extends Observable {
 	 */
 	public void setCurrentState(int currentState) {
 		//if (this.current_state != currentState) {
-			System.out.println("Changing State...");
 			this.current_state = currentState;
 			this.changed_CS = true;
 			this.setMoving(false);
