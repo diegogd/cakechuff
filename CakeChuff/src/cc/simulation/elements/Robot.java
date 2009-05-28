@@ -468,7 +468,7 @@ public class Robot extends Node {
 					// pivotElement.detachChild(object);
 					takenObject.removeFromParent();
 					Father.attachChild(takenObject);
-					System.out.println(Father.toString());
+					// System.out.println(Father.toString());
 
 					takenObject.setLocalRotation(Rotations.rotateY(-0.15f));
 					takenObject.setLocalTranslation(6f, -1f, 3f);
@@ -483,7 +483,7 @@ public class Robot extends Node {
 					if (lastBlister != null) {
 						this.has_object = false;
 						takenObject.setLocalTranslation(0, 0, 0);
-						System.out.println(Father.toString());
+						// System.out.println(Father.toString());
 						// element.setLocalRotation(Rotations.rotateX(0.5f));
 						((Blister) lastBlister).placeCake(takenObject);
 
@@ -510,7 +510,7 @@ public class Robot extends Node {
 					((QualitySubsystem) element).takenBlisters.add(takenObject);
 					takenObject.removeFromParent();
 					Father.attachChild(takenObject);
-					System.out.println(Father.toString());
+					// System.out.println(Father.toString());
 					takenObject.setLocalTranslation(16f, -1f, 8.5f);
 					takenObject.updateRenderState();
 					Father.updateRenderState();
