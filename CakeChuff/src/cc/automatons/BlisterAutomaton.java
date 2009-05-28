@@ -1,4 +1,3 @@
-//TODO: REcuperacion: REconocer si el sensor de final sigue activo para arrancar el movimiento
 package cc.automatons;
 
 import java.io.DataOutputStream;
@@ -16,6 +15,8 @@ import cc.simulation.state.BlisterSubsystemState;
 import cc.simulation.state.CakeSubsystemState;
 import cc.simulation.state.QualitySubsystemState;
 import cc.simulation.state.SystemState;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Define the internal logic of the BlisterAutomaton
@@ -23,7 +24,7 @@ import cc.simulation.state.SystemState;
  * @author CaKeChuff team
  */
 public class BlisterAutomaton extends Automaton {
-
+	private static Logger logger = Logger.getLogger(BlisterAutomaton.class.getName());
 	private static final int START = 0;
 	private static final int INIT = 1;
 	private static final int PRESS = 2;
@@ -64,7 +65,6 @@ public class BlisterAutomaton extends Automaton {
 					sout = new Socket(master, portout);
 					connected = true;
 				} catch (Exception e) {
-					System.err.println("[Blisters]: ERROR");
 					e.printStackTrace();
 				}
 			}
@@ -81,14 +81,14 @@ public class BlisterAutomaton extends Automaton {
 			// tell the master the automaton is on
 			send("A2:ON");
 		} catch (UnknownHostException uhe) {
-			System.err.println("[Blisters]: ERROR");
-			uhe.printStackTrace();
+			logger.severe("[Blisters]: ERROR");
+			logger.severe(uhe.toString());
 		} catch (IOException ioe) {
-			System.err.println("[Blisters]: ERROR");
-			ioe.printStackTrace();
+			logger.severe("[Blisters]: ERROR");
+			logger.severe(ioe.toString());
 		} catch (SecurityException se) {
-			System.err.println("[Blisters]: ERROR");
-			se.printStackTrace();
+			logger.severe("[Blisters]: ERROR");
+			logger.severe(se.toString());
 		}
 	}
 
@@ -304,7 +304,6 @@ public class BlisterAutomaton extends Automaton {
 	 */
 	public void run() {
 		while(treatingupdate){
-			System.out.println("[BlisterAutomaton]: Esperando a terminar anterior operación.");
 			try {
 				Thread.sleep(200);
 			} catch (InterruptedException e) {
@@ -422,7 +421,6 @@ public class BlisterAutomaton extends Automaton {
 		}
 
 		public void setFreq(float freq) {
-			System.out.println("[STAMPER]: Nueva Velocidad: " +freq);
 			this.freq = freq;
 		}
 

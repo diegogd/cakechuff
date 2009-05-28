@@ -93,9 +93,7 @@ public class ScadaMailbox implements Runnable {
 			} catch (Exception e) {
 				// connection failure
 				try{
-					System.out.print("[Mailbox]:Error, Re-connecting...");
 					this.connect();
-					System.out.println("ok");
 				}catch(IOException ioe){
 					//cannot connect
 					ioe.printStackTrace();

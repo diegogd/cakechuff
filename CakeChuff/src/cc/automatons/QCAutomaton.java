@@ -1,4 +1,3 @@
-//TODO: Parar el robot en la parada de emergencia (el comportamiento es distinto al del robot1)
 
 package cc.automatons;
 
@@ -137,7 +136,6 @@ public class QCAutomaton extends Automaton {
 		try{
 			Thread.sleep(2*1000);
 		}catch(InterruptedException ie){
-			//System.out.println("Interrupted");
 			ie.printStackTrace();
 		}
 		cakes_blister=qcsystem.getIfQualityPassed();
