@@ -151,11 +151,15 @@ public class BlisterAutomaton extends Automaton {
 			// TODO Auto-generated catch block
 			//e.printStackTrace();
 		}
-		stamper.work();
+		
 		state = CUTTING;
+		if(!blistersystem.isTouchSensorActived()){
+			blistersystem.setConveyor_velocity(speed);
+			stamper.work();
+		}
 		// send new state
 		send("A2:cutting");
-		if(!blistersystem.isTouchSensorActived()) blistersystem.setConveyor_velocity(speed);
+		
 	}
 
 	/**
@@ -284,8 +288,8 @@ public class BlisterAutomaton extends Automaton {
 			case BLISTER_READY:
 				if (content[0].equalsIgnoreCase("R1")
 						&& content[1].equalsIgnoreCase("blister")) {
-					//run_init();
-					blistersystem.setConveyor_velocity(speed);
+					run_init();
+					//blistersystem.setConveyor_velocity(speed);
 				}
 				break;
 			case FAILURE:
@@ -299,6 +303,16 @@ public class BlisterAutomaton extends Automaton {
 	 * Run the BlisterAutomaton
 	 */
 	public void run() {
+		while(treatingupdate){
+			System.out.println("[BlisterAutomaton]: Esperando a terminar anterior operación.");
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		treatingupdate = true;
 		switch (state) {
 		case CUTTING:
 			run_cutting();
@@ -316,27 +330,23 @@ public class BlisterAutomaton extends Automaton {
 	 */
 	@Override
 	public void update(Observable o, Object arg) {
-		treatingupdate = true;
+		
 		// which sensor?
-		if (arg instanceof LightSensor) {
+		if (arg instanceof TouchSensor) {
+		if (((Sensor) arg).isActived()) {
+			/*state = BLISTER_READY;
+			changingstate=new Thread(this);
+			changingstate.start();*/
+			run_blister_ready();
+		}
+		// else -> no action, blister's pickup is received as a message
+	} else if (arg instanceof LightSensor) {
 			if (((Sensor) arg).isActived()) {
 				state = CUTTING;
 				changingstate=new Thread(this);
 				changingstate.start();
-			} else
-				treatingupdate = false;
-			// else run_choc_car();
-
-		} else if (arg instanceof TouchSensor) {
-			if (((Sensor) arg).isActived() && state != BLISTER_READY) {
-				state = BLISTER_READY;
-				changingstate=new Thread(this);
-				changingstate.start();
-			} else
-				treatingupdate = false;
-			// else -> no action, blister's pickup is received as a message
-		} else
-			treatingupdate = false;
+			}
+		}
 	}
 
 	/**
