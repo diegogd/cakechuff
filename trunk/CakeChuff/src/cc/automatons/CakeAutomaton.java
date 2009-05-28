@@ -241,6 +241,7 @@ public class CakeAutomaton extends Automaton {
 	 * Recover from a failure
 	 */
 	private void run_failure(String data){
+		boolean fromstop=stop;
 		stop=false;
 		System.out.println("[CakeAutomaton]:Restoring");
 		String pars[]=data.split("#");
@@ -256,8 +257,8 @@ public class CakeAutomaton extends Automaton {
 		
 		//Recover state
 		if(pars[0].equalsIgnoreCase("INIT")){
-			//run_init(); <- It was most likely thrown already
-			cakesystem.setConveyor_velocity(speed);
+			if(fromstop) run_init();
+			else cakesystem.setConveyor_velocity(speed);
 		}else if(pars[0].equalsIgnoreCase("CHOC")){
 			state=CHOC;
 			changingstate=new Thread(this);
