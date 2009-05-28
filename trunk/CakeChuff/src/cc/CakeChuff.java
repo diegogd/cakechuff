@@ -69,7 +69,6 @@ public class CakeChuff extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         RunEveryThingButton = new javax.swing.JToggleButton();
-        RunMasterButton = new javax.swing.JToggleButton();
         RunCakeSubsystemButton = new javax.swing.JToggleButton();
         RunBlisterSubsystemButton = new javax.swing.JToggleButton();
         RunQualitySubystemButton = new javax.swing.JToggleButton();
@@ -84,7 +83,7 @@ public class CakeChuff extends javax.swing.JFrame {
         setTitle("CakeChuff - Threads");
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Threads"));
-        jPanel1.setLayout(new java.awt.GridLayout(5, 0));
+        jPanel1.setLayout(new java.awt.GridLayout(4, 0));
 
         RunEveryThingButton.setText("Run All the Systems");
         RunEveryThingButton.setMaximumSize(new java.awt.Dimension(100, 23));
@@ -96,18 +95,6 @@ public class CakeChuff extends javax.swing.JFrame {
             }
         });
         jPanel1.add(RunEveryThingButton);
-
-        RunMasterButton.setForeground(new java.awt.Color(255, 102, 102));
-        RunMasterButton.setText("Master Subsystem is OFF");
-        RunMasterButton.setMaximumSize(new java.awt.Dimension(100, 23));
-        RunMasterButton.setMinimumSize(new java.awt.Dimension(100, 23));
-        RunMasterButton.setPreferredSize(new java.awt.Dimension(100, 23));
-        RunMasterButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                RunMasterButtonActionPerformed(evt);
-            }
-        });
-        jPanel1.add(RunMasterButton);
 
         RunCakeSubsystemButton.setForeground(new java.awt.Color(255, 102, 102));
         RunCakeSubsystemButton.setText("Cake Subsystem is OFF");
@@ -189,18 +176,18 @@ public class CakeChuff extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -240,10 +227,6 @@ public class CakeChuff extends javax.swing.JFrame {
 
     private void RunEveryThingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RunEveryThingButtonActionPerformed
     	if( !scandaRunning ) startSubsystem(SCADA);
-        startSubsystem(MASTER);
-        RunMasterButton.setText("Master is ON");
-        RunMasterButton.setForeground(Color.GREEN);
-        RunMasterButton.setSelected(true);
         startSubsystem(CAKES);
         RunCakeSubsystemButton.setText("Cakes Subystem is ON");
         RunCakeSubsystemButton.setForeground(Color.GREEN);
@@ -259,22 +242,6 @@ public class CakeChuff extends javax.swing.JFrame {
 
         RunEveryThingButton.setEnabled(false);
 }//GEN-LAST:event_RunEveryThingButtonActionPerformed
-
-    private void RunMasterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RunMasterButtonActionPerformed
-    	if( !scandaRunning ) startSubsystem(SCADA);
-        if(RunEveryThingButton.isEnabled()) RunEveryThingButton.setEnabled(false);
-        if(RunMasterButton.isSelected()){
-            startSubsystem(MASTER);
-            RunMasterButton.setText("Master is ON");
-            RunMasterButton.setForeground(Color.GREEN);
-            RunMasterButton.setSelected(true);
-        } else {
-            stopSubsystem(MASTER);
-            RunMasterButton.setText("Master is OFF");
-            RunMasterButton.setForeground(Color.RED);
-            RunMasterButton.setSelected(false);
-        }
-    }//GEN-LAST:event_RunMasterButtonActionPerformed
 
     private void RunQualitySubystemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RunQualitySubystemButtonActionPerformed
     	if( !scandaRunning ) startSubsystem(SCADA);
@@ -314,13 +281,6 @@ public class CakeChuff extends javax.swing.JFrame {
 
     private void startSubsystem(int id){
         switch(id){
-            case MASTER:
-            	
-            	masterAutomaton = new MasterAutomaton("localhost",9009,9008,
-            								 "localhost",9000,9001,
-            								 "localhost",9003,9002,
-            								 "localhost",9005,9004);
-                break;
             case SCADA:
             	scandaRunning = true;
             	java.awt.EventQueue.invokeLater(new Runnable() {
@@ -339,6 +299,10 @@ public class CakeChuff extends javax.swing.JFrame {
                         new ControlInterface().setVisible(true);
                     }
                 });
+                masterAutomaton = new MasterAutomaton("localhost",9009,9008,
+            								 "localhost",9000,9001,
+            								 "localhost",9003,9002,
+            								 "localhost",9005,9004);
                 break;
             case CAKES:            	
             	cakesAutomaton = new CakeAutomaton(9001,9000,"localhost");            	
@@ -408,7 +372,6 @@ public class CakeChuff extends javax.swing.JFrame {
     private javax.swing.JToggleButton RunBlisterSubsystemButton;
     private javax.swing.JToggleButton RunCakeSubsystemButton;
     private javax.swing.JToggleButton RunEveryThingButton;
-    private javax.swing.JToggleButton RunMasterButton;
     private javax.swing.JToggleButton RunQualitySubystemButton;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
