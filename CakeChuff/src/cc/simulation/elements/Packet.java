@@ -64,7 +64,7 @@ public class Packet extends Node {
 		URL model=getClass().getClassLoader().getResource("model/wrap.obj");
 		Spatial loadedModel = ModelLoader.loadOBJ(model, false);
 		
-		float opacityAmount = 0.6f;
+		float opacityAmount = 0.8f;
 		// the sphere material taht will be modified to make the sphere
 		// look opaque then transparent then opaque and so on
 		MaterialState materialState = DisplaySystem.getDisplaySystem().getRenderer()
