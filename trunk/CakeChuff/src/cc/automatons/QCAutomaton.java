@@ -45,6 +45,7 @@ public class QCAutomaton extends Automaton {
 	//simulation
 	private QualitySubsystemState qcsystem;
 	private boolean passed;
+	private boolean blisterwaiting;
 
 	/**
 	 * Constructor
@@ -71,6 +72,7 @@ public class QCAutomaton extends Automaton {
 					
 				}
 			}
+			blisterwaiting=false;
 			dout = new PrintWriter(sout.getOutputStream(),true);
 			//subscribe
 			qcsystem = QualitySubsystemState.getInstance();
@@ -372,17 +374,22 @@ public class QCAutomaton extends Automaton {
 			}
 
 		} else if (arg instanceof TouchSensor) {
-			if (((Sensor) arg).isActived())
-				if (state == STAMP_WAIT) {
-					state = OK_WAIT;
-					changingstate=new Thread(this);
-					changingstate.start();
+			if (((Sensor) arg).isActived()) {
+				if (qcsystem.getRobotIfMoving()) {
+					qcsystem.setConveyor_velocity(0);
+					blisterwaiting = true;
 				} else {
-					state = KO_WAIT;
-					changingstate=new Thread(this);
-					changingstate.start();
-
+					if (state == STAMP_WAIT) {
+						state = OK_WAIT;
+						changingstate = new Thread(this);
+						changingstate.start();
+					} else {
+						state = KO_WAIT;
+						changingstate = new Thread(this);
+						changingstate.start();
+					}
 				}
+			}
 		} else if (o instanceof QualitySubsystemState && ((QualitySubsystemState) o).isChanged_CS()) {
 			//qcsystem.deleteObserver(this);
 			if (!qcsystem.getRobotIfMoving()) {
@@ -397,6 +404,18 @@ public class QCAutomaton extends Automaton {
 						qcsystem.setConveyor_velocity(speed);
 						state = INIT;
 						run_init();
+					}
+				}else if (blisterwaiting && (qcsystem.getRobotCurrentState() == qcsystem.DROPGOODBOX ||qcsystem.getRobotCurrentState() == qcsystem.DROPBADBOX)){
+					if (state == STAMP_WAIT) {
+						blisterwaiting=false;
+						state = OK_WAIT;
+						changingstate = new Thread(this);
+						changingstate.start();
+					} else {
+						blisterwaiting=false;
+						state = KO_WAIT;
+						changingstate = new Thread(this);
+						changingstate.start();
 					}
 				}
 			}
