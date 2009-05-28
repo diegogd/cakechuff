@@ -97,9 +97,7 @@ public class GeneratePDF {
 		
 		File fichero = new File(path + "1.pdf");
 
-		if (fichero.delete())
-			System.out.println("El fichero ha sido borrado satisfactoriamente");
-		else
+		if (!fichero.delete())
 			success = false;
 		
 		return success;
